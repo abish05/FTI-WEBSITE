@@ -58,7 +58,7 @@ const Admission = () => {
 
                             <div className="form-group">
                                 <label className="form-label">Phone Number</label>
-                                <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} className="form-input" placeholder="+91 98765 43210" />
+                                <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} className="form-input" />
                             </div>
                         </div>
 
