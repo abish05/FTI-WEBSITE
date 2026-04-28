@@ -7,10 +7,12 @@ import Admission from './pages/Admission';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import Admin from './pages/Admin';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
