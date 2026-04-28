@@ -69,7 +69,7 @@ const Layout = () => {
                     <div>
                         <h4 style={{ color: 'white', fontSize: '1.2rem', marginBottom: '20px' }}>Contact Info</h4>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                            <li style={{ color: 'var(--text-secondary)' }}>Opp to Canara Bank, Near JM Mobiles, Karunya Nagar, Coimbatore – 641114 <br /><span style={{ fontSize: '0.8rem', opacity: 0.7 }}>(Nagercoil Expansion Soon)</span></li>
+                            <li style={{ color: 'var(--text-secondary)' }}>Opp to Canara Bank, Near JM Mobiles, Karunya Nagar, Coimbatore – 641114</li>
                             <li style={{ color: 'var(--text-secondary)' }}>Phone: +91 77085 88508</li>
                             <li style={{ color: 'var(--text-secondary)' }}>Email: varun10vikash@mail.com</li>
                         </ul>
