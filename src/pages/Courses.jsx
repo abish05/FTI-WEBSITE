@@ -17,7 +17,18 @@ const Courses = () => {
                 careers: 'Frontend Developer, Backend Engineer, Full-Stack Developer.'
             }
         },
-        { title: 'Mobile App Dev', icon: <Smartphone size={40} color="#f59e0b" />, desc: 'Learn to build native and cross-platform applications for iOS and Android.' },
+        {
+            title: 'Mobile App Dev',
+            icon: <Smartphone size={40} color="#f59e0b" />,
+            desc: 'Learn to build native and cross-platform applications for iOS and Android.',
+            details: {
+                subtitle: 'Build for the Pocket-Sized World',
+                description: 'Learn to create seamless user experiences for both iOS and Android using industry-standard frameworks.',
+                modules: ['UI/UX Design Principles', 'Flutter or React Native', 'Native APIs (Camera/GPS)', 'State Management', 'App Store Deployment'],
+                projects: 'A social media feed app and a personal finance tracker.',
+                careers: 'iOS Developer, Android Developer, Cross-Platform App Engineer.'
+            }
+        },
         { title: 'Data Science & AI', icon: <Database size={40} color="#10b981" />, desc: 'Dive into machine learning, data visualization, and artificial intelligence.' },
         { title: 'Cyber Security', icon: <Shield size={40} color="#ef4444" />, desc: 'Protect systems and networks from digital attacks with advanced security protocols.' },
         { title: 'Cloud Computing', icon: <Settings size={40} color="#8b5cf6" />, desc: 'Design, deploy, and manage scalable infrastructure on modern cloud platforms.' },
