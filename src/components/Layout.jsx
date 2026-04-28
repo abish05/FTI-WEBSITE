@@ -55,7 +55,7 @@ const Layout = () => {
                             Bridge the gap between learning and earning at the best technical training institute in Nagercoil.
                         </p>
                         <div style={{ display: 'flex', gap: '15px' }}>
-                            <a href="https://instagram.com/vsbcetc_cse" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }}>Instagram</a>
+                            <a href="https://www.instagram.com/futuretech_karunya?utm_source=qr&igsh=c2U4MTgwZDJ1dmlm" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }}>Instagram</a>
                             <a href="#" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }}>LinkedIn</a>
                             <a href="#" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }}>YouTube</a>
                         </div>
