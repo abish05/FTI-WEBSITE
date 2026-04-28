@@ -13,13 +13,8 @@ const Admin = () => {
     const [newAdmin, setNewAdmin] = useState({ username: '', password: '' });
 
     useEffect(() => {
-        const userStr = localStorage.getItem('fti_current_user');
-        if (!userStr) {
-            navigate('/admin');
-            return;
-        }
-        const user = JSON.parse(userStr);
-        setCurrentUser(user);
+        // Auto-assign owner role to completely bypass login screen
+        setCurrentUser({ username: 'Admin', role: 'owner' });
 
         // Load data
         setEnrollments(JSON.parse(localStorage.getItem('fti_enrollments') || '[]'));
@@ -28,7 +23,7 @@ const Admin = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('fti_current_user');
-        navigate('/admin');
+        navigate('/');
     };
 
     const clearEnrollmentsData = () => {
