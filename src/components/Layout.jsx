@@ -13,7 +13,10 @@ const Layout = () => {
                         <div style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', padding: '8px', borderRadius: '12px' }}>
                             <GraduationCap size={24} color="white" />
                         </div>
-                        FTI
+                        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
+                            <span style={{ fontWeight: 'bold' }}>FutureTech</span>
+                            <span style={{ fontSize: '0.8rem', opacity: 0.7, fontWeight: '400' }}>Training Institute</span>
+                        </div>
                     </Link>
 
                     <div className="nav-links">
@@ -43,7 +46,10 @@ const Layout = () => {
                             <div style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', padding: '8px', borderRadius: '12px', display: 'inline-block' }}>
                                 <GraduationCap size={24} color="white" />
                             </div>
-                            <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>FTI</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
+                                <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>FutureTech</span>
+                                <span style={{ fontSize: '0.9rem', opacity: 0.7, fontWeight: '400' }}>Training Institute</span>
+                            </div>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
                             Bridge the gap between learning and earning at the best technical training institute in Nagercoil.
