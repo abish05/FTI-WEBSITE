@@ -61,7 +61,7 @@ const Layout = () => {
                             <li><Link to="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</Link></li>
                             <li><Link to="/about" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>About</Link></li>
                             <li><Link to="/courses" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>All Courses</Link></li>
-                            <li><Link to="/admin" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Student Login</Link></li>
+                            <li><Link to="/admin" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Admin Login</Link></li>
                             <li><a href="#" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Career Blog</a></li>
                         </ul>
                     </div>
