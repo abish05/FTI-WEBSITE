@@ -86,9 +86,7 @@ const AdminLogin = () => {
                     </button>
                 </form>
 
-                <div style={{ marginTop: '30px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                    <p>Default Owner: <code>owner</code> / <code>password123</code></p>
-                </div>
+
             </div>
         </div>
     );
