@@ -71,6 +71,19 @@ const Contact = () => {
                     </form>
                 </div>
             </div>
+
+            <div className="glass-panel" style={{ padding: '10px', marginTop: '30px', animation: 'fadeIn 0.8s ease-out', animationDelay: '0.2s', animationFillMode: 'both' }}>
+                <iframe
+                    title="Google Maps Location"
+                    src="https://maps.google.com/maps?q=Karunya%20Nagar,%20Coimbatore&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    width="100%"
+                    height="400"
+                    style={{ border: 0, borderRadius: '12px', display: 'block' }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+            </div>
         </div>
     );
 };
