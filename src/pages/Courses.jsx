@@ -67,7 +67,19 @@ const Courses = () => {
                 careers: 'Cloud Architect, DevOps Engineer, Systems Administrator.'
             }
         },
-        { title: 'Digital Marketing', icon: <MonitorPlay size={40} color="#ec4899" />, desc: 'Leverage digital channels to grow businesses and improve online visibility.' }
+        {
+            title: 'Digital Marketing',
+            icon: <MonitorPlay size={40} color="#ec4899" />,
+            desc: 'Leverage digital channels to grow businesses and improve online visibility.',
+            details: {
+                subtitle: 'Master the Art of Online Growth',
+                description: 'In a crowded digital world, learn how to make brands stand out, convert clicks into customers, and track ROI.',
+                modules: ['Search Engine Optimization (SEO)', 'Meta & Google Ads (PPC)', 'Content Strategy', 'Email Marketing Automation', 'Web Analytics'],
+                projectsLabel: "What you'll do:",
+                projects: 'Create a 360-degree marketing campaign and optimize a live brand’s conversion rate.',
+                careers: 'Digital Marketing Manager, SEO Specialist, Performance Marketer.'
+            }
+        }
     ];
 
     return (
