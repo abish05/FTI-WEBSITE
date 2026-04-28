@@ -37,7 +37,10 @@ const Layout = () => {
 
             <footer style={{ marginTop: 'auto', padding: '40px 20px', borderTop: '1px solid var(--glass-border)', background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', textAlign: 'center' }}>
                 <p style={{ color: 'var(--text-secondary)' }}>© {new Date().getFullYear()} FutureTech Training Institute. All rights reserved.</p>
-                <Link to="/admin" style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', textDecoration: 'none', marginTop: '10px', display: 'inline-block' }}>Admin Portal</Link>
+                <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'center', gap: '20px' }}>
+                    <a href="https://futuretechinstitute-privacypolicy.edgeone.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', textDecoration: 'none' }}>Privacy Policy</a>
+                    <Link to="/admin" style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', textDecoration: 'none' }}>Admin Portal</Link>
+                </div>
             </footer>
         </>
     );
