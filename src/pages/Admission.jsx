@@ -53,7 +53,7 @@ const Admission = () => {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                             <div className="form-group">
                                 <label className="form-label">Full Name</label>
-                                <input required type="text" name="fullName" value={formData.fullName} onChange={handleChange} className="form-input" placeholder="John Doe" />
+                                <input required type="text" name="fullName" value={formData.fullName} onChange={handleChange} className="form-input" />
                             </div>
 
                             <div className="form-group">
@@ -64,7 +64,7 @@ const Admission = () => {
 
                         <div className="form-group">
                             <label className="form-label">Email Address</label>
-                            <input required type="email" name="email" value={formData.email} onChange={handleChange} className="form-input" placeholder="john@example.com" />
+                            <input required type="email" name="email" value={formData.email} onChange={handleChange} className="form-input" />
                         </div>
 
                         <div className="form-group">
