@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX } from 'lucide-react';
+import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX, MessageSquare } from 'lucide-react';
 
 const Admin = () => {
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState(null);
     const [activeTab, setActiveTab] = useState('enrollments');
     const [enrollments, setEnrollments] = useState([]);
+    const [messages, setMessages] = useState([]);
 
     // Admin Management State
     const [adminsList, setAdminsList] = useState([]);
@@ -24,6 +25,7 @@ const Admin = () => {
         // Load data
         setEnrollments(JSON.parse(localStorage.getItem('fti_enrollments') || '[]'));
         setAdminsList(JSON.parse(localStorage.getItem('fti_admins') || '[]'));
+        setMessages(JSON.parse(localStorage.getItem('fti_messages') || '[]'));
     }, [navigate]);
 
     const handleLogout = () => {
@@ -35,6 +37,13 @@ const Admin = () => {
         if (window.confirm('Are you sure you want to clear all enrollment data?')) {
             localStorage.removeItem('fti_enrollments');
             setEnrollments([]);
+        }
+    };
+
+    const clearMessagesData = () => {
+        if (window.confirm('Are you sure you want to delete all messages?')) {
+            localStorage.removeItem('fti_messages');
+            setMessages([]);
         }
     };
 
@@ -92,6 +101,13 @@ const Admin = () => {
                 >
                     <Database size={18} style={{ marginRight: '8px' }} /> Enrollments
                 </button>
+                <button
+                    onClick={() => setActiveTab('messages')}
+                    className={`btn-primary ${activeTab !== 'messages' ? 'inactive-tab' : ''}`}
+                    style={activeTab !== 'messages' ? { background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)' } : {}}
+                >
+                    <MessageSquare size={18} style={{ marginRight: '8px' }} /> Messages
+                </button>
                 {currentUser.role === 'owner' && (
                     <button
                         onClick={() => setActiveTab('admins')}
@@ -145,6 +161,50 @@ const Admin = () => {
                                                 </td>
                                                 <td style={{ padding: '20px', color: 'var(--text-secondary)', maxWidth: '250px' }}>
                                                     {entry.remarks || '-'}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+                </>
+            )}
+
+            {activeTab === 'messages' && (
+                <>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+                        <button onClick={clearMessagesData} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.9rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                            <Trash2 size={16} style={{ marginRight: '8px' }} /> Clear All Messages
+                        </button>
+                    </div>
+                    {messages.length === 0 ? (
+                        <div className="glass-panel" style={{ padding: '60px', textAlign: 'center' }}>
+                            <MessageSquare size={48} color="var(--text-secondary)" style={{ marginBottom: '20px', opacity: 0.5 }} />
+                            <h3 style={{ fontSize: '1.5rem', color: 'var(--text-secondary)' }}>No messages yet</h3>
+                            <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: '10px' }}>Messages from the Contact form will appear here.</p>
+                        </div>
+                    ) : (
+                        <div className="glass-panel" style={{ overflow: 'hidden' }}>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                    <thead style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid var(--glass-border)' }}>
+                                        <tr>
+                                            <th style={{ padding: '20px', color: 'var(--text-secondary)', fontWeight: '600' }}>Date</th>
+                                            <th style={{ padding: '20px', color: 'var(--text-secondary)', fontWeight: '600' }}>Sender Name</th>
+                                            <th style={{ padding: '20px', color: 'var(--text-secondary)', fontWeight: '600' }}>Email Address</th>
+                                            <th style={{ padding: '20px', color: 'var(--text-secondary)', fontWeight: '600' }}>Message content</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {messages.map((entry) => (
+                                            <tr key={entry.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                                <td style={{ padding: '20px', color: 'var(--text-secondary)' }}>{entry.date}</td>
+                                                <td style={{ padding: '20px', fontWeight: '500' }}>{entry.name}</td>
+                                                <td style={{ padding: '20px', color: '#60a5fa' }}>{entry.email}</td>
+                                                <td style={{ padding: '20px', maxWidth: '400px', lineHeight: '1.6' }}>
+                                                    {entry.message}
                                                 </td>
                                             </tr>
                                         ))}

@@ -1,6 +1,23 @@
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { useState } from 'react';
 
 const Contact = () => {
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const existing = JSON.parse(localStorage.getItem('fti_messages') || '[]');
+        const newMessage = { ...formData, id: Date.now().toString(), date: new Date().toLocaleDateString() };
+        localStorage.setItem('fti_messages', JSON.stringify([newMessage, ...existing]));
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setSubmitted(false), 5000);
+    };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
     return (
         <div className="section" style={{ maxWidth: '1000px' }}>
             <div style={{ textAlign: 'center', marginBottom: '60px' }}>
@@ -57,18 +74,26 @@ const Contact = () => {
 
                 <div className="glass-panel" style={{ padding: '40px' }}>
                     <h2 style={{ marginBottom: '20px', fontSize: '1.8rem' }}>Send a Message</h2>
-                    <form onSubmit={(e) => e.preventDefault()}>
-                        <div className="form-group">
-                            <input type="text" className="form-input" placeholder="Your Name" required />
+                    {submitted ? (
+                        <div style={{ textAlign: 'center', padding: '40px 20px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                            <span style={{ fontSize: '3rem' }}>🎉</span>
+                            <h3 style={{ marginTop: '15px', color: '#10b981' }}>Message Sent!</h3>
+                            <p style={{ marginTop: '10px', color: 'var(--text-secondary)' }}>We'll get back to you shortly.</p>
                         </div>
-                        <div className="form-group">
-                            <input type="email" className="form-input" placeholder="Your Email" required />
-                        </div>
-                        <div className="form-group">
-                            <textarea className="form-input" rows="5" placeholder="How can we help you?" required></textarea>
-                        </div>
-                        <button type="submit" className="btn-primary" style={{ width: '100%' }}>Send Message</button>
-                    </form>
+                    ) : (
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" placeholder="Your Name" required />
+                            </div>
+                            <div className="form-group">
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} className="form-input" placeholder="Your Email" required />
+                            </div>
+                            <div className="form-group">
+                                <textarea name="message" value={formData.message} onChange={handleChange} className="form-input" rows="5" placeholder="How can we help you?" required></textarea>
+                            </div>
+                            <button type="submit" className="btn-primary" style={{ width: '100%' }}>Send Message</button>
+                        </form>
+                    )}
                 </div>
             </div>
 
