@@ -130,7 +130,7 @@ const Courses = () => {
 
                                 <div style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)', padding: '30px', borderRadius: '16px', marginBottom: '35px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                     <h4 style={{ color: 'white', fontSize: '1.2rem', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        Key Modules
+                                        Curriculum Highlights
                                     </h4>
                                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
                                         {selectedCourse.details.modules.map((mod, i) => (
@@ -143,8 +143,24 @@ const Courses = () => {
                                 </div>
 
                                 <div style={{ marginBottom: '30px' }}>
-                                    <h4 style={{ color: 'white', fontSize: '1.1rem', marginBottom: '10px' }}>{selectedCourse.details.projectsLabel || "What you'll build:"}</h4>
-                                    <p style={{ color: 'rgba(255,255,255,0.7)' }}>{selectedCourse.details.projects}</p>
+                                    <h4 style={{ color: '#ef4444', fontSize: '1.1rem', marginBottom: '10px' }}>The Problem:</h4>
+                                    <p style={{ color: 'rgba(255,255,255,0.7)', fontStyle: 'italic', borderLeft: '3px solid #ef4444', paddingLeft: '15px' }}>"Generic tutorials don't get you jobs."</p>
+                                </div>
+                                <div style={{ marginBottom: '30px', padding: '20px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                                    <h4 style={{ color: '#10b981', fontSize: '1.1rem', marginBottom: '10px' }}>The Solution:</h4>
+                                    <p style={{ color: 'white', lineHeight: '1.6' }}>Our {selectedCourse.title} syllabus is built by industry veterans to focus on what actually matters in 2026.</p>
+                                </div>
+
+                                <div style={{ marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                    <h4 style={{ color: 'white', fontSize: '1.1rem', margin: 0 }}>Tools You'll Master:</h4>
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '10px', display: 'flex' }}>
+                                        {selectedCourse.icon}
+                                    </div>
+                                </div>
+
+                                <div style={{ marginBottom: '30px' }}>
+                                    <h4 style={{ color: 'white', fontSize: '1.1rem', marginBottom: '10px' }}>Outcome:</h4>
+                                    <p style={{ color: 'rgba(255,255,255,0.7)' }}>By the end of this course, you will be able to: <strong style={{ color: 'white' }}>{selectedCourse.details.projects.charAt(0).toLowerCase() + selectedCourse.details.projects.slice(1)}</strong></p>
                                 </div>
 
                                 <div style={{ marginBottom: '40px' }}>
