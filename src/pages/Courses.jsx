@@ -54,7 +54,19 @@ const Courses = () => {
                 careers: 'Security Consultant, Ethical Hacker, SOC Analyst.'
             }
         },
-        { title: 'Cloud Computing', icon: <Settings size={40} color="#8b5cf6" />, desc: 'Design, deploy, and manage scalable infrastructure on modern cloud platforms.' },
+        {
+            title: 'Cloud Computing',
+            icon: <Settings size={40} color="#8b5cf6" />,
+            desc: 'Design, deploy, and manage scalable infrastructure on modern cloud platforms.',
+            details: {
+                subtitle: 'The Backbone of Modern Tech',
+                description: 'Move beyond local servers. Learn to architect, deploy, and scale applications on the world’s most powerful cloud platforms.',
+                modules: ['AWS/Azure Fundamentals', 'Docker & Kubernetes (Containerization)', 'Cloud Security', 'Serverless Architecture', 'DevOps Pipelines'],
+                projectsLabel: "What you'll do:",
+                projects: 'Migrate a legacy system to the cloud and manage automated scaling for high-traffic apps.',
+                careers: 'Cloud Architect, DevOps Engineer, Systems Administrator.'
+            }
+        },
         { title: 'Digital Marketing', icon: <MonitorPlay size={40} color="#ec4899" />, desc: 'Leverage digital channels to grow businesses and improve online visibility.' }
     ];
 
