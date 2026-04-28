@@ -41,7 +41,19 @@ const Courses = () => {
                 careers: 'Data Scientist, ML Engineer, Data Analyst.'
             }
         },
-        { title: 'Cyber Security', icon: <Shield size={40} color="#ef4444" />, desc: 'Protect systems and networks from digital attacks with advanced security protocols.' },
+        {
+            title: 'Cyber Security',
+            icon: <Shield size={40} color="#ef4444" />,
+            desc: 'Protect systems and networks from digital attacks with advanced security protocols.',
+            details: {
+                subtitle: 'Protect the Digital Frontier',
+                description: 'Learn to think like a hacker to build unbreakable defenses. Gain the skills needed to protect sensitive corporate data.',
+                modules: ['Ethical Hacking', 'Network Security', 'Cryptography', 'Incident Response', 'Penetration Testing'],
+                projectsLabel: "What you'll learn:",
+                projects: 'How to identify vulnerabilities, mitigate DDoS attacks, and secure cloud environments.',
+                careers: 'Security Consultant, Ethical Hacker, SOC Analyst.'
+            }
+        },
         { title: 'Cloud Computing', icon: <Settings size={40} color="#8b5cf6" />, desc: 'Design, deploy, and manage scalable infrastructure on modern cloud platforms.' },
         { title: 'Digital Marketing', icon: <MonitorPlay size={40} color="#ec4899" />, desc: 'Leverage digital channels to grow businesses and improve online visibility.' }
     ];
@@ -107,7 +119,7 @@ const Courses = () => {
                                 </div>
 
                                 <div style={{ marginBottom: '30px' }}>
-                                    <h4 style={{ color: 'white', fontSize: '1.1rem', marginBottom: '10px' }}>What you'll build:</h4>
+                                    <h4 style={{ color: 'white', fontSize: '1.1rem', marginBottom: '10px' }}>{selectedCourse.details.projectsLabel || "What you'll build:"}</h4>
                                     <p style={{ color: 'rgba(255,255,255,0.7)' }}>{selectedCourse.details.projects}</p>
                                 </div>
 
