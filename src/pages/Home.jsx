@@ -84,45 +84,6 @@ const Home = () => {
                 )}
             </div>
 
-            {/* SOCIAL PROOF */}
-            <div style={{ textAlign: 'center' }}>
-                <h2 style={{ fontSize: '2.5rem', marginBottom: '15px' }}>Student Outcomes</h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '40px' }}>Meet our alumni working at top tech firms.</p>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', marginBottom: '50px' }}>
-                    <div className="glass-panel" style={{ padding: '30px', textAlign: 'left' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-                            <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>S</div>
-                            <div>
-                                <h4 style={{ fontSize: '1.1rem', margin: 0 }}>Sanjay Kumar</h4>
-                                <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.9rem' }}>Placed at TCS</p>
-                            </div>
-                        </div>
-                        <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>"The portfolio I built at FTI got me instantly recognized during my interview process. The practical labs genuinely prepare you."</p>
-                    </div>
-                    <div className="glass-panel" style={{ padding: '30px', textAlign: 'left' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-                            <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#ec4899', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}>P</div>
-                            <div>
-                                <h4 style={{ fontSize: '1.1rem', margin: 0 }}>Priya Sharma</h4>
-                                <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.9rem' }}>Placed at Infosys</p>
-                            </div>
-                        </div>
-                        <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>"From knowing zero coding to deploying a full AWS server. FTI's mentors are professional engineers and it shows."</p>
-                    </div>
-                </div>
-
-                <div className="glass-panel" style={{ padding: '40px' }}>
-                    <h4 style={{ color: 'var(--text-secondary)', marginBottom: '30px', fontWeight: 'normal', letterSpacing: '1px' }}>OUR STUDENTS ARE PLACED AT</h4>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '40px', flexWrap: 'wrap', opacity: 0.7 }}>
-                        <h2 style={{ margin: 0, color: 'white' }}>TCS</h2>
-                        <h2 style={{ margin: 0, color: 'white' }}>ZOHO</h2>
-                        <h2 style={{ margin: 0, color: 'white' }}>WIPRO</h2>
-                        <h2 style={{ margin: 0, color: 'white' }}>INFOSYS</h2>
-                        <h2 style={{ margin: 0, color: 'white' }}>COGNIZANT</h2>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };
