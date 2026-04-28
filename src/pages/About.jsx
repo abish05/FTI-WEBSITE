@@ -12,7 +12,7 @@ const About = () => {
                     <Target color="var(--accent)" /> Our Vision
                 </h2>
                 <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
-                    <strong style={{ color: 'white' }}>Crisp Overview:</strong> We are a dynamic startup training institute based in Karunya, Coimbatore, offering both in-person and online programs across diverse domains. Our courses are delivered by industry-experienced trainers, focusing on practical, job-ready skills. We aim to bridge the gap between learning and real-world application, helping individuals grow and stay competitive.
+                    We are a dynamic startup training institute based in Karunya, Coimbatore, offering both in-person and online programs across diverse domains. Our courses are delivered by industry-experienced trainers, focusing on practical, job-ready skills. We aim to bridge the gap between learning and real-world application, helping individuals grow and stay competitive.
                 </p>
             </div>
 
