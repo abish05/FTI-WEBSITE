@@ -29,7 +29,18 @@ const Courses = () => {
                 careers: 'iOS Developer, Android Developer, Cross-Platform App Engineer.'
             }
         },
-        { title: 'Data Science & AI', icon: <Database size={40} color="#10b981" />, desc: 'Dive into machine learning, data visualization, and artificial intelligence.' },
+        {
+            title: 'Data Science & AI',
+            icon: <Database size={40} color="#10b981" />,
+            desc: 'Dive into machine learning, data visualization, and artificial intelligence.',
+            details: {
+                subtitle: 'Turn Raw Data into Intelligence',
+                description: 'Master the tools used by data scientists to predict trends, automate tasks, and build "smart" systems.',
+                modules: ['Python for Data Science', 'Statistics & Probability', 'Machine Learning Algorithms', 'Neural Networks (Deep Learning)', 'Data Visualization (Tableau/PowerBI)'],
+                projects: 'A predictive stock market model and a sentiment analysis tool for social media.',
+                careers: 'Data Scientist, ML Engineer, Data Analyst.'
+            }
+        },
         { title: 'Cyber Security', icon: <Shield size={40} color="#ef4444" />, desc: 'Protect systems and networks from digital attacks with advanced security protocols.' },
         { title: 'Cloud Computing', icon: <Settings size={40} color="#8b5cf6" />, desc: 'Design, deploy, and manage scalable infrastructure on modern cloud platforms.' },
         { title: 'Digital Marketing', icon: <MonitorPlay size={40} color="#ec4899" />, desc: 'Leverage digital channels to grow businesses and improve online visibility.' }
