@@ -21,7 +21,7 @@ const Home = () => {
                     Bridge the Gap Between <br />Learning and Earning.
                 </h1>
                 <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto 40px', lineHeight: '1.8' }}>
-                    <strong style={{ color: 'white' }}>Industry-aligned technical training in Nagercoil.</strong> Master in-demand skills with 100% practical sessions and dedicated placement support.
+                    <strong style={{ color: 'white' }}>Industry-aligned technical training.</strong> Master in-demand skills with 100% practical sessions and dedicated placement support.
                 </p>
                 <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
                     <Link to="/courses" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
