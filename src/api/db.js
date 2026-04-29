@@ -3,7 +3,7 @@ const API_URL = `https://jsonblob.com/api/jsonBlob/${BLOB_ID}`;
 
 export const fetchDB = async () => {
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, { cache: 'no-store' });
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         return data;

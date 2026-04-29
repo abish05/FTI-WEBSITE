@@ -36,6 +36,36 @@ const Admin = () => {
         navigate('/admin');
     };
 
+    const migrateLocalData = async () => {
+        if (!window.confirm("This will upload all old data from this device to the cloud database. Only do this once from your original device. Proceed?")) return;
+        
+        try {
+            const db = await fetchDB();
+            
+            const localEnrollments = JSON.parse(localStorage.getItem('fti_enrollments') || '[]');
+            const localMessages = JSON.parse(localStorage.getItem('fti_messages') || '[]');
+            const localAdmins = JSON.parse(localStorage.getItem('fti_admins') || '[]');
+            
+            db.enrollments = [...db.enrollments, ...localEnrollments.filter(le => !db.enrollments.some(de => de.id === le.id))];
+            db.messages = [...db.messages, ...localMessages.filter(lm => !db.messages.some(dm => dm.id === lm.id))];
+            
+            if (localAdmins.length > 0) {
+                db.admins = [...db.admins, ...localAdmins.filter(la => !db.admins.some(da => da.username === la.username))];
+            }
+            
+            await updateDB(db);
+            
+            setEnrollments(db.enrollments);
+            setMessages(db.messages);
+            setAdminsList(db.admins);
+            
+            alert("Data successfully synced to cloud!");
+        } catch (e) {
+            console.error("Sync error:", e);
+            alert("Error syncing data.");
+        }
+    };
+
     const clearEnrollmentsData = async () => {
         if (window.confirm('Are you sure you want to clear all enrollment data?')) {
             const db = await fetchDB();
@@ -141,9 +171,16 @@ const Admin = () => {
                     <h1 className="gradient-text" style={{ fontSize: '2.5rem', marginBottom: '10px' }}>Admin Dashboard</h1>
                     <p style={{ color: 'var(--text-secondary)' }}>Welcome back, <strong style={{ color: 'white' }}>{currentUser.username}</strong> ({currentUser.role}).</p>
                 </div>
-                <button onClick={handleLogout} className="btn-primary" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--glass-border)' }}>
-                    <LogOut size={18} style={{ marginRight: '8px' }} /> Log Out
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    {currentUser.role === 'owner' && (
+                        <button onClick={migrateLocalData} className="btn-primary" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }} title="Click this from your original device to upload your old data to the cloud">
+                            <Database size={18} style={{ marginRight: '8px' }} /> Sync Old Data
+                        </button>
+                    )}
+                    <button onClick={handleLogout} className="btn-primary" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--glass-border)' }}>
+                        <LogOut size={18} style={{ marginRight: '8px' }} /> Log Out
+                    </button>
+                </div>
             </div>
 
             <div style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
@@ -161,15 +198,13 @@ const Admin = () => {
                 >
                     <MessageSquare size={18} style={{ marginRight: '8px' }} /> Messages
                 </button>
-                {currentUser.role === 'owner' && (
-                    <button
-                        onClick={() => setActiveTab('admins')}
-                        className={`btn-primary ${activeTab !== 'admins' ? 'inactive-tab' : ''}`}
-                        style={activeTab !== 'admins' ? { background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)' } : {}}
-                    >
-                        <Shield size={18} style={{ marginRight: '8px' }} /> Manage Admins
-                    </button>
-                )}
+                <button
+                    onClick={() => setActiveTab('admins')}
+                    className={`btn-primary ${activeTab !== 'admins' ? 'inactive-tab' : ''}`}
+                    style={activeTab !== 'admins' ? { background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)' } : {}}
+                >
+                    <Shield size={18} style={{ marginRight: '8px' }} /> Admins List
+                </button>
             </div>
 
             {activeTab === 'enrollments' && (
@@ -288,24 +323,26 @@ const Admin = () => {
                 </>
             )}
 
-            {activeTab === 'admins' && currentUser.role === 'owner' && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '30px' }}>
-                    <div className="glass-panel" style={{ padding: '30px', alignSelf: 'start' }}>
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <UserPlus size={20} color="var(--accent)" /> Add New Admin
-                        </h3>
-                        <form onSubmit={handleAddAdmin}>
-                            <div className="form-group">
-                                <label className="form-label">Username</label>
-                                <input type="text" className="form-input" required value={newAdmin.username} onChange={(e) => setNewAdmin({ ...newAdmin, username: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Password</label>
-                                <input type="password" className="form-input" required value={newAdmin.password} onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })} />
-                            </div>
-                            <button type="submit" className="btn-primary" style={{ width: '100%' }}>Create Admin</button>
-                        </form>
-                    </div>
+            {activeTab === 'admins' && (
+                <div style={{ display: 'grid', gridTemplateColumns: currentUser.role === 'owner' ? 'minmax(300px, 1fr) 2fr' : '1fr', gap: '30px' }}>
+                    {currentUser.role === 'owner' && (
+                        <div className="glass-panel" style={{ padding: '30px', alignSelf: 'start' }}>
+                            <h3 style={{ fontSize: '1.2rem', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <UserPlus size={20} color="var(--accent)" /> Add New Admin
+                            </h3>
+                            <form onSubmit={handleAddAdmin}>
+                                <div className="form-group">
+                                    <label className="form-label">Username</label>
+                                    <input type="text" className="form-input" required value={newAdmin.username} onChange={(e) => setNewAdmin({ ...newAdmin, username: e.target.value })} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Password</label>
+                                    <input type="password" className="form-input" required value={newAdmin.password} onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })} />
+                                </div>
+                                <button type="submit" className="btn-primary" style={{ width: '100%' }}>Create Admin</button>
+                            </form>
+                        </div>
+                    )}
 
                     <div className="glass-panel" style={{ overflow: 'hidden' }}>
                         <div style={{ padding: '20px', borderBottom: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.02)' }}>
