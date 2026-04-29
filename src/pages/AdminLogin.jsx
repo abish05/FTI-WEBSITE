@@ -22,7 +22,10 @@ const AdminLogin = () => {
             const db = await fetchDB();
             const admins = db.admins || [];
             
-            const user = admins.find(a => a.username === credentials.username && a.password === credentials.password);
+            const trimmedUsername = credentials.username.trim();
+            const trimmedPassword = credentials.password.trim();
+            
+            const user = admins.find(a => a.username.toLowerCase() === trimmedUsername.toLowerCase() && a.password === trimmedPassword);
 
             if (user) {
                 localStorage.setItem('fti_current_user', JSON.stringify({
