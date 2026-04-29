@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX, MessageSquare } from 'lucide-react';
+import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX, MessageSquare, Download } from 'lucide-react';
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -79,6 +79,45 @@ const Admin = () => {
         }
     };
 
+    const downloadReport = (type) => {
+        const now = Date.now();
+        let filtered = enrollments;
+
+        if (type !== 'all') {
+            const oneDay = 24 * 60 * 60 * 1000;
+            let timeLimit = now;
+            if (type === 'daily') timeLimit = now - oneDay;
+            else if (type === 'weekly') timeLimit = now - (7 * oneDay);
+            else if (type === 'monthly') timeLimit = now - (30 * oneDay);
+
+            filtered = enrollments.filter(e => {
+                const timestamp = parseInt(e.id);
+                if (isNaN(timestamp)) return true; // Include items without a valid timestamp ID
+                return timestamp >= timeLimit;
+            });
+        }
+
+        if (filtered.length === 0) {
+            alert(`No enrollments found for the selected period (${type}).`);
+            return;
+        }
+
+        const headers = ['Date', 'Student Name', 'Email', 'Phone', 'Course', 'Remarks'];
+        const csvContent = [
+            headers.join(','),
+            ...filtered.map(e => `"${e.date || ''}","${e.fullName || ''}","${e.email || ''}","${e.phone || ''}","${e.course || ''}","${(e.remarks || '').replace(/"/g, '""')}"`)
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `fti_enrollment_report_${type}_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     if (!currentUser) return null;
 
     return (
@@ -121,7 +160,26 @@ const Admin = () => {
 
             {activeTab === 'enrollments' && (
                 <>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}><Download size={18} /></span>
+                            <select 
+                                onChange={(e) => {
+                                    if(e.target.value) {
+                                        downloadReport(e.target.value);
+                                        e.target.value = "";
+                                    }
+                                }}
+                                className="form-input" 
+                                style={{ width: 'auto', padding: '8px 16px', fontSize: '0.9rem', cursor: 'pointer', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: 'white' }}
+                            >
+                                <option value="" style={{ color: 'black' }}>Download Report...</option>
+                                <option value="daily" style={{ color: 'black' }}>Daily Report (Last 24h)</option>
+                                <option value="weekly" style={{ color: 'black' }}>Weekly Report (Last 7d)</option>
+                                <option value="monthly" style={{ color: 'black' }}>Monthly Report (Last 30d)</option>
+                                <option value="all" style={{ color: 'black' }}>All-Time Report</option>
+                            </select>
+                        </div>
                         <button onClick={clearEnrollmentsData} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.9rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
                             <Trash2 size={16} style={{ marginRight: '8px' }} /> Clear All Data
                         </button>
