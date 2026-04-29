@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { fetchDB, updateDB } from '../api/db';
 
 const Admission = () => {
     const [formData, setFormData] = useState({
@@ -11,21 +12,33 @@ const Admission = () => {
 
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simulate API call and save to localStorage
-        const existing = JSON.parse(localStorage.getItem('fti_enrollments') || '[]');
-        const newEnrollment = {
-            ...formData,
-            id: Date.now().toString(),
-            date: new Date().toLocaleDateString()
-        };
-        localStorage.setItem('fti_enrollments', JSON.stringify([newEnrollment, ...existing]));
-        setSubmitted(true);
-        setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
+        
+        try {
+            // Fetch latest DB
+            const db = await fetchDB();
+            const existing = db.enrollments || [];
+            
+            const newEnrollment = {
+                ...formData,
+                id: Date.now().toString(),
+                date: new Date().toLocaleDateString()
+            };
+            
+            // Update remote DB
+            db.enrollments = [newEnrollment, ...existing];
+            await updateDB(db);
+            
+            setSubmitted(true);
+            setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
 
-        // Auto reset success message
-        setTimeout(() => setSubmitted(false), 5000);
+            // Auto reset success message
+            setTimeout(() => setSubmitted(false), 5000);
+        } catch (err) {
+            console.error("Error submitting application:", err);
+            alert("There was an error submitting your application. Please try again.");
+        }
     };
 
     const handleChange = (e) => {

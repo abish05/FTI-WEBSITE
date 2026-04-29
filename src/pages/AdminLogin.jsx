@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, ShieldAlert } from 'lucide-react';
+import { fetchDB } from '../api/db';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
@@ -8,38 +9,34 @@ const AdminLogin = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // Check if already logged in
+        // Check if already logged in (local session is fine for checking auth state)
         if (localStorage.getItem('fti_current_user')) {
             navigate('/admin/dashboard');
         }
-
-        // Bootstrap master owner account if none exists
-        const existingAdmins = localStorage.getItem('fti_admins');
-        if (!existingAdmins) {
-            localStorage.setItem('fti_admins', JSON.stringify([{
-                id: '1',
-                username: 'owner',
-                password: 'password123',
-                role: 'owner',
-                createdAt: new Date().toLocaleDateString()
-            }]));
-        }
     }, [navigate]);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        const admins = JSON.parse(localStorage.getItem('fti_admins') || '[]');
-        const user = admins.find(a => a.username === credentials.username && a.password === credentials.password);
+        
+        try {
+            const db = await fetchDB();
+            const admins = db.admins || [];
+            
+            const user = admins.find(a => a.username === credentials.username && a.password === credentials.password);
 
-        if (user) {
-            localStorage.setItem('fti_current_user', JSON.stringify({
-                id: user.id,
-                username: user.username,
-                role: user.role
-            }));
-            navigate('/admin/dashboard');
-        } else {
-            setError('Invalid username or password');
+            if (user) {
+                localStorage.setItem('fti_current_user', JSON.stringify({
+                    id: user.id,
+                    username: user.username,
+                    role: user.role
+                }));
+                navigate('/admin/dashboard');
+            } else {
+                setError('Invalid username or password');
+            }
+        } catch (err) {
+            console.error("Login error:", err);
+            setError('Error connecting to database. Please try again.');
         }
     };
 

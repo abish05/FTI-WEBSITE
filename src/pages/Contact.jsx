@@ -1,18 +1,29 @@
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useState } from 'react';
+import { fetchDB, updateDB } from '../api/db';
 
 const Contact = () => {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const existing = JSON.parse(localStorage.getItem('fti_messages') || '[]');
-        const newMessage = { ...formData, id: Date.now().toString(), date: new Date().toLocaleDateString() };
-        localStorage.setItem('fti_messages', JSON.stringify([newMessage, ...existing]));
-        setSubmitted(true);
-        setFormData({ name: '', email: '', message: '' });
-        setTimeout(() => setSubmitted(false), 5000);
+        
+        try {
+            const db = await fetchDB();
+            const existing = db.messages || [];
+            const newMessage = { ...formData, id: Date.now().toString(), date: new Date().toLocaleDateString() };
+            
+            db.messages = [newMessage, ...existing];
+            await updateDB(db);
+            
+            setSubmitted(true);
+            setFormData({ name: '', email: '', message: '' });
+            setTimeout(() => setSubmitted(false), 5000);
+        } catch (err) {
+            console.error("Error sending message:", err);
+            alert("There was an error sending your message. Please try again.");
+        }
     };
 
     const handleChange = (e) => {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX, MessageSquare, Download } from 'lucide-react';
+import { fetchDB, updateDB } from '../api/db';
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -22,10 +23,12 @@ const Admin = () => {
         const user = JSON.parse(userStr);
         setCurrentUser(user);
 
-        // Load data
-        setEnrollments(JSON.parse(localStorage.getItem('fti_enrollments') || '[]'));
-        setAdminsList(JSON.parse(localStorage.getItem('fti_admins') || '[]'));
-        setMessages(JSON.parse(localStorage.getItem('fti_messages') || '[]'));
+        // Load data from remote DB
+        fetchDB().then(db => {
+            setEnrollments(db.enrollments || []);
+            setAdminsList(db.admins || []);
+            setMessages(db.messages || []);
+        });
     }, [navigate]);
 
     const handleLogout = () => {
@@ -33,21 +36,25 @@ const Admin = () => {
         navigate('/admin');
     };
 
-    const clearEnrollmentsData = () => {
+    const clearEnrollmentsData = async () => {
         if (window.confirm('Are you sure you want to clear all enrollment data?')) {
-            localStorage.removeItem('fti_enrollments');
+            const db = await fetchDB();
+            db.enrollments = [];
+            await updateDB(db);
             setEnrollments([]);
         }
     };
 
-    const clearMessagesData = () => {
+    const clearMessagesData = async () => {
         if (window.confirm('Are you sure you want to delete all messages?')) {
-            localStorage.removeItem('fti_messages');
+            const db = await fetchDB();
+            db.messages = [];
+            await updateDB(db);
             setMessages([]);
         }
     };
 
-    const handleAddAdmin = (e) => {
+    const handleAddAdmin = async (e) => {
         e.preventDefault();
         if (!newAdmin.username || !newAdmin.password) return;
 
@@ -67,15 +74,22 @@ const Admin = () => {
 
         const updated = [...adminsList, newAdminObj];
         setAdminsList(updated);
-        localStorage.setItem('fti_admins', JSON.stringify(updated));
+        
+        const db = await fetchDB();
+        db.admins = updated;
+        await updateDB(db);
+        
         setNewAdmin({ username: '', password: '' });
     };
 
-    const handleDeleteAdmin = (id) => {
+    const handleDeleteAdmin = async (id) => {
         if (window.confirm('Are you sure you want to remove this admin?')) {
             const updated = adminsList.filter(a => a.id !== id);
             setAdminsList(updated);
-            localStorage.setItem('fti_admins', JSON.stringify(updated));
+            
+            const db = await fetchDB();
+            db.admins = updated;
+            await updateDB(db);
         }
     };
 
