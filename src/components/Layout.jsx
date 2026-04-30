@@ -26,7 +26,7 @@ const Layout = () => {
         <>
             <nav>
                 <div className="nav-content">
-                    <Link to="/" className="nav-logo">
+                    <Link to="/" className="nav-logo" onClick={() => setIsMobileMenuOpen(false)}>
                         <div style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', padding: '8px', borderRadius: '12px' }}>
                             <GraduationCap size={24} color="white" />
                         </div>
@@ -47,9 +47,20 @@ const Layout = () => {
                         )}
                     </div>
 
-                    {/* Simple Mobile menu toggle (optional feature to expand later) */}
-                    <button className="mobile-menu-btn" style={{ background: 'none', border: 'none', color: 'white', display: 'none' }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                        {isMobileMenuOpen ? <X /> : <Menu />}
+                    {/* Mobile Navigation Drawer */}
+                    <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
+                        <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Home</NavLink>
+                        <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>About Us</NavLink>
+                        <NavLink to="/courses" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Courses</NavLink>
+                        <NavLink to="/admission" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Admission</NavLink>
+                        <NavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Contact</NavLink>
+                        {user && (
+                            <NavLink to="/admin" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"} style={{ color: 'var(--accent)', fontWeight: 'bold' }}>Admin Dashboard</NavLink>
+                        )}
+                    </div>
+
+                    <button className="mobile-menu-btn" style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                        {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
                 </div>
             </nav>

@@ -18,7 +18,7 @@ const Home = () => {
     return (
         <div className="section" style={{ display: 'flex', flexDirection: 'column', gap: '80px' }}>
             {/* HERO SECTION */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px', alignItems: 'center', marginTop: '40px', animation: 'fadeIn 0.8s ease-out' }}>
+            <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px', alignItems: 'center', marginTop: '40px', animation: 'fadeIn 0.8s ease-out' }}>
                 <div style={{ textAlign: 'left' }}>
                     <h1 className="gradient-text" style={{ fontSize: '4rem', marginBottom: '24px', letterSpacing: '-1px', lineHeight: '1.1' }}>
                         Bridge the Gap Between <br />Learning and Earning.
@@ -94,7 +94,7 @@ const Home = () => {
             </div>
 
             {/* LAB PREVIEW SECTION */}
-            <div className="glass-panel" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '50px', alignItems: 'center', padding: '60px' }}>
+            <div className="glass-panel hero-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '50px', alignItems: 'center', padding: '60px' }}>
                 <div style={{ order: window.innerWidth > 768 ? 2 : 1 }} className="image-container">
                     <img src={classroomLife} alt="Students in Lab" className="premium-image" style={{ width: '100%', borderRadius: '20px', border: '1px solid var(--glass-border)' }} />
                     <div className="image-overlay"></div>

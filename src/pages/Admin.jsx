@@ -274,7 +274,7 @@ const Admin = () => {
                         </div>
                     ) : (
                         <div className="glass-panel" style={{ overflow: 'hidden' }}>
-                            <div style={{ overflowX: 'auto' }}>
+                            <div className="table-container">
                                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid var(--glass-border)' }}>
                                         <tr>
@@ -355,7 +355,7 @@ const Admin = () => {
                         </div>
                     ) : (
                         <div className="glass-panel" style={{ overflow: 'hidden' }}>
-                            <div style={{ overflowX: 'auto' }}>
+                            <div className="table-container">
                                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid var(--glass-border)' }}>
                                         <tr>
