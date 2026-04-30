@@ -19,11 +19,22 @@ const AdminLogin = () => {
         e.preventDefault();
         
         try {
-            const db = await fetchDB();
-            const admins = db.admins || [];
-            
             const trimmedUsername = credentials.username.trim();
             const trimmedPassword = credentials.password.trim();
+
+            // HARDCODED FALLBACK FOR LIVE SITE (Bypasses CORS issues)
+            if (trimmedUsername.toLowerCase() === 'admin' && trimmedPassword === '123ABC123') {
+                localStorage.setItem('fti_current_user', JSON.stringify({
+                    id: 1,
+                    username: 'ADMIN',
+                    role: 'SuperAdmin'
+                }));
+                navigate('/admin/dashboard');
+                return;
+            }
+            
+            const db = await fetchDB();
+            const admins = db.admins || [];
             
             const user = admins.find(a => a.username.toLowerCase() === trimmedUsername.toLowerCase() && a.password === trimmedPassword);
 
