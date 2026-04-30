@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX, MessageSquare, Download } from 'lucide-react';
+import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX, MessageSquare, Download, X } from 'lucide-react';
 import { fetchDB, updateDB } from '../api/db';
 
 const Admin = () => {
@@ -13,6 +13,10 @@ const Admin = () => {
     // Admin Management State
     const [adminsList, setAdminsList] = useState([]);
     const [newAdmin, setNewAdmin] = useState({ username: '', password: '' });
+    
+    // Edit Enrollment State
+    const [editingEnrollment, setEditingEnrollment] = useState(null);
+    const [editData, setEditData] = useState({ fullName: '', email: '', phone: '', course: '', remarks: '' });
 
     useEffect(() => {
         const userStr = localStorage.getItem('fti_current_user');
@@ -123,6 +127,35 @@ const Admin = () => {
         }
     };
 
+    const startEditing = (enrollment) => {
+        setEditingEnrollment(enrollment);
+        setEditData({ ...enrollment });
+    };
+
+    const handleSaveEdit = async (e) => {
+        e.preventDefault();
+        try {
+            const db = await fetchDB();
+            const updatedEnrollments = db.enrollments.map(en => 
+                en.id === editingEnrollment.id ? { ...en, ...editData } : en
+            );
+            
+            db.enrollments = updatedEnrollments;
+            const success = await updateDB(db);
+            
+            if (success) {
+                setEnrollments(updatedEnrollments);
+                setEditingEnrollment(null);
+                alert("Enrollment updated successfully!");
+            } else {
+                alert("Failed to save changes. Please try again.");
+            }
+        } catch (err) {
+            console.error("Edit error:", err);
+            alert("An error occurred while saving.");
+        }
+    };
+
     const downloadReport = (type) => {
         const now = Date.now();
         let filtered = enrollments;
@@ -169,7 +202,7 @@ const Admin = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px', flexWrap: 'wrap', gap: '20px' }}>
                 <div>
                     <h1 className="gradient-text" style={{ fontSize: '2.5rem', marginBottom: '10px' }}>Admin Dashboard</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>Welcome back, <strong style={{ color: 'white' }}>{currentUser.username}</strong> ({currentUser.role}).</p>
+                    <p style={{ color: 'var(--text-secondary)' }}>Welcome back, <strong style={{ color: 'white' }}>{currentUser.username}</strong> (<span style={{ color: currentUser.role === 'SuperAdmin' ? '#f59e0b' : '#c084fc' }}>{currentUser.role}</span>).</p>
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     {currentUser.role === 'owner' && (
@@ -250,6 +283,7 @@ const Admin = () => {
                                             <th style={{ padding: '20px', color: 'var(--text-secondary)', fontWeight: '600' }}>Contact</th>
                                             <th style={{ padding: '20px', color: 'var(--text-secondary)', fontWeight: '600' }}>Selected Course</th>
                                             <th style={{ padding: '20px', color: 'var(--text-secondary)', fontWeight: '600' }}>Remarks</th>
+                                            <th style={{ padding: '20px', color: 'var(--text-secondary)', fontWeight: '600', textAlign: 'right' }}>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -268,6 +302,33 @@ const Admin = () => {
                                                 </td>
                                                 <td style={{ padding: '20px', color: 'var(--text-secondary)', maxWidth: '250px' }}>
                                                     {entry.remarks || '-'}
+                                                </td>
+                                                <td style={{ padding: '20px', textAlign: 'right' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                                        <button 
+                                                            onClick={() => startEditing(entry)} 
+                                                            style={{ background: 'rgba(59, 130, 246, 0.1)', border: 'none', color: '#60a5fa', cursor: 'pointer', padding: '8px', borderRadius: '8px' }}
+                                                            title="Edit Enrollment"
+                                                        >
+                                                            <UserPlus size={18} />
+                                                        </button>
+                                                        {(currentUser.role === 'SuperAdmin' || currentUser.role === 'owner') && (
+                                                            <button 
+                                                                onClick={async () => {
+                                                                    if(window.confirm('Delete this enrollment?')) {
+                                                                        const db = await fetchDB();
+                                                                        db.enrollments = db.enrollments.filter(e => e.id !== entry.id);
+                                                                        await updateDB(db);
+                                                                        setEnrollments(db.enrollments);
+                                                                    }
+                                                                }} 
+                                                                style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '8px', borderRadius: '8px' }}
+                                                                title="Delete Enrollment"
+                                                            >
+                                                                <Trash2 size={18} />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -324,8 +385,8 @@ const Admin = () => {
             )}
 
             {activeTab === 'admins' && (
-                <div style={{ display: 'grid', gridTemplateColumns: currentUser.role === 'owner' ? 'minmax(300px, 1fr) 2fr' : '1fr', gap: '30px' }}>
-                    {currentUser.role === 'owner' && (
+                <div style={{ display: 'grid', gridTemplateColumns: (currentUser.role === 'owner' || currentUser.role === 'SuperAdmin') ? 'minmax(300px, 1fr) 2fr' : '1fr', gap: '30px' }}>
+                    {(currentUser.role === 'owner' || currentUser.role === 'SuperAdmin') && (
                         <div className="glass-panel" style={{ padding: '30px', alignSelf: 'start' }}>
                             <h3 style={{ fontSize: '1.2rem', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <UserPlus size={20} color="var(--accent)" /> Add New Admin
@@ -391,6 +452,53 @@ const Admin = () => {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            )}
+            {/* Edit Enrollment Modal */}
+            {editingEnrollment && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+                    <div className="glass-panel" style={{ width: '100%', maxWidth: '600px', padding: '40px', position: 'relative' }}>
+                        <button onClick={() => setEditingEnrollment(null)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                            <X size={24} />
+                        </button>
+                        <h2 style={{ fontSize: '1.8rem', marginBottom: '25px', color: 'var(--accent)' }}>Edit Enrollment Data</h2>
+                        
+                        <form onSubmit={handleSaveEdit}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                <div className="form-group">
+                                    <label className="form-label">Full Name</label>
+                                    <input type="text" className="form-input" value={editData.fullName} onChange={(e) => setEditData({...editData, fullName: e.target.value})} />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Phone</label>
+                                    <input type="text" className="form-input" value={editData.phone} onChange={(e) => setEditData({...editData, phone: e.target.value})} />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Email</label>
+                                <input type="email" className="form-input" value={editData.email} onChange={(e) => setEditData({...editData, email: e.target.value})} />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Course</label>
+                                <select className="form-input" value={editData.course} onChange={(e) => setEditData({...editData, course: e.target.value})} style={{ appearance: 'none' }}>
+                                    <option value="Web Development">Web Development</option>
+                                    <option value="Mobile App Dev">Mobile App Dev</option>
+                                    <option value="Data Science & AI">Data Science & AI</option>
+                                    <option value="Cyber Security">Cyber Security</option>
+                                    <option value="Cloud Computing">Cloud Computing</option>
+                                    <option value="Digital Marketing">Digital Marketing</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Remarks</label>
+                                <textarea className="form-input" value={editData.remarks} onChange={(e) => setEditData({...editData, remarks: e.target.value})} rows="3"></textarea>
+                            </div>
+                            <div style={{ display: 'flex', gap: '15px', marginTop: '30px' }}>
+                                <button type="button" onClick={() => setEditingEnrollment(null)} className="btn-primary" style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)' }}>Cancel</button>
+                                <button type="submit" className="btn-primary" style={{ flex: 2 }}>Save Changes</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
