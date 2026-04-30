@@ -1,14 +1,19 @@
 import { Target, Users, BookOpen, Rocket, Award, ShieldCheck, MapPin, Zap, Code, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import classroomLife from '../assets/classroom_life.png';
 
 const About = () => {
     return (
         <div className="section" style={{ maxWidth: '1200px' }}>
             <div style={{ textAlign: 'center', marginBottom: '60px' }}>
                 <h1 className="gradient-text" style={{ fontSize: '3.5rem', marginBottom: '20px' }}>Our Mission</h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem', maxWidth: '800px', margin: '0 auto', lineHeight: '1.8' }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem', maxWidth: '800px', margin: '0 auto 40px', lineHeight: '1.8' }}>
                     To <strong style={{ color: 'white' }}>democratize high-end technical education.</strong> We provide local talent with the same level of expertise, tools, and opportunities found in global tech hubs, ensuring our students are "Industry-Ready" from day one.
                 </p>
+                <div className="image-container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
+                    <img src={classroomLife} alt="FTI Classroom" className="premium-image" style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }} />
+                    <div className="image-overlay"></div>
+                </div>
             </div>
 
             <div className="glass-panel" style={{ padding: '50px', marginBottom: '40px', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%)' }}>

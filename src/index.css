@@ -166,3 +166,36 @@ nav {
     display: none; /* simple mobile hide for now, could add hamburger */
   }
 }
+
+/* Premium Image Styles */
+.premium-image {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: saturate(0.8) brightness(0.9);
+}
+
+.premium-image:hover {
+  filter: saturate(1.1) brightness(1.1);
+  transform: scale(1.02);
+}
+
+.image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
