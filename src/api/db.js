@@ -1,5 +1,5 @@
 const BLOB_ID = '019dddec-3524-7222-8f0d-3f79ee8d3dc1';
-const API_URL = `https://jsonblob.com/api/jsonBlob/${BLOB_ID}`;
+const API_URL = `https://corsproxy.io/?https://jsonblob.com/api/jsonBlob/${BLOB_ID}`;
 
 export const fetchDB = async () => {
     try {
