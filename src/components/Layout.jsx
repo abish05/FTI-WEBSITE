@@ -1,9 +1,26 @@
 import { Outlet, NavLink, Link } from 'react-router-dom';
 import { GraduationCap, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Layout = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const checkUser = () => {
+            const userStr = localStorage.getItem('fti_current_user');
+            if (userStr) {
+                setUser(JSON.parse(userStr));
+            } else {
+                setUser(null);
+            }
+        };
+        
+        checkUser();
+        // Check for storage changes (e.g. login/logout)
+        window.addEventListener('storage', checkUser);
+        return () => window.removeEventListener('storage', checkUser);
+    }, []);
 
     return (
         <>
@@ -25,6 +42,9 @@ const Layout = () => {
                         <NavLink to="/courses" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Courses</NavLink>
                         <NavLink to="/admission" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Admission</NavLink>
                         <NavLink to="/contact" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Contact</NavLink>
+                        {user && (
+                            <NavLink to="/admin" className={({ isActive }) => isActive ? "nav-link active dashboard-link" : "nav-link dashboard-link"} style={{ color: 'var(--accent)', fontWeight: '600', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '12px', padding: '8px 16px' }}>Dashboard</NavLink>
+                        )}
                     </div>
 
                     {/* Simple Mobile menu toggle (optional feature to expand later) */}

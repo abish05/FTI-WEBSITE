@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX, MessageSquare, Download, X } from 'lucide-react';
+import { Database, Trash2, LogOut, Users, UserPlus, Shield, UserX, MessageSquare, Download, X, Edit3 } from 'lucide-react';
 import { fetchDB, updateDB } from '../api/db';
 
 const Admin = () => {
@@ -310,7 +310,7 @@ const Admin = () => {
                                                             style={{ background: 'rgba(59, 130, 246, 0.1)', border: 'none', color: '#60a5fa', cursor: 'pointer', padding: '8px', borderRadius: '8px' }}
                                                             title="Edit Enrollment"
                                                         >
-                                                            <UserPlus size={18} />
+                                                            <Edit3 size={18} />
                                                         </button>
                                                         {(currentUser.role === 'SuperAdmin' || currentUser.role === 'owner') && (
                                                             <button 
