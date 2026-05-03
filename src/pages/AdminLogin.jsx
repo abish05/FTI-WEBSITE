@@ -8,28 +8,42 @@ const AdminLogin = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         setError('');
 
-        // Using user provided credentials
-        if (credentials.email === 'abishstk@gmail.com' && credentials.password === '9zipj5h2mC*') {
-            const user = {
-                email: credentials.email,
-                role: 'SuperAdmin',
-                username: 'abishstk'
-            };
-            localStorage.setItem('fti_current_user', JSON.stringify(user));
-            // Trigger storage event for Layout component
-            window.dispatchEvent(new Event('storage'));
+        try {
+            const db = await fetchDB();
+            const authorizedAdmins = db.admins || [];
             
-            setTimeout(() => {
-                navigate('/admin/dashboard');
-            }, 1000);
-        } else {
+            // Master Fallback
+            const isMaster = credentials.email === 'abishstk@gmail.com' && credentials.password === '9zipj5h2mC*';
+            
+            // Sub-Admin Check (For simplicity, sub-admins use a shared default passcode for now, or we could add password field to DB)
+            // The user only provided one password, so I'll use it as the "Universal System Passcode" for all authorized emails.
+            const isSubAdmin = authorizedAdmins.some(a => a.email === credentials.email) && credentials.password === '9zipj5h2mC*';
+
+            if (isMaster || isSubAdmin) {
+                const foundAdmin = authorizedAdmins.find(a => a.email === credentials.email) || { username: 'Master Admin', role: 'SuperAdmin' };
+                const user = {
+                    email: credentials.email,
+                    role: foundAdmin.role,
+                    username: foundAdmin.username
+                };
+                localStorage.setItem('fti_current_user', JSON.stringify(user));
+                window.dispatchEvent(new Event('storage'));
+                
+                setTimeout(() => {
+                    navigate('/admin/dashboard');
+                }, 1000);
+            } else {
+                setIsLoading(false);
+                setError('ACCESS DENIED: UNAUTHORIZED PROTOCOLS');
+            }
+        } catch (err) {
             setIsLoading(false);
-            setError('ACCESS DENIED: INVALID PROTOCOLS');
+            setError('SYSTEM ERROR: UNABLE TO REACH MAINFRAME');
         }
     };
 
