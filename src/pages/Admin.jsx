@@ -114,7 +114,6 @@ const Admin = () => {
                 width: '280px', 
                 height: '100vh', 
                 position: 'fixed', 
-                left: isSidebarOpen ? '0' : '-280px', 
                 top: 0, 
                 background: 'rgba(15, 23, 42, 0.98)', 
                 borderRight: '1px solid rgba(16, 185, 129, 0.2)',
@@ -124,7 +123,7 @@ const Admin = () => {
                 zIndex: 1000,
                 backdropFilter: 'blur(10px)',
                 transition: 'left 0.3s ease-in-out'
-            }} className="admin-sidebar">
+            }} className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div style={{ marginBottom: '40px', padding: '0 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                         <div style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: 'bold', letterSpacing: '2px', marginBottom: '8px' }}>FTI_MAINFRAME</div>
@@ -206,10 +205,12 @@ const Admin = () => {
     return (
         <div style={{ minHeight: '100vh', background: '#020617', color: 'white' }}>
             <style>{`
+                .admin-sidebar { left: 0; }
                 .admin-main { padding-left: 280px; transition: padding 0.3s; }
                 @media (max-width: 1024px) {
                     .admin-main { padding-left: 0; }
                     .admin-sidebar { left: -280px; }
+                    .admin-sidebar.open { left: 0; }
                     .mobile-only { display: block !important; }
                     .desktop-only { display: none !important; }
                 }
@@ -217,6 +218,8 @@ const Admin = () => {
                 .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
                 .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
                 .admin-table { min-width: 800px; }
+                .spin { animation: spin 1s linear infinite; }
+                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             `}</style>
 
             <Sidebar />
