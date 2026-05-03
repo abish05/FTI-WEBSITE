@@ -1,37 +1,34 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { 
     LayoutDashboard, Users, MessageSquare, Settings, 
-    LogOut, Shield, ShieldCheck, Zap, Globe, 
-    Search, Filter, Download, ArrowUpRight, 
-    Calendar, CheckCircle, Clock, Trash2,
-    Database, Activity, RefreshCw, UserPlus, X, Menu
+    LogOut, Search, Download, Trash2, Menu, X, 
+    ShieldCheck, Zap, RefreshCw, Plus, UserPlus
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { fetchDB, updateDB } from '../api/db';
 
 const Admin = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('Overview');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [enrollments, setEnrollments] = useState([]);
     const [messages, setMessages] = useState([]);
     const [admins, setAdmins] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [currentUser, setCurrentUser] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [newStudent, setNewStudent] = useState({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
+    const [syncTime, setSyncTime] = useState(new Date().toLocaleTimeString());
 
-    // New Admin Form
-    const [newAdmin, setNewAdmin] = useState({ email: '', username: '', role: 'Admin' });
+    const user = JSON.parse(localStorage.getItem('fti_current_user'));
 
     useEffect(() => {
-        const user = localStorage.getItem('fti_current_user');
         if (!user) {
             navigate('/admin');
             return;
         }
-        setCurrentUser(JSON.parse(user));
         loadData();
-    }, [navigate]);
+    }, []);
 
     const loadData = async () => {
         setIsLoading(true);
@@ -39,331 +36,231 @@ const Admin = () => {
         setEnrollments(data.enrollments || []);
         setMessages(data.messages || []);
         setAdmins(data.admins || []);
+        setSyncTime(new Date().toLocaleTimeString());
         setIsLoading(false);
     };
 
     const handleLogout = () => {
         localStorage.removeItem('fti_current_user');
-        window.dispatchEvent(new Event('storage'));
         navigate('/admin');
     };
 
-    const handleUpdateDB = async (newData) => {
-        const success = await updateDB({ 
-            enrollments: newData.enrollments || enrollments, 
-            messages: newData.messages || messages,
-            admins: newData.admins || admins
-        });
-        if (success) {
-            if (newData.enrollments) setEnrollments(newData.enrollments);
-            if (newData.messages) setMessages(newData.messages);
-            if (newData.admins) setAdmins(newData.admins);
-        }
-        return success;
-    };
-
     const handleDeleteEnrollment = async (id) => {
-        if (!window.confirm('Delete this record?')) return;
-        handleUpdateDB({ enrollments: enrollments.filter(e => e.id !== id) });
+        if (window.confirm('Delete this record permanently?')) {
+            const updated = enrollments.filter(item => item.id !== id);
+            const success = await updateDB({ enrollments: updated, messages, admins });
+            if (success) setEnrollments(updated);
+        }
     };
 
-    const handleDeleteMessage = async (id) => {
-        if (!window.confirm('Delete this message?')) return;
-        handleUpdateDB({ messages: messages.filter(m => m.id !== id) });
-    };
-
-    const handleAddAdmin = async (e) => {
+    const handleAddStudent = async (e) => {
         e.preventDefault();
-        if (admins.find(a => a.email === newAdmin.email)) {
-            alert('Admin already exists');
-            return;
+        const student = {
+            ...newStudent,
+            id: Date.now().toString(),
+            date: new Date().toLocaleString()
+        };
+        const updated = [student, ...enrollments];
+        const success = await updateDB({ enrollments: updated, messages, admins });
+        if (success) {
+            setEnrollments(updated);
+            setShowAddModal(false);
+            setNewStudent({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
         }
-        const updatedAdmins = [...admins, { ...newAdmin, id: Date.now().toString() }];
-        const success = await handleUpdateDB({ admins: updatedAdmins });
-        if (success) setNewAdmin({ email: '', username: '', role: 'Admin' });
     };
 
-    const handleDeleteAdmin = async (id) => {
-        const adminToDelete = admins.find(a => a.id === id);
-        if (adminToDelete?.email === 'abishstk@gmail.com') {
-            alert('Cannot remove Master Admin');
-            return;
-        }
-        if (!window.confirm('Remove admin access?')) return;
-        handleUpdateDB({ admins: admins.filter(a => a.id !== id) });
+    const exportCSV = () => {
+        const headers = ['Name', 'Email', 'Phone', 'Course', 'Date', 'Remarks'];
+        const rows = enrollments.map(e => [e.fullName, e.email, e.phone, e.course, e.date, e.remarks]);
+        const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `FTI_Students_${new Date().toLocaleDateString()}.csv`;
+        link.click();
     };
-
-    const filteredEnrollments = enrollments.filter(e => 
-        e.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        e.course?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        e.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        e.phone?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const Sidebar = () => (
-        <>
-            {/* Mobile Overlay */}
-            {isSidebarOpen && (
-                <div 
-                    onClick={() => setIsSidebarOpen(false)}
-                    style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 999, backdropFilter: 'blur(4px)' }}
-                ></div>
-            )}
-            
-            <div style={{ 
-                width: '280px', 
-                height: '100vh', 
-                position: 'fixed', 
-                top: 0, 
-                background: 'rgba(15, 23, 42, 0.98)', 
-                borderRight: '1px solid rgba(16, 185, 129, 0.2)',
-                padding: '30px 20px',
-                display: 'flex',
-                flexDirection: 'column',
-                zIndex: 1000,
-                backdropFilter: 'blur(10px)',
-                transition: 'left 0.3s ease-in-out'
-            }} className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-                <div style={{ marginBottom: '40px', padding: '0 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                        <div style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: 'bold', letterSpacing: '2px', marginBottom: '8px' }}>FTI_MAINFRAME</div>
-                        <h2 style={{ fontSize: '1.4rem', fontWeight: '900', color: 'white', letterSpacing: '-1px' }}>
-                            FTI CONTROL <br /> CENTER
-                        </h2>
-                    </div>
-                    <button onClick={() => setIsSidebarOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} className="mobile-only">
-                        <X size={24} />
-                    </button>
-                </div>
-
-                <div className="admin-nav" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <SidebarItem icon={<LayoutDashboard size={20} />} label="Overview" active={activeTab === 'Overview'} onClick={() => { setActiveTab('Overview'); setIsSidebarOpen(false); }} />
-                    <SidebarItem icon={<Users size={20} />} label="Student Database" active={activeTab === 'Participants'} onClick={() => { setActiveTab('Participants'); setIsSidebarOpen(false); }} />
-                    <SidebarItem icon={<MessageSquare size={20} />} label="Inquiries" active={activeTab === 'Messages'} onClick={() => { setActiveTab('Messages'); setIsSidebarOpen(false); }} />
-                    <SidebarItem icon={<Settings size={20} />} label="Master Control" active={activeTab === 'Config'} onClick={() => { setActiveTab('Config'); setIsSidebarOpen(false); }} />
-                </div>
-
-                <button 
-                    onClick={handleLogout}
-                    style={{ 
-                        marginTop: 'auto', 
-                        background: 'none', 
-                        border: 'none', 
-                        color: '#ef4444', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '12px', 
-                        padding: '12px 15px', 
-                        cursor: 'pointer',
-                        fontSize: '0.9rem',
-                        fontWeight: 'bold',
-                        borderRadius: '12px',
-                        transition: 'all 0.3s'
-                    }}
-                >
-                    <LogOut size={20} /> Sign Out
-                </button>
-            </div>
-        </>
-    );
 
     const SidebarItem = ({ icon, label, active, onClick }) => (
-        <button 
+        <div 
             onClick={onClick}
             style={{ 
-                width: '100%',
-                background: active ? 'rgba(16, 185, 129, 0.1)' : 'none', 
-                border: active ? '1px solid rgba(16, 185, 129, 0.2)' : 'none', 
-                color: active ? '#10b981' : 'var(--text-secondary)', 
                 display: 'flex', 
                 alignItems: 'center', 
-                gap: '15px', 
-                padding: '12px 10px', 
-                marginBottom: '10px',
+                gap: '12px', 
+                padding: '12px 15px', 
+                marginBottom: '8px',
                 cursor: 'pointer',
-                fontSize: '0.95rem',
-                fontWeight: active ? 'bold' : 'normal',
                 borderRadius: '12px',
-                transition: 'all 0.3s'
+                background: active ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
+                color: active ? '#10b981' : '#94a3b8',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                border: active ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid transparent'
             }}
+            className="sidebar-item"
         >
-            {icon} {label}
-        </button>
+            {icon}
+            <span style={{ fontWeight: active ? '600' : '400', fontSize: '0.95rem' }}>{label}</span>
+        </div>
     );
 
     const StatCard = ({ label, value, subtext, icon, color }) => (
         <div className="glass-panel" style={{ padding: '25px', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', right: '-10px', bottom: '-10px', opacity: 0.05 }}>
+            <div style={{ position: 'relative', zIndex: 1 }}>
+                <p style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
+                <h3 style={{ fontSize: '2rem', margin: '10px 0 5px 0', fontWeight: '800' }}>{value}</h3>
+                <p style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{subtext}</p>
+            </div>
+            <div style={{ position: 'absolute', right: '-10px', bottom: '-10px', color: `${color}15`, transform: 'rotate(-15deg)' }}>
                 {icon}
             </div>
-            <div style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '15px' }}>{label.toUpperCase()}</div>
-            <div style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '5px' }}>{value}</div>
-            <div style={{ fontSize: '0.8rem', color: color }}>{subtext}</div>
         </div>
     );
 
     return (
-        <div style={{ minHeight: '100vh', background: '#020617', color: 'white' }}>
+        <div style={{ minHeight: '100vh', background: '#020617', color: 'white', display: 'flex' }}>
             <style>{`
-                .admin-sidebar { left: 0; }
-                .admin-nav { position: static !important; width: auto !important; background: none !important; border: none !important; backdrop-filter: none !important; }
-                .admin-main { padding: 30px 30px 30px 310px; transition: all 0.3s; }
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(30, 41, 59, 1); border-radius: 24px; }
+                .admin-sidebar { width: 280px; height: 100vh; position: fixed; left: 0; top: 0; background: #0b0f1a; border-right: 1px solid rgba(30, 41, 59, 1); padding: 30px 20px; display: flex; flexDirection: column; z-index: 1000; transition: transform 0.3s; }
+                .admin-main { flex: 1; margin-left: 280px; padding: 40px; min-width: 0; }
+                .sidebar-item:hover { background: rgba(255,255,255,0.03); color: white; }
                 @media (max-width: 1024px) {
-                    .admin-main { padding: 30px 20px; }
-                    .admin-sidebar { left: -280px; }
-                    .admin-sidebar.open { left: 0; }
-                    .mobile-only { display: block !important; }
-                    .desktop-only { display: none !important; }
+                    .admin-sidebar { transform: translateX(-100%); }
+                    .admin-sidebar.open { transform: translateX(0); }
+                    .admin-main { margin-left: 0; padding: 20px; }
                 }
-                .mobile-only { display: none; }
-                .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-                .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-                .admin-table { min-width: 800px; }
-                .spin { animation: spin 1s linear infinite; }
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                .form-input { width: 100%; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(30, 41, 59, 1); border-radius: 12px; padding: 12px 15px; color: white; margin-bottom: 15px; outline: none; transition: border 0.3s; }
+                .form-input:focus { border-color: #10b981; }
             `}</style>
 
-            <Sidebar />
-
-            <main className="admin-main">
-                {/* Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <button onClick={() => setIsSidebarOpen(true)} className="mobile-only" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '10px', borderRadius: '8px' }}>
-                            <Menu size={24} />
-                        </button>
-                        <div>
-                            <h1 style={{ fontSize: '1.8rem', fontWeight: '900' }}>{activeTab}</h1>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Welcome, <strong style={{ color: '#10b981' }}>{currentUser?.username}</strong></p>
-                        </div>
+            {/* Sidebar */}
+            <div className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
+                        <p style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Mainframe</p>
+                        <h2 style={{ fontSize: '1.2rem', fontWeight: '800' }}>FTI CONTROL</h2>
                     </div>
-                    <button onClick={loadData} className="btn-primary" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px 15px', borderRadius: '10px' }}>
-                        <RefreshCw size={18} className={isLoading ? 'spin' : ''} />
+                    <button className="mobile-only" onClick={() => setIsSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#94a3b8' }}>
+                        <X size={20} />
                     </button>
                 </div>
 
+                <div style={{ flex: 1 }}>
+                    <SidebarItem icon={<LayoutDashboard size={20} />} label="Overview" active={activeTab === 'Overview'} onClick={() => { setActiveTab('Overview'); setIsSidebarOpen(false); }} />
+                    <SidebarItem icon={<Users size={20} />} label="Student Ledger" active={activeTab === 'Participants'} onClick={() => { setActiveTab('Participants'); setIsSidebarOpen(false); }} />
+                    <SidebarItem icon={<MessageSquare size={20} />} label="Inquiries" active={activeTab === 'Messages'} onClick={() => { setActiveTab('Messages'); setIsSidebarOpen(false); }} />
+                    <SidebarItem icon={<Settings size={20} />} label="System Config" active={activeTab === 'Config'} onClick={() => { setActiveTab('Config'); setIsSidebarOpen(false); }} />
+                </div>
+
+                <button 
+                    onClick={handleLogout}
+                    style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', cursor: 'pointer', fontWeight: '600' }}
+                >
+                    <LogOut size={18} /> Sign Out
+                </button>
+            </div>
+
+            {/* Main Content */}
+            <main className="admin-main">
+                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <button className="mobile-only" onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#10b981' }}>
+                            <Menu size={24} />
+                        </button>
+                        <div>
+                            <h1 style={{ fontSize: '2rem', fontWeight: '800', letterSpacing: '-0.02em' }}>{activeTab}</h1>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px' }}>
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }}></div>
+                                <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>SYSTEM_LIVE • Last Synced: {syncTime}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onClick={loadData} style={{ padding: '10px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', cursor: 'pointer' }} title="Refresh Data">
+                        <RefreshCw size={20} className={isLoading ? 'spin' : ''} />
+                    </button>
+                </header>
+
                 {activeTab === 'Overview' && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                        <div className="stat-grid">
+                    <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '40px' }}>
                             <StatCard label="Total Students" value={enrollments.length} subtext="Active Enrollments" icon={<Users size={80} />} color="#10b981" />
-                            <StatCard label="Messages" value={messages.length} subtext="Pending Inquiries" icon={<MessageSquare size={80} />} color="#3b82f6" />
-                            <StatCard label="Admins" value={admins.length + 1} subtext="Authorized Users" icon={<ShieldCheck size={80} />} color="#f59e0b" />
-                            <StatCard label="Status" value="Live" subtext="All Systems Optimal" icon={<Zap size={80} />} color="#a855f7" />
+                            <StatCard label="Enquiries" value={messages.length} subtext="Pending Messages" icon={<MessageSquare size={80} />} color="#3b82f6" />
+                            <StatCard label="Sync Status" value="Healthy" subtext="All systems optimal" icon={<Zap size={80} />} color="#a855f7" />
+                            <StatCard label="Access Level" value="Root" subtext={user?.role || 'Admin'} icon={<ShieldCheck size={80} />} color="#f59e0b" />
                         </div>
 
-                        <div className="glass-panel" style={{ padding: '25px' }}>
-                            <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <Clock size={20} color="#10b981" /> Recent Activity
-                            </h3>
-                            <div className="table-container">
-                                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                                    <thead>
-                                        <tr style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                            <th style={{ padding: '15px' }}>NAME</th>
-                                            <th style={{ padding: '15px' }}>COURSE</th>
-                                            <th style={{ padding: '15px' }}>DATE</th>
-                                            <th style={{ padding: '15px' }}>STATUS</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {enrollments.slice(0, 5).map(e => (
-                                            <tr key={e.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                                                <td style={{ padding: '15px', fontWeight: '600' }}>{e.fullName}</td>
-                                                <td style={{ padding: '15px', fontSize: '0.9rem' }}>{e.course}</td>
-                                                <td style={{ padding: '15px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{e.date}</td>
-                                                <td style={{ padding: '15px' }}>
-                                                    <span style={{ fontSize: '0.7rem', padding: '4px 10px', borderRadius: '10px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>NEW</span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div className="glass-panel" style={{ padding: '30px' }}>
+                            <h3 style={{ fontSize: '1.2rem', marginBottom: '20px', fontWeight: '700' }}>Recent Activity</h3>
+                            {enrollments.slice(0, 5).map(e => (
+                                <div key={e.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                        <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
+                                            <UserPlus size={20} />
+                                        </div>
+                                        <div>
+                                            <p style={{ fontWeight: '600' }}>{e.fullName} enrolled</p>
+                                            <p style={{ fontSize: '0.8rem', color: '#64748b' }}>{e.course} • {e.date}</p>
+                                        </div>
+                                    </div>
+                                    <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: '700' }}>NEW</div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}
 
                 {activeTab === 'Participants' && (
-                    <div className="glass-panel" style={{ padding: '0' }}>
-                        <div style={{ padding: '20px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-                            <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
-                                <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
+                    <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
+                        <div style={{ display: 'flex', gap: '15px', marginBottom: '30px', flexWrap: 'wrap' }}>
+                            <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+                                <Search size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
                                 <input 
                                     type="text" 
-                                    placeholder="Search students..." 
-                                    style={{ width: '100%', padding: '10px 15px 10px 40px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: 'white' }}
+                                    placeholder="Search student ledger..." 
+                                    className="form-input" 
+                                    style={{ paddingLeft: '45px', marginBottom: 0 }}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                             </div>
-                            <button className="btn-primary" style={{ background: '#10b981', color: 'black', padding: '10px 20px', borderRadius: '10px' }}>
-                                <Download size={18} style={{ marginRight: '8px' }} /> Export CSV
+                            <button onClick={() => setShowAddModal(true)} style={{ background: '#10b981', color: '#020617', border: 'none', borderRadius: '12px', padding: '0 20px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                <Plus size={20} /> Add Student
+                            </button>
+                            <button onClick={exportCSV} style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '0 20px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                <Download size={18} /> Export CSV
                             </button>
                         </div>
 
-                        <div className="table-container">
-                            <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>
-                                        <th style={{ padding: '15px 20px' }}>NAME</th>
-                                        <th style={{ padding: '15px 20px' }}>CONTACT</th>
-                                        <th style={{ padding: '15px 20px' }}>COURSE</th>
-                                        <th style={{ padding: '15px 20px' }}>REMARKS</th>
-                                        <th style={{ padding: '15px 20px' }}>ACTIONS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredEnrollments.map(item => (
-                                        <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                                            <td style={{ padding: '15px 20px' }}>
-                                                <div style={{ fontWeight: 'bold' }}>{item.fullName}</div>
-                                                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>ID: {item.id.substring(0,8)}</div>
-                                            </td>
-                                            <td style={{ padding: '15px 20px' }}>
-                                                <div style={{ fontSize: '0.9rem' }}>{item.phone}</div>
-                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{item.email}</div>
-                                            </td>
-                                            <td style={{ padding: '15px 20px', fontSize: '0.9rem' }}>{item.course}</td>
-                                            <td style={{ padding: '15px 20px', fontSize: '0.8rem', color: 'var(--text-secondary)', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                                {item.remarks || 'No remarks'}
-                                            </td>
-                                            <td style={{ padding: '15px 20px' }}>
-                                                <button onClick={() => handleDeleteEnrollment(item.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
-                                                    <Trash2 size={18} />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'Messages' && (
-                    <div className="glass-panel" style={{ padding: '25px' }}>
-                        <div className="table-container">
+                        <div className="glass-panel" style={{ overflowX: 'auto' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                 <thead>
-                                    <tr style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <th style={{ padding: '15px' }}>SENDER</th>
-                                        <th style={{ padding: '15px' }}>MESSAGE</th>
-                                        <th style={{ padding: '15px' }}>DATE</th>
-                                        <th style={{ padding: '15px' }}>ACTIONS</th>
+                                    <tr style={{ borderBottom: '1px solid rgba(30, 41, 59, 1)' }}>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Student</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Contact</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Course</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Remarks</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {messages.map(m => (
-                                        <tr key={m.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                                            <td style={{ padding: '15px' }}>
-                                                <div style={{ fontWeight: 'bold' }}>{m.name}</div>
-                                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{m.email}</div>
+                                    {enrollments.filter(e => e.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || e.course.toLowerCase().includes(searchTerm.toLowerCase())).map(e => (
+                                        <tr key={e.id} style={{ borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
+                                            <td style={{ padding: '20px' }}>
+                                                <div style={{ fontWeight: '600' }}>{e.fullName}</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Joined {e.date}</div>
                                             </td>
-                                            <td style={{ padding: '15px', fontSize: '0.9rem', maxWidth: '400px' }}>{m.message}</td>
-                                            <td style={{ padding: '15px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{m.date}</td>
-                                            <td style={{ padding: '15px' }}>
-                                                <button onClick={() => handleDeleteMessage(m.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
-                                                    <Trash2 size={18} />
+                                            <td style={{ padding: '20px' }}>
+                                                <div>{e.phone}</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{e.email}</div>
+                                            </td>
+                                            <td style={{ padding: '20px' }}>
+                                                <span style={{ padding: '5px 12px', borderRadius: '8px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', fontSize: '0.8rem', fontWeight: '600' }}>{e.course}</span>
+                                            </td>
+                                            <td style={{ padding: '20px', color: '#94a3b8', fontSize: '0.9rem', maxWidth: '200px' }}>{e.remarks || '---'}</td>
+                                            <td style={{ padding: '20px' }}>
+                                                <button onClick={() => handleDeleteEnrollment(e.id)} style={{ padding: '8px', borderRadius: '8px', color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', cursor: 'pointer' }}>
+                                                    <Trash2 size={16} />
                                                 </button>
                                             </td>
                                         </tr>
@@ -374,73 +271,28 @@ const Admin = () => {
                     </div>
                 )}
 
-                {activeTab === 'Config' && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                        {/* Admin Management Section */}
-                        <div className="glass-panel" style={{ padding: '30px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
-                                <Shield size={24} color="#10b981" />
-                                <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Master Access Control</h3>
+                {/* MODALS */}
+                {showAddModal && (
+                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000, padding: '20px' }}>
+                        <div className="glass-panel" style={{ width: '100%', maxWidth: '500px', padding: '40px', animation: 'fadeIn 0.3s ease-out' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Add New Student</h2>
+                                <button onClick={() => setShowAddModal(false)} style={{ color: '#94a3b8', background: 'none', border: 'none' }}><X size={24} /></button>
                             </div>
-
-                            <form onSubmit={handleAddAdmin} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginBottom: '40px', background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '15px' }}>
-                                <input 
-                                    required 
-                                    placeholder="Admin Email" 
-                                    className="form-input" 
-                                    value={newAdmin.email} 
-                                    onChange={e => setNewAdmin({...newAdmin, email: e.target.value})} 
-                                />
-                                <input 
-                                    required 
-                                    placeholder="Username" 
-                                    className="form-input" 
-                                    value={newAdmin.username} 
-                                    onChange={e => setNewAdmin({...newAdmin, username: e.target.value})} 
-                                />
-                                <select className="form-input" value={newAdmin.role} onChange={e => setNewAdmin({...newAdmin, role: e.target.value})}>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Manager">Manager</option>
+                            <form onSubmit={handleAddStudent}>
+                                <input placeholder="Full Name" className="form-input" required value={newStudent.fullName} onChange={e => setNewStudent({...newStudent, fullName: e.target.value})} />
+                                <input placeholder="Email Address" type="email" className="form-input" required value={newStudent.email} onChange={e => setNewStudent({...newStudent, email: e.target.value})} />
+                                <input placeholder="Phone Number" className="form-input" required value={newStudent.phone} onChange={e => setNewStudent({...newStudent, phone: e.target.value})} />
+                                <select className="form-input" value={newStudent.course} onChange={e => setNewStudent({...newStudent, course: e.target.value})}>
+                                    <option>Web Development</option>
+                                    <option>Cyber Security</option>
+                                    <option>Python Data Science</option>
+                                    <option>Artificial Intelligence</option>
+                                    <option>Cloud Computing</option>
                                 </select>
-                                <button type="submit" className="btn-primary" style={{ background: '#10b981', color: 'black', height: '100%', borderRadius: '10px' }}>
-                                    <UserPlus size={18} style={{ marginRight: '8px' }} /> Add Admin
-                                </button>
+                                <textarea placeholder="Remarks (Optional)" className="form-input" rows="3" style={{ resize: 'none' }} value={newStudent.remarks} onChange={e => setNewStudent({...newStudent, remarks: e.target.value})}></textarea>
+                                <button type="submit" style={{ width: '100%', padding: '15px', background: '#10b981', color: '#020617', border: 'none', borderRadius: '12px', fontWeight: '800', marginTop: '10px', cursor: 'pointer' }}>Register Student</button>
                             </form>
-
-                            <div className="table-container">
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', textAlign: 'left' }}>
-                                            <th style={{ padding: '15px' }}>USERNAME</th>
-                                            <th style={{ padding: '15px' }}>EMAIL</th>
-                                            <th style={{ padding: '15px' }}>ROLE</th>
-                                            <th style={{ padding: '15px' }}>ACTIONS</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {/* Master Admin Row */}
-                                        <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                                            <td style={{ padding: '15px' }}><div style={{ fontWeight: 'bold' }}>Master (You)</div></td>
-                                            <td style={{ padding: '15px' }}>abishstk@gmail.com</td>
-                                            <td style={{ padding: '15px' }}><span style={{ color: '#10b981', fontWeight: 'bold' }}>OWNER</span></td>
-                                            <td style={{ padding: '15px' }}><ShieldCheck size={18} color="#10b981" /></td>
-                                        </tr>
-                                        {/* Sub-Admins */}
-                                        {admins.map(a => (
-                                            <tr key={a.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                                                <td style={{ padding: '15px' }}>{a.username}</td>
-                                                <td style={{ padding: '15px' }}>{a.email}</td>
-                                                <td style={{ padding: '15px' }}>{a.role}</td>
-                                                <td style={{ padding: '15px' }}>
-                                                    <button onClick={() => handleDeleteAdmin(a.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
-                                                        <Trash2 size={18} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
                     </div>
                 )}
