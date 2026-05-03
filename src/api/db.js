@@ -29,24 +29,19 @@ const saveLocalData = (data) => {
 };
 
 export const fetchDB = async () => {
-    // 1. Immediately return local data to ensure UI is fast and never blocked
     const localData = getLocalData();
     
-    // 2. Attempt to sync with cloud in background
     try {
-        // Try direct API first (most reliable if CORS allows)
         let response = await fetch(BASE_URL, { cache: 'no-store' });
         
-        // If direct fails due to CORS, try AllOrigins proxy
         if (!response.ok) {
             response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(BASE_URL)}`, { cache: 'no-store' });
         }
 
         if (response.ok) {
             const cloudData = await response.json();
-            
-            // Simple merge: If cloud has more enrollments, assume it's newer
-            if (cloudData && cloudData.enrollments && cloudData.enrollments.length > localData.enrollments.length) {
+            // If cloud fetch works, it is the absolute source of truth
+            if (cloudData && (cloudData.enrollments || cloudData.messages)) {
                 saveLocalData(cloudData);
                 return cloudData;
             }
