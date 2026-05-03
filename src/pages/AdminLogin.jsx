@@ -24,12 +24,12 @@ const AdminLogin = () => {
                 const foundAdmin = authorizedAdmins.find(a => a.email === credentials.email) || { username: 'Master Admin', role: 'SuperAdmin' };
                 const user = {
                     email: credentials.email,
-                    role: foundAdmin.role,
-                    username: foundAdmin.username
+                    role: foundAdmin.role || 'Admin',
+                    username: foundAdmin.username || foundAdmin.email
                 };
                 localStorage.setItem('fti_current_user', JSON.stringify(user));
                 window.dispatchEvent(new Event('storage'));
-                navigate('/admin/dashboard');
+                navigate('/admin');
             } else {
                 setIsLoading(false);
                 setError('ACCESS DENIED: UNAUTHORIZED PROTOCOLS');

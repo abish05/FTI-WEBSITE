@@ -175,7 +175,7 @@ const Admin = () => {
                     <SidebarItem icon={<LayoutDashboard size={20} />} label="Overview" active={activeTab === 'Overview'} onClick={() => { setActiveTab('Overview'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<Users size={20} />} label="Student Ledger" active={activeTab === 'Participants'} onClick={() => { setActiveTab('Participants'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<MessageSquare size={20} />} label="Inquiries" active={activeTab === 'Messages'} onClick={() => { setActiveTab('Messages'); setIsSidebarOpen(false); }} />
-                    <SidebarItem icon={<Settings size={20} />} label="System Config" active={activeTab === 'Config'} onClick={() => { setActiveTab('Config'); setIsSidebarOpen(false); }} />
+                    <SidebarItem icon={<ShieldCheck size={20} />} label="System Config" active={activeTab === 'Config'} onClick={() => { setActiveTab('Config'); setIsSidebarOpen(false); }} />
                 </div>
 
                 <button 
@@ -345,6 +345,80 @@ const Admin = () => {
                                     )}
                                 </button>
                             </form>
+                        </div>
+                    </div>
+                )}
+                {activeTab === 'Config' && (
+                    <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
+                        <div className="glass-panel" style={{ padding: '40px', maxWidth: '800px' }}>
+                            <h2 style={{ marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <ShieldCheck color="#118a8b" size={32} /> Admin Management
+                            </h2>
+                            <p style={{ color: '#94a3b8', marginBottom: '30px' }}>Authorize new administrators or manage existing staff access. Use this to give access to your CIO or team members.</p>
+                            
+                            <form onSubmit={async (e) => {
+                                e.preventDefault();
+                                const email = e.target.email.value;
+                                const username = e.target.username.value;
+                                const role = e.target.role.value;
+                                
+                                const newAdmins = [...admins, { email, username, role, id: Date.now().toString() }];
+                                const success = await updateDB({ enrollments, messages, admins: newAdmins });
+                                if (success) {
+                                    setAdmins(newAdmins);
+                                    e.target.reset();
+                                    alert("Admin Authorized Successfully.");
+                                }
+                            }} style={{ marginBottom: '40px', padding: '25px', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Full Name / Display Name</label>
+                                        <input required name="username" className="form-input" placeholder="e.g. CIO Name" style={{ marginBottom: 0 }} />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Admin Email Address</label>
+                                        <input required name="email" type="email" className="form-input" placeholder="cio@example.com" style={{ marginBottom: 0 }} />
+                                    </div>
+                                </div>
+                                <div style={{ marginBottom: '20px' }}>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Access Level</label>
+                                    <select name="role" className="form-input" style={{ appearance: 'none', marginBottom: 0 }}>
+                                        <option value="Admin">Standard Admin (View & Edit)</option>
+                                        <option value="Manager">Manager (Reports Only)</option>
+                                        <option value="Staff">Staff (View Only)</option>
+                                    </select>
+                                </div>
+                                <button type="submit" style={{ width: '100%', padding: '14px', background: '#118a8b', color: 'black', fontWeight: 'bold', border: 'none', borderRadius: '12px', cursor: 'pointer' }}>
+                                    Authorize Access
+                                </button>
+                            </form>
+
+                            <div style={{ marginTop: '40px' }}>
+                                <h3 style={{ fontSize: '1rem', marginBottom: '20px', color: 'white' }}>Current Authorized Personnel</h3>
+                                {admins.map(a => (
+                                    <div key={a.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', marginBottom: '10px' }}>
+                                        <div>
+                                            <p style={{ fontWeight: 'bold', margin: 0 }}>{a.username}</p>
+                                            <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0 }}>{a.email}</p>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                            <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '20px', background: 'rgba(17, 138, 139, 0.1)', color: '#118a8b' }}>{a.role}</span>
+                                            <button 
+                                                onClick={async () => {
+                                                    if(confirm('Revoke access for this admin?')){
+                                                        const updated = admins.filter(x => x.id !== a.id);
+                                                        const success = await updateDB({ enrollments, messages, admins: updated });
+                                                        if (success) setAdmins(updated);
+                                                    }
+                                                }}
+                                                style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 )}

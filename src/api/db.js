@@ -32,45 +32,58 @@ export const fetchDB = async () => {
     const localData = getLocalData();
     
     try {
-        let response = await fetch(BASE_URL, { cache: 'no-store' });
+        const response = await fetch(`${BASE_URL}?t=${Date.now()}`, { cache: 'no-store' });
         
-        if (!response.ok) {
-            response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(BASE_URL)}`, { cache: 'no-store' });
-        }
-
         if (response.ok) {
             const cloudData = await response.json();
-            // If cloud fetch works, it is the absolute source of truth
-            if (cloudData && (cloudData.enrollments || cloudData.messages)) {
-                saveLocalData(cloudData);
-                return cloudData;
+            
+            if (cloudData) {
+                // DEEP MERGE: Combine local and cloud to ensure no data is lost
+                const merged = {
+                    enrollments: mergeCollections(localData.enrollments, cloudData.enrollments),
+                    messages: mergeCollections(localData.messages, cloudData.messages),
+                    admins: cloudData.admins || localData.admins || []
+                };
+                
+                saveLocalData(merged);
+                return merged;
             }
         }
     } catch (error) {
-        console.log("Cloud sync paused (using Local-First architecture)");
+        console.warn("MAINFRAME_SYNC_PAUSED: Operating in Local-First mode.");
     }
     
     return localData;
 };
 
-export const updateDB = async (newData) => {
-    // 1. GUARANTEED LOCAL SAVE: Instantly update local storage so the admin always sees their changes
-    saveLocalData(newData);
+// Helper to merge arrays of objects by ID, keeping the most recent
+const mergeCollections = (local = [], cloud = []) => {
+    const map = new Map();
+    [...cloud, ...local].forEach(item => {
+        if (item && item.id) map.set(item.id, item);
+    });
+    return Array.from(map.values()).sort((a, b) => b.id - a.id);
+};
+
+export const updateDB = async (data) => {
+    // 1. Save locally immediately
+    saveLocalData(data);
     
-    // 2. BACKGROUND CLOUD SYNC: Fire and forget to the cloud
     try {
-        // We don't await this so it doesn't block the UI if the proxy is slow
-        fetch(`${PUT_PROXY}${BASE_URL}`, {
+        // 2. Perform a background push using proxy for reliability
+        const pushUrl = `${PUT_PROXY}${BASE_URL}`;
+        const response = await fetch(pushUrl, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(newData)
-        }).catch(e => console.log("Background sync failed, but data is safe locally."));
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
         
-        return true; // Always return true because local save succeeded
+        if (response.ok) {
+            return true;
+        }
     } catch (error) {
-        return true; // Always return true because local save succeeded
+        console.error("BACKGROUND_SYNC_FAILED:", error);
     }
+    
+    return true; // Return true as local save is complete
 };
