@@ -35,7 +35,16 @@ const saveLocalData = (data) => {
 export const fetchDB = async () => {
     const localData = getLocalData();
     
-    // Try each proxy until one works
+    // FAST-PATH: Return local data immediately to the UI for instant speed
+    // We don't await the cloud sync here to keep the app lightning fast
+    syncCloudInBackgroundTask();
+    
+    return localData;
+};
+
+// BACKGROUND SYNC: Try each proxy without blocking the UI
+const syncCloudInBackgroundTask = async () => {
+    const localData = getLocalData();
     for (const proxy of PROXIES) {
         try {
             const url = `${proxy}${encodeURIComponent(BASE_URL + '?t=' + Date.now())}`;
@@ -50,16 +59,13 @@ export const fetchDB = async () => {
                         admins: cloudData.admins || localData.admins || []
                     };
                     saveLocalData(merged);
-                    return merged;
+                    // Dispatch event so UI can update if it was waiting
+                    window.dispatchEvent(new Event('fti_db_updated'));
+                    return;
                 }
             }
-        } catch (e) {
-            console.log(`Proxy ${proxy} failed, trying next...`);
-        }
+        } catch (e) {}
     }
-    
-    console.warn("ALL_PROXIES_FAILED: Reverting to local state.");
-    return localData;
 };
 
 // Helper to merge arrays of objects by ID, keeping the most recent

@@ -29,6 +29,10 @@ const Admin = () => {
             return;
         }
         loadData();
+
+        // Listen for background sync completions to refresh UI automatically
+        window.addEventListener('fti_db_updated', loadData);
+        return () => window.removeEventListener('fti_db_updated', loadData);
     }, []);
 
     const loadData = async () => {

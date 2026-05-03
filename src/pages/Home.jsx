@@ -37,7 +37,7 @@ const Home = () => {
                 </div>
                 <div style={{ position: 'relative' }} className="image-container">
                     <div style={{ position: 'absolute', top: '-20px', left: '-20px', right: '20px', bottom: '20px', background: 'var(--accent)', filter: 'blur(100px)', opacity: '0.1', zIndex: -1 }}></div>
-                    <img src={heroV2} alt="FutureTech Classroom" className="premium-image" style={{ width: '100%', borderRadius: '24px', border: '1px solid var(--glass-border)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }} />
+                    <img src={heroV2} alt="FutureTech Classroom" className="premium-image" style={{ width: '100%', borderRadius: '24px', border: '1px solid var(--glass-border)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }} loading="lazy" />
                     <div className="image-overlay"></div>
                 </div>
             </div>
@@ -96,7 +96,7 @@ const Home = () => {
             {/* LAB PREVIEW SECTION */}
             <div className="glass-panel hero-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '50px', alignItems: 'center', padding: '60px' }}>
                 <div style={{ order: window.innerWidth > 768 ? 2 : 1 }} className="image-container">
-                    <img src={classroomLife} alt="Students in Lab" className="premium-image" style={{ width: '100%', borderRadius: '20px', border: '1px solid var(--glass-border)' }} />
+                    <img src={classroomLife} alt="Students in Lab" className="premium-image" style={{ width: '100%', borderRadius: '20px', border: '1px solid var(--glass-border)' }} loading="lazy" />
                     <div className="image-overlay"></div>
                 </div>
                 <div style={{ textAlign: 'left', order: window.innerWidth > 768 ? 1 : 2 }}>

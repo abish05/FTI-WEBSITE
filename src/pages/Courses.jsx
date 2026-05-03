@@ -110,7 +110,7 @@ const Courses = () => {
                         onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(17, 138, 139, 0.5)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; }}>
                         <div className="image-container" style={{ height: '200px', borderRadius: '0' }}>
-                            <img src={domain.image} alt={domain.title} className="premium-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <img src={domain.image} alt={domain.title} className="premium-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                             <div className="image-overlay"></div>
                         </div>
                         <div style={{ padding: '30px' }}>
@@ -151,7 +151,7 @@ const Courses = () => {
                         </button>
 
                         <div style={{ margin: '-50px -50px 30px -50px', height: '300px', overflow: 'hidden' }}>
-                            <img src={selectedCourse.image} alt={selectedCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <img src={selectedCourse.image} alt={selectedCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '25px', marginBottom: '30px' }}>
