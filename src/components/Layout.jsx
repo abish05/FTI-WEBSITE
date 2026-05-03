@@ -29,13 +29,13 @@ const Layout = () => {
                     <Link to="/" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{ 
                             background: 'white', 
-                            padding: '4px 12px', 
-                            borderRadius: '20px', 
+                            padding: '6px 14px', 
+                            borderRadius: '16px', 
                             display: 'flex', 
                             alignItems: 'center',
-                            boxShadow: '0 0 15px rgba(17, 138, 139, 0.3)'
+                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(17, 138, 139, 0.2)'
                         }}>
-                            <img src="/logo.png" alt="FutureTech Institute Logo" style={{ height: '35px', objectFit: 'contain' }} />
+                            <img src="/logo.png" alt="FutureTech Institute Logo" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
                         </div>
                     </Link>
 
@@ -76,15 +76,15 @@ const Layout = () => {
                 <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '40px', textAlign: 'left' }}>
 
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '25px' }}>
                             <div style={{ 
                                 background: 'white', 
-                                padding: '6px 15px', 
-                                borderRadius: '24px', 
+                                padding: '8px 18px', 
+                                borderRadius: '18px', 
                                 display: 'inline-flex',
-                                boxShadow: '0 0 20px rgba(17, 138, 139, 0.2)'
+                                boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)'
                             }}>
-                                <img src="/logo.png" alt="FutureTech Institute Logo" style={{ height: '45px', objectFit: 'contain' }} />
+                                <img src="/logo.png" alt="FutureTech Institute Logo" style={{ height: '42px', width: 'auto', objectFit: 'contain' }} />
                             </div>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
