@@ -87,20 +87,22 @@ const Admin = () => {
             style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                gap: '12px', 
-                padding: '12px 15px', 
-                marginBottom: '8px',
+                gap: '14px', 
+                padding: '14px 18px', 
+                marginBottom: '10px',
                 cursor: 'pointer',
-                borderRadius: '12px',
-                background: active ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
+                borderRadius: '16px',
+                background: active ? 'rgba(16, 185, 129, 0.12)' : 'transparent',
                 color: active ? '#10b981' : '#94a3b8',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                border: active ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid transparent'
+                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                border: active ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid transparent'
             }}
             className="sidebar-item"
         >
-            {icon}
-            <span style={{ fontWeight: active ? '600' : '400', fontSize: '0.95rem' }}>{label}</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px' }}>
+                {icon}
+            </div>
+            <span style={{ fontWeight: active ? '700' : '500', fontSize: '0.95rem', letterSpacing: '0.01em' }}>{label}</span>
         </div>
     );
 
@@ -122,8 +124,8 @@ const Admin = () => {
             <style>{`
                 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
                 .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(30, 41, 59, 1); border-radius: 24px; }
-                .admin-sidebar { width: 280px; height: 100vh; position: fixed; left: 0; top: 0; background: #0b0f1a; border-right: 1px solid rgba(30, 41, 59, 1); padding: 30px 20px; display: flex; flexDirection: column; z-index: 1000; transition: transform 0.3s; }
-                .admin-main { flex: 1; margin-left: 280px; padding: 40px; min-width: 0; }
+                .admin-sidebar { width: 280px; height: 100vh; position: fixed; left: 0; top: 0; background: #0b0f1a; border-right: 1px solid rgba(30, 41, 59, 1); padding: 35px 22px; display: flex; flex-direction: column; z-index: 1000; transition: transform 0.3s; }
+                .admin-main { flex: 1; margin-left: 280px; padding: 50px 60px; min-width: 0; }
                 .sidebar-item:hover { background: rgba(255,255,255,0.03); color: white; }
                 @media (max-width: 1024px) {
                     .admin-sidebar { transform: translateX(-100%); }
@@ -183,11 +185,11 @@ const Admin = () => {
 
                 {activeTab === 'Overview' && (
                     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '40px' }}>
-                            <StatCard label="Total Students" value={enrollments.length} subtext="Active Enrollments" icon={<Users size={80} />} color="#10b981" />
-                            <StatCard label="Enquiries" value={messages.length} subtext="Pending Messages" icon={<MessageSquare size={80} />} color="#3b82f6" />
-                            <StatCard label="Sync Status" value="Healthy" subtext="All systems optimal" icon={<Zap size={80} />} color="#a855f7" />
-                            <StatCard label="Access Level" value="Root" subtext={user?.role || 'Admin'} icon={<ShieldCheck size={80} />} color="#f59e0b" />
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '25px', marginBottom: '45px' }}>
+                            <StatCard label="Total Students" value={enrollments.length} subtext="Active Enrollments" icon={<Users size={85} />} color="#10b981" />
+                            <StatCard label="Enquiries" value={messages.length} subtext="Pending Messages" icon={<MessageSquare size={85} />} color="#3b82f6" />
+                            <StatCard label="Sync Status" value="Healthy" subtext="All systems optimal" icon={<Zap size={85} />} color="#a855f7" />
+                            <StatCard label="Access Level" value="Root" subtext={user?.role || 'Admin'} icon={<ShieldCheck size={85} />} color="#f59e0b" />
                         </div>
 
                         <div className="glass-panel" style={{ padding: '30px' }}>
@@ -236,11 +238,11 @@ const Admin = () => {
                             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                 <thead>
                                     <tr style={{ borderBottom: '1px solid rgba(30, 41, 59, 1)' }}>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Student</th>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Contact</th>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Course</th>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Remarks</th>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Actions</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '30%' }}>Student</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '25%' }}>Contact</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '20%' }}>Course</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '15%' }}>Remarks</th>
+                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '10%', textAlign: 'center' }}>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -258,8 +260,8 @@ const Admin = () => {
                                                 <span style={{ padding: '5px 12px', borderRadius: '8px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', fontSize: '0.8rem', fontWeight: '600' }}>{e.course}</span>
                                             </td>
                                             <td style={{ padding: '20px', color: '#94a3b8', fontSize: '0.9rem', maxWidth: '200px' }}>{e.remarks || '---'}</td>
-                                            <td style={{ padding: '20px' }}>
-                                                <button onClick={() => handleDeleteEnrollment(e.id)} style={{ padding: '8px', borderRadius: '8px', color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', cursor: 'pointer' }}>
+                                            <td style={{ padding: '20px', textAlign: 'center' }}>
+                                                <button onClick={() => handleDeleteEnrollment(e.id)} style={{ padding: '10px', borderRadius: '10px', color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <Trash2 size={16} />
                                                 </button>
                                             </td>
