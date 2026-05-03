@@ -207,9 +207,9 @@ const Admin = () => {
             <style>{`
                 .admin-sidebar { left: 0; }
                 .admin-nav { position: static !important; width: auto !important; background: none !important; border: none !important; backdrop-filter: none !important; }
-                .admin-main { padding-left: 280px; transition: padding 0.3s; }
+                .admin-main { padding: 30px 30px 30px 310px; transition: all 0.3s; }
                 @media (max-width: 1024px) {
-                    .admin-main { padding-left: 0; }
+                    .admin-main { padding: 30px 20px; }
                     .admin-sidebar { left: -280px; }
                     .admin-sidebar.open { left: 0; }
                     .mobile-only { display: block !important; }
@@ -225,7 +225,7 @@ const Admin = () => {
 
             <Sidebar />
 
-            <main className="admin-main" style={{ padding: '30px' }}>
+            <main className="admin-main">
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
