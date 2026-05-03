@@ -26,23 +26,24 @@ const Layout = () => {
         <>
             <nav>
                 <div className="nav-content">
-                    <Link to="/" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'center',
-                            mixBlendMode: 'screen'
-                        }}>
-                            <img 
-                                src="/logo.png" 
-                                alt="FutureTech Institute Logo" 
-                                style={{ 
-                                    height: '180px', 
-                                    width: 'auto', 
-                                    objectFit: 'contain',
-                                    filter: 'invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1)',
-                                }} 
-                            />
-                        </div>
+                    <Link to="/" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <svg width="240" height="80" viewBox="0 0 240 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0 0 15px rgba(17, 138, 139, 0.4))' }}>
+                            {/* Teal Teardrop Icon */}
+                            <path d="M40 10C23.4315 10 10 23.4315 10 40C10 56.5685 40 75 40 75C40 75 70 56.5685 70 40C70 23.4315 56.5685 10 40 10Z" fill="#118a8b" />
+                            {/* Robot Head */}
+                            <circle cx="40" cy="40" r="15" fill="white" />
+                            <rect x="22" y="35" width="8" height="10" rx="4" fill="white" />
+                            <rect x="50" y="35" width="8" height="10" rx="4" fill="white" />
+                            <circle cx="40" cy="22" r="4" fill="white" />
+                            <rect x="38" y="22" width="4" height="10" fill="white" />
+                            {/* Robot Eyes */}
+                            <rect x="33" y="38" width="5" height="4" rx="1" fill="#118a8b" />
+                            <rect x="42" y="38" width="5" height="4" rx="1" fill="#118a8b" />
+                            
+                            {/* Text */}
+                            <text x="80" y="35" fontFamily="Outfit, sans-serif" fontWeight="500" fontSize="22" fill="#118a8b">Future Tech</text>
+                            <text x="80" y="65" fontFamily="Outfit, sans-serif" fontWeight="800" fontSize="36" fill="white">Institute</text>
+                        </svg>
                     </Link>
 
                     <div className="nav-links">
@@ -82,22 +83,19 @@ const Layout = () => {
                 <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '40px', textAlign: 'left' }}>
 
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '25px' }}>
-                            <div style={{ 
-                                display: 'inline-flex',
-                                mixBlendMode: 'screen'
-                            }}>
-                                <img 
-                                    src="/logo.png" 
-                                    alt="FutureTech Institute Logo" 
-                                    style={{ 
-                                        height: '240px', 
-                                        width: 'auto', 
-                                        objectFit: 'contain',
-                                        filter: 'invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1)',
-                                    }} 
-                                />
-                            </div>
+                        <div style={{ marginBottom: '30px' }}>
+                            <svg width="280" height="100" viewBox="0 0 240 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0 0 25px rgba(17, 138, 139, 0.3))' }}>
+                                <path d="M40 10C23.4315 10 10 23.4315 10 40C10 56.5685 40 75 40 75C40 75 70 56.5685 70 40C70 23.4315 56.5685 10 40 10Z" fill="#118a8b" />
+                                <circle cx="40" cy="40" r="15" fill="white" />
+                                <rect x="22" y="35" width="8" height="10" rx="4" fill="white" />
+                                <rect x="50" y="35" width="8" height="10" rx="4" fill="white" />
+                                <circle cx="40" cy="22" r="4" fill="white" />
+                                <rect x="38" y="22" width="4" height="10" fill="white" />
+                                <rect x="33" y="38" width="5" height="4" rx="1" fill="#118a8b" />
+                                <rect x="42" y="38" width="5" height="4" rx="1" fill="#118a8b" />
+                                <text x="80" y="35" fontFamily="Outfit, sans-serif" fontWeight="500" fontSize="22" fill="#118a8b">Future Tech</text>
+                                <text x="80" y="65" fontFamily="Outfit, sans-serif" fontWeight="800" fontSize="36" fill="white">Institute</text>
+                            </svg>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
                             Bridge the gap between learning and earning at the best technical training institute in Nagercoil.
