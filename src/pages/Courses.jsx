@@ -1,5 +1,6 @@
 import { MonitorPlay, Smartphone, Database, Shield, Layout, Settings, X, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import webDevImg from '../assets/web_dev.png';
 import mobileDevImg from '../assets/mobile_dev.png';
 import fullStackImg from '../assets/full_stack_dev.png';
@@ -116,9 +117,26 @@ const Courses = () => {
                             <div style={{ marginBottom: '20px', marginTop: '-50px', position: 'relative', zIndex: 2, background: 'var(--bg-primary)', width: 'fit-content', padding: '10px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>{domain.icon}</div>
                             <h3 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>{domain.title}</h3>
                             <p style={{ color: 'var(--text-secondary)' }}>{domain.desc}</p>
-                            <button onClick={() => setSelectedCourse(domain)} style={{ marginTop: '20px', background: 'none', border: 'none', color: 'var(--accent)', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                Learn More <span style={{ fontSize: '1.2rem' }}>→</span>
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '25px' }}>
+                                <button onClick={() => setSelectedCourse(domain)} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', padding: 0 }}>
+                                    Learn More <span style={{ fontSize: '1.2rem' }}>→</span>
+                                </button>
+                                <Link to="/admission" style={{ 
+                                    background: 'var(--accent)', 
+                                    color: 'black', 
+                                    textDecoration: 'none', 
+                                    padding: '8px 16px', 
+                                    borderRadius: '8px', 
+                                    fontSize: '0.9rem', 
+                                    fontWeight: '700',
+                                    transition: 'transform 0.2s'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                >
+                                    Apply Now
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -189,6 +207,22 @@ const Courses = () => {
                                     <h4 style={{ color: 'white', fontSize: '1.1rem', marginBottom: '10px' }}>Career Roles:</h4>
                                     <p style={{ color: '#c084fc', fontWeight: '500' }}>{selectedCourse.details.careers}</p>
                                 </div>
+
+                                <Link to="/admission" style={{ 
+                                    display: 'block',
+                                    width: '100%',
+                                    textAlign: 'center',
+                                    background: 'var(--accent)', 
+                                    color: 'black', 
+                                    textDecoration: 'none', 
+                                    padding: '18px', 
+                                    borderRadius: '12px', 
+                                    fontSize: '1.1rem', 
+                                    fontWeight: '800',
+                                    boxShadow: '0 10px 20px rgba(17, 138, 139, 0.3)'
+                                }}>
+                                    Enroll in {selectedCourse.title} Now
+                                </Link>
                             </div>
                         ) : (
                             <div style={{ padding: '40px 0', textAlign: 'center' }}>
