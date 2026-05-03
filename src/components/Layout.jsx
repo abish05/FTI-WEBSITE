@@ -36,7 +36,7 @@ const Layout = () => {
                                 src="/logo.png" 
                                 alt="FutureTech Institute Logo" 
                                 style={{ 
-                                    height: '50px', 
+                                    height: '85px', 
                                     width: 'auto', 
                                     objectFit: 'contain',
                                     filter: 'invert(1) hue-rotate(180deg) brightness(1.5) contrast(1.2)',
@@ -91,7 +91,7 @@ const Layout = () => {
                                     src="/logo.png" 
                                     alt="FutureTech Institute Logo" 
                                     style={{ 
-                                        height: '65px', 
+                                        height: '110px', 
                                         width: 'auto', 
                                         objectFit: 'contain',
                                         filter: 'invert(1) hue-rotate(180deg) brightness(1.5) contrast(1.2)',
