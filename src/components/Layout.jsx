@@ -43,7 +43,7 @@ const Layout = () => {
                         <NavLink to="/admission" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Admission</NavLink>
                         <NavLink to="/contact" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Contact</NavLink>
                         {user && (
-                            <NavLink to="/admin" className={({ isActive }) => isActive ? "nav-link active dashboard-link" : "nav-link dashboard-link"} style={{ color: 'var(--accent)', fontWeight: '600', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '12px', padding: '8px 16px' }}>Dashboard</NavLink>
+                            <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} style={{ color: 'var(--accent)', fontWeight: '600' }}>Dashboard</NavLink>
                         )}
                     </div>
 
@@ -55,7 +55,7 @@ const Layout = () => {
                         <NavLink to="/admission" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Admission</NavLink>
                         <NavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Contact</NavLink>
                         {user && (
-                            <NavLink to="/admin" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"} style={{ color: 'var(--accent)', fontWeight: 'bold' }}>Admin Dashboard</NavLink>
+                            <NavLink to="/admin/dashboard" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"} style={{ color: 'var(--accent)', fontWeight: 'bold' }}>Dashboard</NavLink>
                         )}
                     </div>
 

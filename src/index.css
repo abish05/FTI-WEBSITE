@@ -138,6 +138,10 @@ nav {
   border-bottom: 1px solid var(--glass-border);
 }
 
+.mobile-nav, .mobile-menu-btn {
+  display: none;
+}
+
 .nav-content {
   max-width: 1200px;
   margin: 0 auto;
