@@ -28,14 +28,20 @@ const Layout = () => {
                 <div className="nav-content">
                     <Link to="/" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{ 
-                            background: 'white', 
-                            padding: '6px 14px', 
-                            borderRadius: '16px', 
                             display: 'flex', 
                             alignItems: 'center',
-                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(17, 138, 139, 0.2)'
+                            mixBlendMode: 'lighten'
                         }}>
-                            <img src="/logo.png" alt="FutureTech Institute Logo" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
+                            <img 
+                                src="/logo.png" 
+                                alt="FutureTech Institute Logo" 
+                                style={{ 
+                                    height: '50px', 
+                                    width: 'auto', 
+                                    objectFit: 'contain',
+                                    filter: 'invert(1) hue-rotate(180deg) brightness(1.5) contrast(1.2)',
+                                }} 
+                            />
                         </div>
                     </Link>
 
@@ -78,13 +84,19 @@ const Layout = () => {
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '25px' }}>
                             <div style={{ 
-                                background: 'white', 
-                                padding: '8px 18px', 
-                                borderRadius: '18px', 
                                 display: 'inline-flex',
-                                boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)'
+                                mixBlendMode: 'lighten'
                             }}>
-                                <img src="/logo.png" alt="FutureTech Institute Logo" style={{ height: '42px', width: 'auto', objectFit: 'contain' }} />
+                                <img 
+                                    src="/logo.png" 
+                                    alt="FutureTech Institute Logo" 
+                                    style={{ 
+                                        height: '65px', 
+                                        width: 'auto', 
+                                        objectFit: 'contain',
+                                        filter: 'invert(1) hue-rotate(180deg) brightness(1.5) contrast(1.2)',
+                                    }} 
+                                />
                             </div>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
