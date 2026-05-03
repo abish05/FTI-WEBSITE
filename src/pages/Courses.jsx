@@ -2,7 +2,7 @@ import { MonitorPlay, Smartphone, Database, Shield, Layout, Settings, X, CheckCi
 import { useState } from 'react';
 import webDevImg from '../assets/web_dev.png';
 import mobileDevImg from '../assets/mobile_dev.png';
-import dataScienceImg from '../assets/data_science.png';
+import fullStackImg from '../assets/full_stack_dev.png';
 import cyberSecurityImg from '../assets/cyber_security.png';
 import cloudComputingImg from '../assets/cloud_computing.png';
 import digitalMarketingImg from '../assets/digital_marketing.png';
@@ -38,16 +38,16 @@ const Courses = () => {
             }
         },
         {
-            title: 'Data Science & AI',
+            title: 'Full Stack Development',
             icon: <Database size={40} color="#118a8b" />,
-            image: dataScienceImg,
-            desc: 'Dive into machine learning, data visualization, and artificial intelligence.',
+            image: fullStackImg,
+            desc: 'Master the complete ecosystem of modern software development, from UI to robust backends.',
             details: {
-                subtitle: 'Turn Raw Data into Intelligence',
-                description: 'Master the tools used by data scientists to predict trends, automate tasks, and build "smart" systems.',
-                modules: ['Python for Data Science', 'Statistics & Probability', 'Machine Learning Algorithms', 'Neural Networks (Deep Learning)', 'Data Visualization (Tableau/PowerBI)'],
-                projects: 'A predictive stock market model and a sentiment analysis tool for social media.',
-                careers: 'Data Scientist, ML Engineer, Data Analyst.'
+                subtitle: 'Build End-to-End Applications',
+                description: 'Master the complete ecosystem of modern software development, from crafting intuitive user interfaces to architecting robust server-side infrastructures.',
+                modules: ['MERN Stack (MongoDB, Express, React, Node.js)', 'System Architecture & API Design', 'State Management (Redux/Context API)', 'Authentication & Security (JWT/OAuth)', 'Deployment & CI/CD Pipelines'],
+                projects: 'A real-time collaborative workspace and a high-scale social media engine.',
+                careers: 'Full Stack Developer, Software Architect, Product Engineer.'
             }
         },
         {
