@@ -30,16 +30,16 @@ const Layout = () => {
                         <div style={{ 
                             display: 'flex', 
                             alignItems: 'center',
-                            mixBlendMode: 'lighten'
+                            mixBlendMode: 'screen'
                         }}>
                             <img 
                                 src="/logo.png" 
                                 alt="FutureTech Institute Logo" 
                                 style={{ 
-                                    height: '130px', 
+                                    height: '180px', 
                                     width: 'auto', 
                                     objectFit: 'contain',
-                                    filter: 'invert(1) hue-rotate(180deg) brightness(1.5) contrast(1.2)',
+                                    filter: 'invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1)',
                                 }} 
                             />
                         </div>
@@ -85,16 +85,16 @@ const Layout = () => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '25px' }}>
                             <div style={{ 
                                 display: 'inline-flex',
-                                mixBlendMode: 'lighten'
+                                mixBlendMode: 'screen'
                             }}>
                                 <img 
                                     src="/logo.png" 
                                     alt="FutureTech Institute Logo" 
                                     style={{ 
-                                        height: '180px', 
+                                        height: '240px', 
                                         width: 'auto', 
                                         objectFit: 'contain',
-                                        filter: 'invert(1) hue-rotate(180deg) brightness(1.5) contrast(1.2)',
+                                        filter: 'invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1)',
                                     }} 
                                 />
                             </div>
