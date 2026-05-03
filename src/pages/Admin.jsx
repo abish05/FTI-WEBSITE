@@ -136,12 +136,12 @@ const Admin = () => {
                     </button>
                 </div>
 
-                <nav style={{ flex: 1 }}>
+                <div className="admin-nav" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <SidebarItem icon={<LayoutDashboard size={20} />} label="Overview" active={activeTab === 'Overview'} onClick={() => { setActiveTab('Overview'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<Users size={20} />} label="Student Database" active={activeTab === 'Participants'} onClick={() => { setActiveTab('Participants'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<MessageSquare size={20} />} label="Inquiries" active={activeTab === 'Messages'} onClick={() => { setActiveTab('Messages'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<Settings size={20} />} label="Master Control" active={activeTab === 'Config'} onClick={() => { setActiveTab('Config'); setIsSidebarOpen(false); }} />
-                </nav>
+                </div>
 
                 <button 
                     onClick={handleLogout}
@@ -178,7 +178,7 @@ const Admin = () => {
                 display: 'flex', 
                 alignItems: 'center', 
                 gap: '15px', 
-                padding: '12px 15px', 
+                padding: '12px 10px', 
                 marginBottom: '10px',
                 cursor: 'pointer',
                 fontSize: '0.95rem',
@@ -206,6 +206,7 @@ const Admin = () => {
         <div style={{ minHeight: '100vh', background: '#020617', color: 'white' }}>
             <style>{`
                 .admin-sidebar { left: 0; }
+                .admin-nav { position: static !important; width: auto !important; background: none !important; border: none !important; backdrop-filter: none !important; }
                 .admin-main { padding-left: 280px; transition: padding 0.3s; }
                 @media (max-width: 1024px) {
                     .admin-main { padding-left: 0; }
