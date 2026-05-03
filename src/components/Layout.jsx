@@ -4,23 +4,6 @@ import { useState, useEffect } from 'react';
 
 const Layout = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        const checkUser = () => {
-            const userStr = localStorage.getItem('fti_current_user');
-            if (userStr) {
-                setUser(JSON.parse(userStr));
-            } else {
-                setUser(null);
-            }
-        };
-        
-        checkUser();
-        // Check for storage changes (e.g. login/logout)
-        window.addEventListener('storage', checkUser);
-        return () => window.removeEventListener('storage', checkUser);
-    }, []);
 
     return (
         <>
@@ -42,9 +25,6 @@ const Layout = () => {
                         <NavLink to="/courses" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Courses</NavLink>
                         <NavLink to="/admission" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Admission</NavLink>
                         <NavLink to="/contact" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Contact</NavLink>
-                        {user && (
-                            <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"} style={{ color: 'var(--accent)', fontWeight: '600' }}>Dashboard</NavLink>
-                        )}
                     </div>
 
                     {/* Mobile Navigation Drawer */}
@@ -54,9 +34,6 @@ const Layout = () => {
                         <NavLink to="/courses" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Courses</NavLink>
                         <NavLink to="/admission" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Admission</NavLink>
                         <NavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Contact</NavLink>
-                        {user && (
-                            <NavLink to="/admin/dashboard" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"} style={{ color: 'var(--accent)', fontWeight: 'bold' }}>Dashboard</NavLink>
-                        )}
                     </div>
 
                     <button className="mobile-menu-btn" style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
@@ -98,7 +75,6 @@ const Layout = () => {
                             <li><Link to="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</Link></li>
                             <li><Link to="/about" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>About</Link></li>
                             <li><Link to="/courses" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>All Courses</Link></li>
-                            <li><Link to="/admin" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Admin Login</Link></li>
                             <li><a href="#" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Career Blog</a></li>
                         </ul>
                     </div>
