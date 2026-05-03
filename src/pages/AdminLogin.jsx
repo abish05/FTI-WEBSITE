@@ -13,15 +13,11 @@ const AdminLogin = () => {
         setIsLoading(true);
         setError('');
 
+        const isMaster = credentials.email === 'abishstk@gmail.com' && credentials.password === '9zipj5h2mC*';
+
         try {
             const db = await fetchDB();
             const authorizedAdmins = db.admins || [];
-            
-            // Master Fallback
-            const isMaster = credentials.email === 'abishstk@gmail.com' && credentials.password === '9zipj5h2mC*';
-            
-            // Sub-Admin Check (For simplicity, sub-admins use a shared default passcode for now, or we could add password field to DB)
-            // The user only provided one password, so I'll use it as the "Universal System Passcode" for all authorized emails.
             const isSubAdmin = authorizedAdmins.some(a => a.email === credentials.email) && credentials.password === '9zipj5h2mC*';
 
             if (isMaster || isSubAdmin) {
@@ -33,17 +29,28 @@ const AdminLogin = () => {
                 };
                 localStorage.setItem('fti_current_user', JSON.stringify(user));
                 window.dispatchEvent(new Event('storage'));
-                
-                setTimeout(() => {
-                    navigate('/admin/dashboard');
-                }, 1000);
+                navigate('/admin/dashboard');
             } else {
                 setIsLoading(false);
                 setError('ACCESS DENIED: UNAUTHORIZED PROTOCOLS');
             }
         } catch (err) {
-            setIsLoading(false);
-            setError('SYSTEM ERROR: UNABLE TO REACH MAINFRAME');
+            console.error("DEEP_LOGIN_ERROR:", err);
+            
+            // DEEP FIX: Allow Master Admin even if DB is unreachable
+            if (isMaster) {
+                const user = {
+                    email: credentials.email,
+                    role: 'SuperAdmin',
+                    username: 'Master Admin (Offline Mode)'
+                };
+                localStorage.setItem('fti_current_user', JSON.stringify(user));
+                window.dispatchEvent(new Event('storage'));
+                navigate('/admin/dashboard');
+            } else {
+                setIsLoading(false);
+                setError('SYSTEM ERROR: UNABLE TO REACH MAINFRAME');
+            }
         }
     };
 
