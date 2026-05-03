@@ -23,24 +23,28 @@ const Admission = () => {
             const newEnrollment = {
                 ...formData,
                 id: Date.now().toString(),
-                date: new Date().toLocaleDateString()
+                date: new Date().toLocaleString()
             };
             
-            // 1. Submit to Formspree for email/backup
-            await fetch("https://formspree.io/f/meenezll", {
+            // 1. Submit to Formspree for email/backup (Primary for User)
+            const formspreeRes = await fetch("https://formspree.io/f/meenezll", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
                 body: JSON.stringify(newEnrollment)
             });
 
-            // 2. Update remote DB for Admin Dashboard
+            if (!formspreeRes.ok) throw new Error('Formspree submission failed');
+
+            // 2. Update remote DB for Admin Dashboard (Sync for Dashboard)
             db.enrollments = [newEnrollment, ...existing];
-            await updateDB(db);
+            const dbSuccess = await updateDB(db);
             
+            if (!dbSuccess) {
+                console.warn("DB update failed, but Formspree was successful.");
+            }
+
             setSubmitted(true);
             setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
-
-            // Auto reset success message
             setTimeout(() => setSubmitted(false), 5000);
         } catch (err) {
             console.error("Error submitting application:", err);
