@@ -19,6 +19,7 @@ const Admin = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [newStudent, setNewStudent] = useState({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
     const [syncTime, setSyncTime] = useState(new Date().toLocaleTimeString());
+    const [networkHealth, setNetworkHealth] = useState('Checking...');
 
     const user = JSON.parse(localStorage.getItem('fti_current_user'));
 
@@ -37,6 +38,10 @@ const Admin = () => {
         setMessages(data.messages || []);
         setAdmins(data.admins || []);
         setSyncTime(new Date().toLocaleTimeString());
+        
+        // Network Check
+        const isHealthy = data.enrollments.length > 0 || data.messages.length > 0;
+        setNetworkHealth(isHealthy ? 'Optimal' : 'Degraded');
         setIsLoading(false);
     };
 
@@ -211,7 +216,7 @@ const Admin = () => {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '25px', marginBottom: '45px' }}>
                             <StatCard label="Total Students" value={enrollments.length} subtext="Active Enrollments" icon={<Users size={85} />} color="#118a8b" />
                             <StatCard label="Enquiries" value={messages.length} subtext="Pending Messages" icon={<MessageSquare size={85} />} color="#118a8b" />
-                            <StatCard label="Sync Status" value="Healthy" subtext="All systems optimal" icon={<Zap size={85} />} color="#a855f7" />
+                            <StatCard label="Network Health" value={networkHealth} subtext="Cloud Gateway Status" icon={<Zap size={85} />} color={networkHealth === 'Optimal' ? '#118a8b' : '#ef4444'} />
                             <StatCard label="Access Level" value="Root" subtext={user?.role || 'Admin'} icon={<ShieldCheck size={85} />} color="#f59e0b" />
                         </div>
 

@@ -4,7 +4,11 @@
 
 const BLOB_ID = '019dec9d-e994-7076-8175-c68ba24b4c87';
 const BASE_URL = `https://api.jsonblob.com/${BLOB_ID}`;
-const PUT_PROXY = 'https://corsproxy.io/?';
+const PROXIES = [
+    'https://corsproxy.io/?',
+    'https://api.allorigins.win/raw?url=',
+    'https://thingproxy.freeboard.io/fetch/'
+];
 
 // Helper to get local data safely
 const getLocalData = () => {
@@ -31,28 +35,30 @@ const saveLocalData = (data) => {
 export const fetchDB = async () => {
     const localData = getLocalData();
     
-    try {
-        const response = await fetch(`${BASE_URL}?t=${Date.now()}`, { cache: 'no-store' });
-        
-        if (response.ok) {
-            const cloudData = await response.json();
+    // Try each proxy until one works
+    for (const proxy of PROXIES) {
+        try {
+            const url = `${proxy}${encodeURIComponent(BASE_URL + '?t=' + Date.now())}`;
+            const response = await fetch(url, { cache: 'no-store' });
             
-            if (cloudData) {
-                // DEEP MERGE: Combine local and cloud to ensure no data is lost
-                const merged = {
-                    enrollments: mergeCollections(localData.enrollments, cloudData.enrollments),
-                    messages: mergeCollections(localData.messages, cloudData.messages),
-                    admins: cloudData.admins || localData.admins || []
-                };
-                
-                saveLocalData(merged);
-                return merged;
+            if (response.ok) {
+                const cloudData = await response.json();
+                if (cloudData) {
+                    const merged = {
+                        enrollments: mergeCollections(localData.enrollments, cloudData.enrollments),
+                        messages: mergeCollections(localData.messages, cloudData.messages),
+                        admins: cloudData.admins || localData.admins || []
+                    };
+                    saveLocalData(merged);
+                    return merged;
+                }
             }
+        } catch (e) {
+            console.log(`Proxy ${proxy} failed, trying next...`);
         }
-    } catch (error) {
-        console.warn("MAINFRAME_SYNC_PAUSED: Operating in Local-First mode.");
     }
     
+    console.warn("ALL_PROXIES_FAILED: Reverting to local state.");
     return localData;
 };
 
@@ -66,24 +72,25 @@ const mergeCollections = (local = [], cloud = []) => {
 };
 
 export const updateDB = async (data) => {
-    // 1. Save locally immediately
     saveLocalData(data);
     
-    try {
-        // 2. Perform a background push using proxy for reliability
-        const pushUrl = `${PUT_PROXY}${BASE_URL}`;
-        const response = await fetch(pushUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
-        if (response.ok) {
-            return true;
+    for (const proxy of PROXIES) {
+        try {
+            const url = `${proxy}${encodeURIComponent(BASE_URL)}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                console.log("Cloud sync successful via " + proxy);
+                return true;
+            }
+        } catch (error) {
+            console.log(`Push failed via ${proxy}, trying next...`);
         }
-    } catch (error) {
-        console.error("BACKGROUND_SYNC_FAILED:", error);
     }
     
-    return true; // Return true as local save is complete
+    return false;
 };

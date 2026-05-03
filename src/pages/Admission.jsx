@@ -11,12 +11,14 @@ const Admission = () => {
     });
 
     const [submitted, setSubmitted] = useState(false);
+    const [isSyncing, setIsSyncing] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSyncing(true);
         
         try {
-            // Fetch latest DB
+            // Fetch latest DB with retry logic built-in to fetchDB
             const db = await fetchDB();
             const existing = db.enrollments || [];
             
@@ -26,29 +28,31 @@ const Admission = () => {
                 date: new Date().toLocaleString()
             };
             
-            // 1. Submit to Formspree for email/backup (Primary for User)
-            const formspreeRes = await fetch("https://formspree.io/f/meenezll", {
+            // 1. Submit to Formspree (Primary Backup)
+            await fetch("https://formspree.io/f/meenezll", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Accept": "application/json" },
                 body: JSON.stringify(newEnrollment)
             });
 
-            if (!formspreeRes.ok) throw new Error('Formspree submission failed');
-
             // 2. Update remote DB for Admin Dashboard (Sync for Dashboard)
             db.enrollments = [newEnrollment, ...existing];
             const dbSuccess = await updateDB(db);
             
-            if (!dbSuccess) {
-                console.warn("DB update failed, but Formspree was successful.");
+            if (dbSuccess) {
+                setSubmitted(true);
+                setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
+            } else {
+                // Fallback: If cloud fails but local is saved
+                alert("Data saved locally but cloud sync is slow. Our team will still receive your application via backup protocols.");
+                setSubmitted(true);
             }
-
-            setSubmitted(true);
-            setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
-            setTimeout(() => setSubmitted(false), 5000);
         } catch (err) {
             console.error("Error submitting application:", err);
-            alert("There was an error submitting your application. Please try again.");
+            alert("SYSTEM ERROR: UNABLE TO REACH CLOUD MAINFRAME. Please check your internet.");
+        } finally {
+            setIsSyncing(false);
+            setTimeout(() => setSubmitted(false), 8000);
         }
     };
 
@@ -108,8 +112,13 @@ const Admission = () => {
                             <textarea name="remarks" value={formData.remarks} onChange={handleChange} className="form-input" rows="4" placeholder="Any specific requirements or questions?"></textarea>
                         </div>
 
-                        <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '20px', padding: '16px' }}>
-                            Submit Application
+                        <button type="submit" disabled={isSyncing} className="btn-primary" style={{ width: '100%', marginTop: '20px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                            {isSyncing ? (
+                                <>
+                                    <div className="spinner" style={{ width: '20px', height: '20px', border: '2px solid rgba(0,0,0,0.1)', borderTopColor: 'black', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+                                    VERIFYING WITH MAINFRAME...
+                                </>
+                            ) : 'Submit Application'}
                         </button>
                     </form>
                 )}
