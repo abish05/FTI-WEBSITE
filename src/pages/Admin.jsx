@@ -55,17 +55,40 @@ const Admin = () => {
 
     const handleAddStudent = async (e) => {
         e.preventDefault();
-        const student = {
-            ...newStudent,
-            id: Date.now().toString(),
-            date: new Date().toLocaleString()
-        };
-        const updated = [student, ...enrollments];
-        const success = await updateDB({ enrollments: updated, messages, admins });
-        if (success) {
-            setEnrollments(updated);
-            setShowAddModal(false);
-            setNewStudent({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
+        setIsLoading(true);
+        
+        try {
+            // Safety fetch to get latest messages and admins
+            const currentDB = await fetchDB();
+            
+            const student = {
+                ...newStudent,
+                id: Date.now().toString(),
+                date: new Date().toLocaleString()
+            };
+            
+            const updatedEnrollments = [student, ...(currentDB.enrollments || [])];
+            
+            const success = await updateDB({ 
+                ...currentDB,
+                enrollments: updatedEnrollments 
+            });
+
+            if (success) {
+                setEnrollments(updatedEnrollments);
+                setMessages(currentDB.messages || []);
+                setAdmins(currentDB.admins || []);
+                setShowAddModal(false);
+                setNewStudent({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
+                setSyncTime(new Date().toLocaleTimeString());
+            } else {
+                alert('CRITICAL ERROR: Mainframe rejected the update. Check your connection.');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('SYSTEM ERROR: Could not reach the cloud database.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -293,7 +316,34 @@ const Admin = () => {
                                     <option>Cloud Computing</option>
                                 </select>
                                 <textarea placeholder="Remarks (Optional)" className="form-input" rows="3" style={{ resize: 'none' }} value={newStudent.remarks} onChange={e => setNewStudent({...newStudent, remarks: e.target.value})}></textarea>
-                                <button type="submit" style={{ width: '100%', padding: '15px', background: '#10b981', color: '#020617', border: 'none', borderRadius: '12px', fontWeight: '800', marginTop: '10px', cursor: 'pointer' }}>Register Student</button>
+                                <button 
+                                    type="submit" 
+                                    disabled={isLoading}
+                                    style={{ 
+                                        width: '100%', 
+                                        padding: '15px', 
+                                        background: isLoading ? '#1e293b' : '#10b981', 
+                                        color: isLoading ? '#94a3b8' : '#020617', 
+                                        border: 'none', 
+                                        borderRadius: '12px', 
+                                        fontWeight: '800', 
+                                        marginTop: '10px', 
+                                        cursor: isLoading ? 'not-allowed' : 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '10px'
+                                    }}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <RefreshCw size={20} className="spin" />
+                                            SAVING TO MAINFRAME...
+                                        </>
+                                    ) : (
+                                        'PERMANENTLY REGISTER STUDENT'
+                                    )}
+                                </button>
                             </form>
                         </div>
                     </div>
