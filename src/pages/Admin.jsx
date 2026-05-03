@@ -115,10 +115,10 @@ const Admin = () => {
                 marginBottom: '10px',
                 cursor: 'pointer',
                 borderRadius: '16px',
-                background: active ? 'rgba(16, 185, 129, 0.12)' : 'transparent',
-                color: active ? '#10b981' : '#94a3b8',
+                background: active ? 'rgba(17, 138, 139, 0.12)' : 'transparent',
+                color: active ? '#118a8b' : '#94a3b8',
                 transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                border: active ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid transparent'
+                border: active ? '1px solid rgba(17, 138, 139, 0.25)' : '1px solid transparent'
             }}
             className="sidebar-item"
         >
@@ -156,14 +156,14 @@ const Admin = () => {
                     .admin-main { margin-left: 0; padding: 20px; }
                 }
                 .form-input { width: 100%; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(30, 41, 59, 1); border-radius: 12px; padding: 12px 15px; color: white; margin-bottom: 15px; outline: none; transition: border 0.3s; }
-                .form-input:focus { border-color: #10b981; }
+                .form-input:focus { border-color: #118a8b; }
             `}</style>
 
             {/* Sidebar */}
             <div className={`admin-sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div>
-                        <p style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Mainframe</p>
+                        <p style={{ color: '#118a8b', fontSize: '0.7rem', fontWeight: '800', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Mainframe</p>
                         <h2 style={{ fontSize: '1.2rem', fontWeight: '800' }}>FTI CONTROL</h2>
                     </div>
                     <button className="mobile-only" onClick={() => setIsSidebarOpen(false)} style={{ background: 'none', border: 'none', color: '#94a3b8' }}>
@@ -190,13 +190,13 @@ const Admin = () => {
             <main className="admin-main">
                 <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <button className="mobile-only" onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#10b981' }}>
+                        <button className="mobile-only" onClick={() => setIsSidebarOpen(true)} style={{ background: 'none', border: 'none', color: '#118a8b' }}>
                             <Menu size={24} />
                         </button>
                         <div>
                             <h1 style={{ fontSize: '2rem', fontWeight: '800', letterSpacing: '-0.02em' }}>{activeTab}</h1>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px' }}>
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }}></div>
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#118a8b', boxShadow: '0 0 10px #118a8b' }}></div>
                                 <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>SYSTEM_LIVE • Last Synced: {syncTime}</span>
                             </div>
                         </div>
@@ -209,8 +209,8 @@ const Admin = () => {
                 {activeTab === 'Overview' && (
                     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '25px', marginBottom: '45px' }}>
-                            <StatCard label="Total Students" value={enrollments.length} subtext="Active Enrollments" icon={<Users size={85} />} color="#10b981" />
-                            <StatCard label="Enquiries" value={messages.length} subtext="Pending Messages" icon={<MessageSquare size={85} />} color="#3b82f6" />
+                            <StatCard label="Total Students" value={enrollments.length} subtext="Active Enrollments" icon={<Users size={85} />} color="#118a8b" />
+                            <StatCard label="Enquiries" value={messages.length} subtext="Pending Messages" icon={<MessageSquare size={85} />} color="#118a8b" />
                             <StatCard label="Sync Status" value="Healthy" subtext="All systems optimal" icon={<Zap size={85} />} color="#a855f7" />
                             <StatCard label="Access Level" value="Root" subtext={user?.role || 'Admin'} icon={<ShieldCheck size={85} />} color="#f59e0b" />
                         </div>
@@ -220,7 +220,7 @@ const Admin = () => {
                             {enrollments.slice(0, 5).map(e => (
                                 <div key={e.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
+                                        <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(17, 138, 139, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#118a8b' }}>
                                             <UserPlus size={20} />
                                         </div>
                                         <div>
@@ -228,7 +228,7 @@ const Admin = () => {
                                             <p style={{ fontSize: '0.8rem', color: '#64748b' }}>{e.course} • {e.date}</p>
                                         </div>
                                     </div>
-                                    <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: '700' }}>NEW</div>
+                                    <div style={{ fontSize: '0.8rem', color: '#118a8b', fontWeight: '700' }}>NEW</div>
                                 </div>
                             ))}
                         </div>
@@ -249,7 +249,7 @@ const Admin = () => {
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                             </div>
-                            <button onClick={() => setShowAddModal(true)} style={{ background: '#10b981', color: '#020617', border: 'none', borderRadius: '12px', padding: '0 20px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                            <button onClick={() => setShowAddModal(true)} style={{ background: '#118a8b', color: '#020617', border: 'none', borderRadius: '12px', padding: '0 20px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                                 <Plus size={20} /> Add Student
                             </button>
                             <button onClick={exportCSV} style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '0 20px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -280,7 +280,7 @@ const Admin = () => {
                                                 <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{e.email}</div>
                                             </td>
                                             <td style={{ padding: '20px' }}>
-                                                <span style={{ padding: '5px 12px', borderRadius: '8px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', fontSize: '0.8rem', fontWeight: '600' }}>{e.course}</span>
+                                                <span style={{ padding: '5px 12px', borderRadius: '8px', background: 'rgba(17, 138, 139, 0.1)', color: '#118a8b', fontSize: '0.8rem', fontWeight: '600' }}>{e.course}</span>
                                             </td>
                                             <td style={{ padding: '20px', color: '#94a3b8', fontSize: '0.9rem', maxWidth: '200px' }}>{e.remarks || '---'}</td>
                                             <td style={{ padding: '20px', textAlign: 'center' }}>
@@ -322,7 +322,7 @@ const Admin = () => {
                                     style={{ 
                                         width: '100%', 
                                         padding: '15px', 
-                                        background: isLoading ? '#1e293b' : '#10b981', 
+                                        background: isLoading ? '#1e293b' : '#118a8b', 
                                         color: isLoading ? '#94a3b8' : '#020617', 
                                         border: 'none', 
                                         borderRadius: '12px', 

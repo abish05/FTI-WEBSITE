@@ -13,7 +13,7 @@ const Courses = () => {
     const domains = [
         {
             title: 'Web Development',
-            icon: <Layout size={40} color="#3b82f6" />,
+            icon: <Layout size={40} color="#118a8b" />,
             image: webDevImg,
             desc: 'Master front-end and back-end technologies to build modern web applications.',
             details: {
@@ -39,7 +39,7 @@ const Courses = () => {
         },
         {
             title: 'Data Science & AI',
-            icon: <Database size={40} color="#10b981" />,
+            icon: <Database size={40} color="#118a8b" />,
             image: dataScienceImg,
             desc: 'Dive into machine learning, data visualization, and artificial intelligence.',
             details: {
@@ -106,7 +106,7 @@ const Courses = () => {
             <div className="card-grid">
                 {domains.map((domain, index) => (
                     <div key={index} className="glass-panel" style={{ padding: '0', overflow: 'hidden', transition: 'all 0.3s ease' }}
-                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.5)'; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(17, 138, 139, 0.5)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; }}>
                         <div className="image-container" style={{ height: '200px', borderRadius: '0' }}>
                             <img src={domain.image} alt={domain.title} className="premium-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -157,7 +157,7 @@ const Courses = () => {
                                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
                                         {selectedCourse.details.modules.map((mod, i) => (
                                             <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                                                <CheckCircle2 size={20} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
+                                                <CheckCircle2 size={20} color="#118a8b" style={{ flexShrink: 0, marginTop: '2px' }} />
                                                 <span style={{ color: 'rgba(255,255,255,0.85)' }}>{mod}</span>
                                             </li>
                                         ))}
@@ -168,8 +168,8 @@ const Courses = () => {
                                     <h4 style={{ color: '#ef4444', fontSize: '1.1rem', marginBottom: '10px' }}>The Problem:</h4>
                                     <p style={{ color: 'rgba(255,255,255,0.7)', fontStyle: 'italic', borderLeft: '3px solid #ef4444', paddingLeft: '15px' }}>"Generic tutorials don't get you jobs."</p>
                                 </div>
-                                <div style={{ marginBottom: '30px', padding: '20px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                                    <h4 style={{ color: '#10b981', fontSize: '1.1rem', marginBottom: '10px' }}>The Solution:</h4>
+                                <div style={{ marginBottom: '30px', padding: '20px', background: 'rgba(17, 138, 139, 0.1)', borderRadius: '12px', border: '1px solid rgba(17, 138, 139, 0.2)' }}>
+                                    <h4 style={{ color: '#118a8b', fontSize: '1.1rem', marginBottom: '10px' }}>The Solution:</h4>
                                     <p style={{ color: 'white', lineHeight: '1.6' }}>Our {selectedCourse.title} syllabus is built by industry veterans to focus on what actually matters in 2026.</p>
                                 </div>
 

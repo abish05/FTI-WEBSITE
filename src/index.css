@@ -6,8 +6,8 @@
   --background-gradient: radial-gradient(circle at top left, #1a1a2e 0%, #05050a 100%);
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --accent: #3b82f6;
-  --accent-secondary: #8b5cf6;
+  --accent: #118a8b;
+  --accent-secondary: #0d6b6b;
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.08);
   --modal-padding: 50px;
@@ -88,7 +88,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #60a5fa, #c084fc);
+  background: linear-gradient(135deg, #16b8b8, #0a5454);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

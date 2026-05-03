@@ -66,8 +66,8 @@ const Admission = () => {
             <div className="glass-panel" style={{ padding: '40px' }}>
                 {submitted ? (
                     <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-                        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.2)', border: '2px solid #10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-                            <span style={{ fontSize: '2rem', color: '#10b981' }}>✓</span>
+                        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(17, 138, 139, 0.2)', border: '2px solid #118a8b', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                            <span style={{ fontSize: '2rem', color: '#118a8b' }}>✓</span>
                         </div>
                         <h2 style={{ marginBottom: '15px' }}>Enrollment Received!</h2>
                         <p style={{ color: 'var(--text-secondary)' }}>Thank you for your interest. Our admissions team will contact you shortly.</p>

@@ -16,7 +16,7 @@ const About = () => {
                 </div>
             </div>
 
-            <div className="glass-panel" style={{ padding: '50px', marginBottom: '40px', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%)' }}>
+            <div className="glass-panel" style={{ padding: '50px', marginBottom: '40px', background: 'linear-gradient(135deg, rgba(17, 138, 139, 0.05) 0%, rgba(17, 138, 139, 0.05) 100%)' }}>
                 <h2 style={{ fontSize: '2.2rem', marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <Rocket color="var(--accent)" size={32} /> Why We Are Different
                 </h2>
@@ -26,12 +26,12 @@ const About = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
                     <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '30px', borderRadius: '16px' }}>
-                        <BookOpen color="#3b82f6" size={28} style={{ marginBottom: '15px' }} />
+                        <BookOpen color="#118a8b" size={28} style={{ marginBottom: '15px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '10px' }}>Engineering Excellence</h3>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>Our curriculum is influenced by the rigorous standards of top engineering pedagogy, translated into practical, hands-on modules.</p>
                     </div>
                     <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '30px', borderRadius: '16px' }}>
-                        <ShieldCheck color="#10b981" size={28} style={{ marginBottom: '15px' }} />
+                        <ShieldCheck color="#118a8b" size={28} style={{ marginBottom: '15px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '10px' }}>The Pro-Tech Advantage</h3>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>We utilize professional-grade environments—from advanced firewalls for security training to high-end editing suites—giving you a competitive edge.</p>
                     </div>
@@ -60,14 +60,14 @@ const About = () => {
                     </h2>
                     <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <li style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
-                            <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '10px', borderRadius: '10px' }}><Zap color="#3b82f6" size={20} /></div>
+                            <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '10px', borderRadius: '10px' }}><Zap color="#118a8b" size={20} /></div>
                             <div>
                                 <strong style={{ color: 'white', fontSize: '1.1rem' }}>Practical Mastery:</strong>
                                 <p style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>20% Theory, 80% Live Lab Work.</p>
                             </div>
                         </li>
                         <li style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
-                            <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '10px', borderRadius: '10px' }}><Target color="#10b981" size={20} /></div>
+                            <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '10px', borderRadius: '10px' }}><Target color="#118a8b" size={20} /></div>
                             <div>
                                 <strong style={{ color: 'white', fontSize: '1.1rem' }}>Portfolio Driven:</strong>
                                 <p style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>You graduate with a body of work, not just a piece of paper.</p>
@@ -84,7 +84,7 @@ const About = () => {
                 </div>
             </div>
 
-            <div className="glass-panel" style={{ padding: '60px 40px', textAlign: 'center', background: 'radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%)' }}>
+            <div className="glass-panel" style={{ padding: '60px 40px', textAlign: 'center', background: 'radial-gradient(circle at center, rgba(17, 138, 139, 0.1) 0%, transparent 70%)' }}>
                 <h2 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>Ready to start your journey?</h2>
                 <Link to="/admission" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', padding: '18px 40px' }}>
                     Join the FTI Community Today <ChevronRight size={20} />

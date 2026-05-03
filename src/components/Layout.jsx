@@ -26,13 +26,16 @@ const Layout = () => {
         <>
             <nav>
                 <div className="nav-content">
-                    <Link to="/" className="nav-logo" onClick={() => setIsMobileMenuOpen(false)}>
-                        <div style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', padding: '8px', borderRadius: '12px' }}>
-                            <GraduationCap size={24} color="white" />
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
-                            <span style={{ fontWeight: 'bold' }}>FutureTech</span>
-                            <span style={{ fontSize: '0.8rem', opacity: 0.7, fontWeight: '400' }}>Training Institute</span>
+                    <Link to="/" className="nav-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ 
+                            background: 'white', 
+                            padding: '4px 12px', 
+                            borderRadius: '20px', 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            boxShadow: '0 0 15px rgba(17, 138, 139, 0.3)'
+                        }}>
+                            <img src="/logo.png" alt="FutureTech Institute Logo" style={{ height: '35px', objectFit: 'contain' }} />
                         </div>
                     </Link>
 
@@ -74,12 +77,14 @@ const Layout = () => {
 
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-                            <div style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', padding: '8px', borderRadius: '12px', display: 'inline-block' }}>
-                                <GraduationCap size={24} color="white" />
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
-                                <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>FutureTech</span>
-                                <span style={{ fontSize: '0.9rem', opacity: 0.7, fontWeight: '400' }}>Training Institute</span>
+                            <div style={{ 
+                                background: 'white', 
+                                padding: '6px 15px', 
+                                borderRadius: '24px', 
+                                display: 'inline-flex',
+                                boxShadow: '0 0 20px rgba(17, 138, 139, 0.2)'
+                            }}>
+                                <img src="/logo.png" alt="FutureTech Institute Logo" style={{ height: '45px', objectFit: 'contain' }} />
                             </div>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>

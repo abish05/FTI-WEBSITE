@@ -47,7 +47,7 @@ const Contact = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
                 <div className="glass-panel" style={{ padding: '40px', display: 'flex', flexDirection: 'column', gap: '30px' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
-                        <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '12px', borderRadius: '50%' }}>
+                        <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '12px', borderRadius: '50%' }}>
                             <MapPin color="var(--accent)" />
                         </div>
                         <div>
@@ -61,7 +61,7 @@ const Contact = () => {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
-                        <div style={{ background: 'rgba(139, 92, 246, 0.1)', padding: '12px', borderRadius: '50%' }}>
+                        <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '12px', borderRadius: '50%' }}>
                             <Phone color="#8b5cf6" />
                         </div>
                         <div>
@@ -81,8 +81,8 @@ const Contact = () => {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
-                        <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '12px', borderRadius: '50%' }}>
-                            <Clock color="#10b981" />
+                        <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '12px', borderRadius: '50%' }}>
+                            <Clock color="#118a8b" />
                         </div>
                         <div>
                             <h3 style={{ fontSize: '1.2rem', marginBottom: '5px' }}>Working Hours</h3>
@@ -94,9 +94,9 @@ const Contact = () => {
                 <div className="glass-panel" style={{ padding: '40px' }}>
                     <h2 style={{ marginBottom: '20px', fontSize: '1.8rem' }}>Send a Message</h2>
                     {submitted ? (
-                        <div style={{ textAlign: 'center', padding: '40px 20px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                        <div style={{ textAlign: 'center', padding: '40px 20px', background: 'rgba(17, 138, 139, 0.1)', borderRadius: '16px', border: '1px solid rgba(17, 138, 139, 0.2)' }}>
                             <span style={{ fontSize: '3rem' }}>🎉</span>
-                            <h3 style={{ marginTop: '15px', color: '#10b981' }}>Message Sent!</h3>
+                            <h3 style={{ marginTop: '15px', color: '#118a8b' }}>Message Sent!</h3>
                             <p style={{ marginTop: '10px', color: 'var(--text-secondary)' }}>We'll get back to you shortly.</p>
                         </div>
                     ) : (

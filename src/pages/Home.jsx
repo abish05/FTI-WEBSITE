@@ -50,7 +50,7 @@ const Home = () => {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '30px' }}>
                     <div className="glass-panel" style={{ padding: '35px' }}>
-                        <MonitorPlay size={32} color="#3b82f6" style={{ marginBottom: '20px' }} />
+                        <MonitorPlay size={32} color="#118a8b" style={{ marginBottom: '20px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '15px' }}>Real-World Labs</h3>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>Forget theoretical slides. Practice on the exact same tools used by companies like Google, Meta, and Amazon.</p>
                     </div>
@@ -60,7 +60,7 @@ const Home = () => {
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>Learn directly from professionals with years of experience in Video Editing, Python Development, and Cyber Security.</p>
                     </div>
                     <div className="glass-panel" style={{ padding: '35px' }}>
-                        <Code size={32} color="#10b981" style={{ marginBottom: '20px' }} />
+                        <Code size={32} color="#118a8b" style={{ marginBottom: '20px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '15px' }}>Portfolio Building</h3>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>Every student graduates with a tangible "Work Portfolio" to showcase to recruiters, not just a paper certificate.</p>
                     </div>
@@ -73,13 +73,13 @@ const Home = () => {
             </div>
 
             {/* CAREER PATH FINDER */}
-            <div className="glass-panel" style={{ padding: '50px', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)', textAlign: 'center' }}>
+            <div className="glass-panel" style={{ padding: '50px', background: 'linear-gradient(135deg, rgba(17, 138, 139, 0.1) 0%, rgba(17, 138, 139, 0.1) 100%)', textAlign: 'center' }}>
                 <h2 style={{ fontSize: '2rem', marginBottom: '15px' }}>Interactive Career Path Finder</h2>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '30px' }}>Unsure where to start? Tell us your primary interest and we'll suggest the right course for you.</p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap' }}>
                     <button onClick={() => setQuizInterest('Design')} className="btn-primary" style={{ background: quizInterest === 'Design' ? '#ec4899' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>🎨 Visuals & Design</button>
-                    <button onClick={() => setQuizInterest('Logic')} className="btn-primary" style={{ background: quizInterest === 'Logic' ? '#3b82f6' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>💻 Code & Logic</button>
-                    <button onClick={() => setQuizInterest('Security')} className="btn-primary" style={{ background: quizInterest === 'Security' ? '#10b981' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>🛡️ Hack & Security</button>
+                    <button onClick={() => setQuizInterest('Logic')} className="btn-primary" style={{ background: quizInterest === 'Logic' ? '#118a8b' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>💻 Code & Logic</button>
+                    <button onClick={() => setQuizInterest('Security')} className="btn-primary" style={{ background: quizInterest === 'Security' ? '#118a8b' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>🛡️ Hack & Security</button>
                 </div>
                 {quizInterest && (
                     <div style={{ marginTop: '30px', animation: 'fadeIn 0.5s ease' }}>
@@ -106,11 +106,11 @@ const Home = () => {
                     </p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '10px', borderRadius: '10px' }}><ImageIcon size={20} color="#3b82f6" /></div>
+                            <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '10px', borderRadius: '10px' }}><ImageIcon size={20} color="#118a8b" /></div>
                             <span>High-Performance Hardware</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '10px', borderRadius: '10px' }}><Zap size={20} color="#10b981" /></div>
+                            <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '10px', borderRadius: '10px' }}><Zap size={20} color="#118a8b" /></div>
                             <span>Gigabit Connectivity</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
