@@ -26,7 +26,14 @@ const Admission = () => {
                 date: new Date().toLocaleDateString()
             };
             
-            // Update remote DB
+            // 1. Submit to Formspree for email/backup
+            await fetch("https://formspree.io/f/meenezll", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newEnrollment)
+            });
+
+            // 2. Update remote DB for Admin Dashboard
             db.enrollments = [newEnrollment, ...existing];
             await updateDB(db);
             

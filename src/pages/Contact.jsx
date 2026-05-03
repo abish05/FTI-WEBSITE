@@ -14,6 +14,14 @@ const Contact = () => {
             const existing = db.messages || [];
             const newMessage = { ...formData, id: Date.now().toString(), date: new Date().toLocaleDateString() };
             
+            // 1. Submit to Formspree
+            await fetch("https://formspree.io/f/meenezll", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newMessage)
+            });
+
+            // 2. Update DB
             db.messages = [newMessage, ...existing];
             await updateDB(db);
             
