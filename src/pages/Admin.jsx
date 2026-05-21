@@ -49,11 +49,24 @@ const Admin = () => {
             setAdmins(data);
         });
 
+        // Subscribe to real-time enrollment updates from Firestore
+        const unsubEnrollments = subscribeToEnrollments((data) => {
+            setEnrollments(data);
+            setSyncTime(new Date().toLocaleTimeString());
+            setIsConnected(true);
+            setIsLoading(false);
+        });
+
+        // Subscribe to real-time message updates from Firestore
+        const unsubMessages = subscribeToMessages((data) => {
+            setMessages(data);
+        });
+
         // Cleanup subscriptions on unmount
         return () => {
-            unsubEnrollments();
-            unsubMessages();
-            unsubAdmins();
+            if (unsubEnrollments) unsubEnrollments();
+            if (unsubMessages) unsubMessages();
+            if (unsubAdmins) unsubAdmins();
         };
     }, []);
 
