@@ -41,7 +41,7 @@ const AdminLogin = () => {
                 
                 sessionStorage.setItem('fti_current_user', JSON.stringify(user));
                 window.dispatchEvent(new Event('storage'));
-                navigate('/admin');
+                navigate('/admin/dashboard');
             } else {
                 setIsLoading(false);
                 setError('ACCESS DENIED: UNAUTHORIZED PROTOCOLS');
