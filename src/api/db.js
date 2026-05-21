@@ -179,5 +179,16 @@ export const updateAdmin = async (id, adminData) => {
     }
 };
 
+// ---- UPDATE ADMIN STATUS ----
+export const updateAdminStatus = async (id, isOnline) => {
+    try {
+        await updateDoc(doc(db, 'admins', id), { isOnline });
+        return true;
+    } catch (err) {
+        console.error('updateAdminStatus error:', err);
+        return false;
+    }
+};
+
 // ---- LEGACY COMPATIBILITY (updateDB is no longer needed) ----
 export const updateDB = async () => true;

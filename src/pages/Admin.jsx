@@ -15,7 +15,8 @@ import {
     addEnrollment,
     addAdmin,
     updateAdmin,
-    deleteAdmin
+    deleteAdmin,
+    updateAdminStatus
 } from '../api/db';
 
 const Admin = () => {
@@ -36,7 +37,7 @@ const Admin = () => {
     const [adminForm, setAdminForm] = useState({ username: '', email: '', role: 'Admin', password: '' });
     const [editingAdminId, setEditingAdminId] = useState(null);
 
-    const user = JSON.parse(localStorage.getItem('fti_current_user'));
+    const user = JSON.parse(sessionStorage.getItem('fti_current_user') || 'null');
 
     useEffect(() => {
         if (!user) {
@@ -62,16 +63,29 @@ const Admin = () => {
             setMessages(data);
         });
 
+        // Handle browser/tab close
+        const handleBeforeUnload = () => {
+            if (user && user.id && user.id !== 'master') {
+                // We use navigator.sendBeacon or standard sync call
+                updateAdminStatus(user.id, false);
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
         // Cleanup subscriptions on unmount
         return () => {
             if (unsubEnrollments) unsubEnrollments();
             if (unsubMessages) unsubMessages();
             if (unsubAdmins) unsubAdmins();
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         };
     }, []);
 
-    const handleLogout = () => {
-        localStorage.removeItem('fti_current_user');
+    const handleLogout = async () => {
+        if (user && user.id && user.id !== 'master') {
+            await updateAdminStatus(user.id, false);
+        }
+        sessionStorage.removeItem('fti_current_user');
         navigate('/admin');
     };
 
@@ -448,7 +462,16 @@ const Admin = () => {
                                 {admins.map(a => (
                                     <div key={a.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', marginBottom: '10px' }}>
                                         <div>
-                                            <p style={{ fontWeight: 'bold', margin: 0 }}>{a.username}</p>
+                                            <p style={{ fontWeight: 'bold', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                {a.username}
+                                                <span style={{ 
+                                                    width: '8px', 
+                                                    height: '8px', 
+                                                    borderRadius: '50%', 
+                                                    backgroundColor: a.isOnline ? '#22c55e' : '#64748b',
+                                                    boxShadow: a.isOnline ? '0 0 8px rgba(34, 197, 94, 0.5)' : 'none'
+                                                }} title={a.isOnline ? 'Online' : 'Offline'}></span>
+                                            </p>
                                             <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0 }}>{a.email}</p>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, ChevronRight, ShieldAlert } from 'lucide-react';
-import { fetchDB } from '../api/db';
+import { fetchDB, updateAdminStatus } from '../api/db';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
@@ -29,11 +29,17 @@ const AdminLogin = () => {
             if (isMaster || isSubAdmin) {
                 const adminData = foundAdmin || { username: 'Master Admin', role: 'SuperAdmin' };
                 const user = {
+                    id: adminData.id || 'master',
                     email: credentials.email,
                     role: adminData.role || 'Admin',
                     username: adminData.username || adminData.email
                 };
-                localStorage.setItem('fti_current_user', JSON.stringify(user));
+                
+                if (foundAdmin) {
+                    await updateAdminStatus(foundAdmin.id, true);
+                }
+                
+                sessionStorage.setItem('fti_current_user', JSON.stringify(user));
                 window.dispatchEvent(new Event('storage'));
                 navigate('/admin');
             } else {
@@ -46,11 +52,12 @@ const AdminLogin = () => {
             // DEEP FIX: Allow Master Admin even if DB is unreachable
             if (isMaster) {
                 const user = {
+                    id: 'master',
                     email: credentials.email,
                     role: 'SuperAdmin',
                     username: 'Master Admin (Offline Mode)'
                 };
-                localStorage.setItem('fti_current_user', JSON.stringify(user));
+                sessionStorage.setItem('fti_current_user', JSON.stringify(user));
                 window.dispatchEvent(new Event('storage'));
                 navigate('/admin/dashboard');
             } else {
