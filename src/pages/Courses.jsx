@@ -126,23 +126,13 @@ const Courses = () => {
                             <div className="image-overlay"></div>
                         </div>
                         <div style={{ padding: '30px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '-60px', position: 'relative', zIndex: 2 }}>
-                                <div style={{ background: 'var(--bg-primary)', width: 'fit-content', padding: '12px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>{domain.icon}</div>
-                                <div style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-secondary))', color: 'white', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', boxShadow: '0 4px 15px rgba(17, 138, 139, 0.3)' }}>{domain.duration}</div>
+                            <div style={{ marginBottom: '20px', marginTop: '-60px', position: 'relative', zIndex: 2, background: 'var(--bg-primary)', width: 'fit-content', padding: '12px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+                                {domain.icon}
                             </div>
                             <h3 style={{ fontSize: '1.6rem', marginBottom: '12px' }}>{domain.title}</h3>
                             <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px', minHeight: '50px' }}>{domain.desc}</p>
                             
-                            <div style={{ padding: '15px', background: 'rgba(15, 118, 110, 0.05)', borderRadius: '12px', marginBottom: '25px', border: '1px solid rgba(15, 118, 110, 0.1)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                                    <span style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: '500' }}>Course Fee</span>
-                                    <span style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '1.2rem' }}>{domain.price}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: '600' }}>✨ EMI Available</span>
-                                    <span style={{ fontSize: '0.85rem', color: '#f59e0b', fontWeight: '700' }}>100% Placement</span>
-                                </div>
-                            </div>
+
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                                 <button onClick={() => setSelectedCourse(domain)} style={{ flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontWeight: '600', cursor: 'pointer', padding: '12px', borderRadius: '10px', transition: 'all 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--bg-secondary)'}>
