@@ -80,7 +80,7 @@ const Layout = () => {
             </main>
 
             <footer style={{ marginTop: 'auto', padding: '60px 20px', borderTop: '1px solid var(--glass-border)', background: 'linear-gradient(180deg, rgba(15,23,42,0.3) 0%, rgba(0,0,0,0.8) 100%)', backdropFilter: 'blur(10px)' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '40px', textAlign: 'left' }}>
+                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '40px', textAlign: 'left', alignItems: 'start' }}>
 
                     <div>
                         <div style={{ marginBottom: '30px' }}>
@@ -98,7 +98,7 @@ const Layout = () => {
                             </svg>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
-                            Bridge the gap between learning and earning at the best technical training institute in Nagercoil.
+                            Bridge the gap between learning and earning at the best technical training institute in Coimbatore.
                         </p>
                         <div style={{ display: 'flex', gap: '15px' }}>
                             <a href="https://www.instagram.com/futuretech_karunya?utm_source=qr&igsh=c2U4MTgwZDJ1dmlm" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }}>Instagram</a>
@@ -113,8 +113,8 @@ const Layout = () => {
                             <li><Link to="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</Link></li>
                             <li><Link to="/about" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>About</Link></li>
                             <li><Link to="/courses" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>All Courses</Link></li>
-                            <li><Link to="/admin" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Admin Login</Link></li>
-                            <li><a href="#" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Career Blog</a></li>
+                            <li><Link to="/admission" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Admission</Link></li>
+                            <li><Link to="/contact" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Contact</Link></li>
                         </ul>
                     </div>
 
@@ -125,13 +125,6 @@ const Layout = () => {
                             <li style={{ color: 'var(--text-secondary)' }}>Phone: +91 77085 88508</li>
                             <li style={{ color: 'var(--text-secondary)' }}>Email: varun10vikash@mail.com</li>
                         </ul>
-                    </div>
-
-                    <div>
-                        <h4 style={{ color: 'white', fontSize: '1.2rem', marginBottom: '20px' }}>SEO Keywords</h4>
-                        <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.85rem', lineHeight: '1.6' }}>
-                            Find the highest rated software development courses near me here. We are proud to offer premium Cyber Security and AI certification in Tamil Nadu, specialized to meet modern corporate standards.
-                        </p>
                     </div>
 
                 </div>
