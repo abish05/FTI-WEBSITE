@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { 
     LayoutDashboard, Users, MessageSquare,
     LogOut, Search, Download, Trash2, Menu, X, 
-    ShieldCheck, Zap, RefreshCw, Plus, UserPlus, Mail
+    ShieldCheck, Zap, RefreshCw, Plus, UserPlus, Mail, Edit
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
     subscribeToEnrollments,
     subscribeToMessages,
+    subscribeToAdmins,
     fetchDB,
     deleteEnrollment,
     deleteMessage,
     addEnrollment,
     addAdmin,
+    updateAdmin,
     deleteAdmin
 } from '../api/db';
 
@@ -29,6 +31,10 @@ const Admin = () => {
     const [newStudent, setNewStudent] = useState({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
     const [syncTime, setSyncTime] = useState(new Date().toLocaleTimeString());
     const [isConnected, setIsConnected] = useState(false);
+    
+    // Admin Management Form State
+    const [adminForm, setAdminForm] = useState({ username: '', email: '', role: 'Admin', password: '' });
+    const [editingAdminId, setEditingAdminId] = useState(null);
 
     const user = JSON.parse(localStorage.getItem('fti_current_user'));
 
@@ -38,28 +44,16 @@ const Admin = () => {
             return;
         }
 
-        // Load admins once (not real-time)
-        fetchDB().then(data => {
-            setAdmins(data.admins || []);
-        });
-
-        // Subscribe to real-time enrollment updates from Firestore
-        const unsubEnrollments = subscribeToEnrollments((data) => {
-            setEnrollments(data);
-            setSyncTime(new Date().toLocaleTimeString());
-            setIsConnected(true);
-            setIsLoading(false);
-        });
-
-        // Subscribe to real-time message updates from Firestore
-        const unsubMessages = subscribeToMessages((data) => {
-            setMessages(data);
+        // Subscribe to real-time admins updates from Firestore
+        const unsubAdmins = subscribeToAdmins((data) => {
+            setAdmins(data);
         });
 
         // Cleanup subscriptions on unmount
         return () => {
             unsubEnrollments();
             unsubMessages();
+            unsubAdmins();
         };
     }, []);
 
@@ -377,37 +371,63 @@ const Admin = () => {
                             
                             <form onSubmit={async (e) => {
                                 e.preventDefault();
-                                const email = e.target.email.value;
-                                const username = e.target.username.value;
-                                const role = e.target.role.value;
-                                const result = await addAdmin({ email, username, role });
-                                if (result.success) {
-                                    setAdmins(prev => [...prev, { id: result.id, email, username, role }]);
-                                    e.target.reset();
-                                    alert("Admin Authorized Successfully.");
+                                if (editingAdminId) {
+                                    const result = await updateAdmin(editingAdminId, adminForm);
+                                    if (result) {
+                                        setEditingAdminId(null);
+                                        setAdminForm({ username: '', email: '', role: 'Admin', password: '' });
+                                        alert("Admin Updated Successfully.");
+                                    } else {
+                                        alert("Failed to update admin.");
+                                    }
+                                } else {
+                                    const result = await addAdmin(adminForm);
+                                    if (result.success) {
+                                        setAdminForm({ username: '', email: '', role: 'Admin', password: '' });
+                                        alert("Admin Authorized Successfully.");
+                                    } else {
+                                        alert("Failed to add admin.");
+                                    }
                                 }
                             }} style={{ marginBottom: '40px', padding: '25px', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Full Name / Display Name</label>
-                                        <input required name="username" className="form-input" placeholder="e.g. CIO Name" style={{ marginBottom: 0 }} />
+                                        <input required name="username" value={adminForm.username} onChange={(e) => setAdminForm({...adminForm, username: e.target.value})} className="form-input" placeholder="e.g. CIO Name" style={{ marginBottom: 0 }} />
                                     </div>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Admin Email Address</label>
-                                        <input required name="email" type="email" className="form-input" placeholder="cio@example.com" style={{ marginBottom: 0 }} />
+                                        <input required name="email" type="email" value={adminForm.email} onChange={(e) => setAdminForm({...adminForm, email: e.target.value})} className="form-input" placeholder="cio@example.com" style={{ marginBottom: 0 }} />
                                     </div>
                                 </div>
-                                <div style={{ marginBottom: '20px' }}>
-                                    <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Access Level</label>
-                                    <select name="role" className="form-input" style={{ appearance: 'none', marginBottom: 0 }}>
-                                        <option value="Admin">Standard Admin (View & Edit)</option>
-                                        <option value="Manager">Manager (Reports Only)</option>
-                                        <option value="Staff">Staff (View Only)</option>
-                                    </select>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Access Level</label>
+                                        <select name="role" value={adminForm.role} onChange={(e) => setAdminForm({...adminForm, role: e.target.value})} className="form-input" style={{ appearance: 'none', marginBottom: 0 }}>
+                                            <option value="Admin">Standard Admin (View & Edit)</option>
+                                            <option value="Manager">Manager (Reports Only)</option>
+                                            <option value="Staff">Staff (View Only)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Passcode / Password</label>
+                                        <input required name="password" type="text" value={adminForm.password} onChange={(e) => setAdminForm({...adminForm, password: e.target.value})} className="form-input" placeholder="Set a secure password" style={{ marginBottom: 0 }} />
+                                    </div>
                                 </div>
-                                <button type="submit" style={{ width: '100%', padding: '14px', background: '#118a8b', color: 'black', fontWeight: 'bold', border: 'none', borderRadius: '12px', cursor: 'pointer' }}>
-                                    Authorize Access
-                                </button>
+                                
+                                <div style={{ display: 'flex', gap: '15px' }}>
+                                    <button type="submit" style={{ flex: 1, padding: '14px', background: '#118a8b', color: 'black', fontWeight: 'bold', border: 'none', borderRadius: '12px', cursor: 'pointer' }}>
+                                        {editingAdminId ? 'Save Changes' : 'Authorize Access'}
+                                    </button>
+                                    {editingAdminId && (
+                                        <button type="button" onClick={() => {
+                                            setEditingAdminId(null);
+                                            setAdminForm({ username: '', email: '', role: 'Admin', password: '' });
+                                        }} style={{ flex: 1, padding: '14px', background: 'rgba(255,255,255,0.1)', color: 'white', fontWeight: 'bold', border: 'none', borderRadius: '12px', cursor: 'pointer' }}>
+                                            Cancel Edit
+                                        </button>
+                                    )}
+                                </div>
                             </form>
 
                             <div>
@@ -420,14 +440,32 @@ const Admin = () => {
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                                             <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: '20px', background: 'rgba(17, 138, 139, 0.1)', color: '#118a8b' }}>{a.role}</span>
+                                            
+                                            <button 
+                                                onClick={() => {
+                                                    setEditingAdminId(a.id);
+                                                    setAdminForm({ username: a.username, email: a.email, role: a.role, password: a.password || '' });
+                                                }}
+                                                style={{ background: 'none', border: 'none', color: '#f59e0b', cursor: 'pointer' }}
+                                                title="Edit Admin"
+                                            >
+                                                <Edit size={18} />
+                                            </button>
+
                                             <button 
                                                 onClick={async () => {
                                                     if(confirm('Revoke access for this admin?')){
                                                         const success = await deleteAdmin(a.id);
-                                                        if (success) setAdmins(prev => prev.filter(x => x.id !== a.id));
+                                                        if (success) {
+                                                            if (editingAdminId === a.id) {
+                                                                setEditingAdminId(null);
+                                                                setAdminForm({ username: '', email: '', role: 'Admin', password: '' });
+                                                            }
+                                                        }
                                                     }
                                                 }}
                                                 style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                                                title="Revoke Access"
                                             >
                                                 <Trash2 size={18} />
                                             </button>

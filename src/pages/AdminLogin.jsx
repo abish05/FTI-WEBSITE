@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, ChevronRight, ShieldAlert } from 'lucide-react';
+import { fetchDB } from '../api/db';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
@@ -18,14 +19,19 @@ const AdminLogin = () => {
         try {
             const db = await fetchDB();
             const authorizedAdmins = db.admins || [];
-            const isSubAdmin = authorizedAdmins.some(a => a.email === credentials.email) && credentials.password === '9zipj5h2mC*';
+            
+            // Find the admin by email
+            const foundAdmin = authorizedAdmins.find(a => a.email === credentials.email);
+            
+            // Check if subAdmin credentials match the stored password
+            const isSubAdmin = foundAdmin && foundAdmin.password === credentials.password;
 
             if (isMaster || isSubAdmin) {
-                const foundAdmin = authorizedAdmins.find(a => a.email === credentials.email) || { username: 'Master Admin', role: 'SuperAdmin' };
+                const adminData = foundAdmin || { username: 'Master Admin', role: 'SuperAdmin' };
                 const user = {
                     email: credentials.email,
-                    role: foundAdmin.role || 'Admin',
-                    username: foundAdmin.username || foundAdmin.email
+                    role: adminData.role || 'Admin',
+                    username: adminData.username || adminData.email
                 };
                 localStorage.setItem('fti_current_user', JSON.stringify(user));
                 window.dispatchEvent(new Event('storage'));

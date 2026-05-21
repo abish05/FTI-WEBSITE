@@ -16,7 +16,8 @@ import {
     query,
     orderBy,
     serverTimestamp,
-    onSnapshot
+    onSnapshot,
+    updateDoc
 } from 'firebase/firestore';
 
 // ---- LOCAL CACHE (for instant UI, while Firestore loads) ----
@@ -76,6 +77,17 @@ export const subscribeToMessages = (callback) => {
         callback(messages);
     }, (err) => {
         console.error('Message subscription error:', err);
+    });
+};
+
+export const subscribeToAdmins = (callback) => {
+    // Sort admins by creation date descending
+    const q = query(collection(db, 'admins'), orderBy('createdAt', 'desc'));
+    return onSnapshot(q, (snap) => {
+        const admins = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        callback(admins);
+    }, (err) => {
+        console.error('Admin subscription error:', err);
     });
 };
 
@@ -152,6 +164,17 @@ export const deleteAdmin = async (id) => {
         return true;
     } catch (err) {
         console.error('deleteAdmin error:', err);
+        return false;
+    }
+};
+
+// ---- UPDATE ADMIN ----
+export const updateAdmin = async (id, adminData) => {
+    try {
+        await updateDoc(doc(db, 'admins', id), adminData);
+        return true;
+    } catch (err) {
+        console.error('updateAdmin error:', err);
         return false;
     }
 };
