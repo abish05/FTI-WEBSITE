@@ -45,25 +45,7 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* PLACEMENT STATS */}
-            <div style={{ margin: '40px 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px', textAlign: 'center', animation: 'fadeInUp 1s ease-out' }}>
-                <div className="glass-panel" style={{ padding: '30px' }}>
-                    <h2 className="gradient-text" style={{ fontSize: '3rem', margin: 0 }}>98%</h2>
-                    <p style={{ color: 'var(--text-secondary)', fontWeight: '500', marginTop: '10px' }}>Placement Rate</p>
-                </div>
-                <div className="glass-panel" style={{ padding: '30px' }}>
-                    <h2 className="gradient-text" style={{ fontSize: '3rem', margin: 0 }}>6 LPA</h2>
-                    <p style={{ color: 'var(--text-secondary)', fontWeight: '500', marginTop: '10px' }}>Average Package</p>
-                </div>
-                <div className="glass-panel" style={{ padding: '30px' }}>
-                    <h2 className="gradient-text" style={{ fontSize: '3rem', margin: 0 }}>50+</h2>
-                    <p style={{ color: 'var(--text-secondary)', fontWeight: '500', marginTop: '10px' }}>Hiring Partners</p>
-                </div>
-                <div className="glass-panel" style={{ padding: '30px' }}>
-                    <h2 className="gradient-text" style={{ fontSize: '3rem', margin: 0 }}>10+</h2>
-                    <p style={{ color: 'var(--text-secondary)', fontWeight: '500', marginTop: '10px' }}>Expert Mentors</p>
-                </div>
-            </div>
+
 
             {/* WHY FTI SECTION */}
             <div>
@@ -144,37 +126,7 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* STUDENT TESTIMONIALS */}
-            <div style={{ marginTop: '80px', marginBottom: '40px' }}>
-                <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-                    <h2 style={{ fontSize: '2.5rem', marginBottom: '15px' }}>Student Success Stories</h2>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Hear directly from our alumni who transformed their careers.</p>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-                    {[1, 2, 3].map((item) => (
-                        <div key={item} className="glass-panel" style={{ padding: '40px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: '20px', right: '20px', color: 'rgba(15, 118, 110, 0.1)' }}>
-                                <PlayCircle size={60} />
-                            </div>
-                            <div style={{ display: 'flex', gap: '5px', marginBottom: '20px' }}>
-                                {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={18} fill="#f59e0b" color="#f59e0b" />)}
-                            </div>
-                            <p style={{ color: 'var(--text-primary)', fontSize: '1.1rem', fontStyle: 'italic', marginBottom: '30px', lineHeight: '1.7' }}>
-                                "The practical approach at FTI completely changed my trajectory. I went from having zero coding knowledge to landing a job as a Full Stack Developer in just 6 months!"
-                            </p>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent), var(--accent-secondary))', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontWeight: 'bold' }}>
-                                    A{item}
-                                </div>
-                                <div>
-                                    <h4 style={{ margin: 0, fontSize: '1.1rem' }}>Alumni Name {item}</h4>
-                                    <p style={{ margin: 0, color: 'var(--accent)', fontSize: '0.9rem', fontWeight: '500' }}>Placed at TechCorp</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+
 
         </div>
     );
