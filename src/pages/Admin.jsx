@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { 
-    LayoutDashboard, Users, MessageSquare, Settings, 
+    LayoutDashboard, Users, MessageSquare,
     LogOut, Search, Download, Trash2, Menu, X, 
-    ShieldCheck, Zap, RefreshCw, Plus, UserPlus
+    ShieldCheck, Zap, RefreshCw, Plus, UserPlus, Mail
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { fetchDB, updateDB } from '../api/db';
+import {
+    subscribeToEnrollments,
+    subscribeToMessages,
+    fetchDB,
+    deleteEnrollment,
+    deleteMessage,
+    addEnrollment,
+    addAdmin,
+    deleteAdmin
+} from '../api/db';
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -19,7 +28,7 @@ const Admin = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [newStudent, setNewStudent] = useState({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
     const [syncTime, setSyncTime] = useState(new Date().toLocaleTimeString());
-    const [networkHealth, setNetworkHealth] = useState('Checking...');
+    const [isConnected, setIsConnected] = useState(false);
 
     const user = JSON.parse(localStorage.getItem('fti_current_user'));
 
@@ -28,26 +37,31 @@ const Admin = () => {
             navigate('/admin');
             return;
         }
-        loadData();
 
-        // Listen for background sync completions to refresh UI automatically
-        window.addEventListener('fti_db_updated', loadData);
-        return () => window.removeEventListener('fti_db_updated', loadData);
+        // Load admins once (not real-time)
+        fetchDB().then(data => {
+            setAdmins(data.admins || []);
+        });
+
+        // Subscribe to real-time enrollment updates from Firestore
+        const unsubEnrollments = subscribeToEnrollments((data) => {
+            setEnrollments(data);
+            setSyncTime(new Date().toLocaleTimeString());
+            setIsConnected(true);
+            setIsLoading(false);
+        });
+
+        // Subscribe to real-time message updates from Firestore
+        const unsubMessages = subscribeToMessages((data) => {
+            setMessages(data);
+        });
+
+        // Cleanup subscriptions on unmount
+        return () => {
+            unsubEnrollments();
+            unsubMessages();
+        };
     }, []);
-
-    const loadData = async () => {
-        setIsLoading(true);
-        const data = await fetchDB();
-        setEnrollments(data.enrollments || []);
-        setMessages(data.messages || []);
-        setAdmins(data.admins || []);
-        setSyncTime(new Date().toLocaleTimeString());
-        
-        // Network Check
-        const isHealthy = data.enrollments.length > 0 || data.messages.length > 0;
-        setNetworkHealth(isHealthy ? 'Optimal' : 'Degraded');
-        setIsLoading(false);
-    };
 
     const handleLogout = () => {
         localStorage.removeItem('fti_current_user');
@@ -56,55 +70,34 @@ const Admin = () => {
 
     const handleDeleteEnrollment = async (id) => {
         if (window.confirm('Delete this record permanently?')) {
-            const updated = enrollments.filter(item => item.id !== id);
-            const success = await updateDB({ enrollments: updated, messages, admins });
-            if (success) setEnrollments(updated);
+            const success = await deleteEnrollment(id);
+            if (!success) alert('Failed to delete. Please try again.');
+        }
+    };
+
+    const handleDeleteMessage = async (id) => {
+        if (window.confirm('Delete this message permanently?')) {
+            await deleteMessage(id);
         }
     };
 
     const handleAddStudent = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        
-        try {
-            // Safety fetch to get latest messages and admins
-            const currentDB = await fetchDB();
-            
-            const student = {
-                ...newStudent,
-                id: Date.now().toString(),
-                date: new Date().toLocaleString()
-            };
-            
-            const updatedEnrollments = [student, ...(currentDB.enrollments || [])];
-            
-            const success = await updateDB({ 
-                ...currentDB,
-                enrollments: updatedEnrollments 
-            });
-
-            if (success) {
-                setEnrollments(updatedEnrollments);
-                setMessages(currentDB.messages || []);
-                setAdmins(currentDB.admins || []);
-                setShowAddModal(false);
-                setNewStudent({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
-                setSyncTime(new Date().toLocaleTimeString());
-            } else {
-                alert('CRITICAL ERROR: Mainframe rejected the update. Check your connection.');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('SYSTEM ERROR: Could not reach the cloud database.');
-        } finally {
-            setIsLoading(false);
+        const result = await addEnrollment(newStudent);
+        if (result.success) {
+            setShowAddModal(false);
+            setNewStudent({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
+        } else {
+            alert('Failed to add student. Please check your connection.');
         }
+        setIsLoading(false);
     };
 
     const exportCSV = () => {
         const headers = ['Name', 'Email', 'Phone', 'Course', 'Date', 'Remarks'];
-        const rows = enrollments.map(e => [e.fullName, e.email, e.phone, e.course, e.date, e.remarks]);
-        const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
+        const rows = enrollments.map(e => [e.fullName, e.email, e.phone, e.course, e.date, e.remarks || '']);
+        const csvContent = [headers, ...rows].map(r => r.map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -155,6 +148,8 @@ const Admin = () => {
         <div style={{ minHeight: '100vh', background: '#020617', color: 'white', display: 'flex' }}>
             <style>{`
                 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                @keyframes spin { to { transform: rotate(360deg); } }
+                @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
                 .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(30, 41, 59, 1); border-radius: 24px; }
                 .admin-sidebar { width: 280px; height: 100vh; position: fixed; left: 0; top: 0; background: #0b0f1a; border-right: 1px solid rgba(30, 41, 59, 1); padding: 35px 22px; display: flex; flex-direction: column; z-index: 1000; transition: transform 0.3s; }
                 .admin-main { flex: 1; margin-left: 280px; padding: 50px 60px; min-width: 0; }
@@ -164,8 +159,9 @@ const Admin = () => {
                     .admin-sidebar.open { transform: translateX(0); }
                     .admin-main { margin-left: 0; padding: 20px; }
                 }
-                .form-input { width: 100%; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(30, 41, 59, 1); border-radius: 12px; padding: 12px 15px; color: white; margin-bottom: 15px; outline: none; transition: border 0.3s; }
+                .form-input { width: 100%; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(30, 41, 59, 1); border-radius: 12px; padding: 12px 15px; color: white; margin-bottom: 15px; outline: none; transition: border 0.3s; box-sizing: border-box; }
                 .form-input:focus { border-color: #118a8b; }
+                .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #118a8b; box-shadow: 0 0 10px #118a8b; animation: pulse 2s infinite; }
             `}</style>
 
             {/* Sidebar */}
@@ -205,46 +201,63 @@ const Admin = () => {
                         <div>
                             <h1 style={{ fontSize: '2rem', fontWeight: '800', letterSpacing: '-0.02em' }}>{activeTab}</h1>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px' }}>
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#118a8b', boxShadow: '0 0 10px #118a8b' }}></div>
-                                <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>SYSTEM_LIVE • Last Synced: {syncTime}</span>
+                                <div className="live-dot"></div>
+                                <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+                                    {isConnected ? `LIVE • Last updated: ${syncTime}` : 'Connecting to Firestore...'}
+                                </span>
                             </div>
                         </div>
                     </div>
-                    <button onClick={loadData} style={{ padding: '10px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', cursor: 'pointer' }} title="Refresh Data">
-                        <RefreshCw size={20} className={isLoading ? 'spin' : ''} />
-                    </button>
+                    <div style={{ display: 'flex', align: 'center', gap: '8px', background: 'rgba(17,138,139,0.1)', border: '1px solid rgba(17,138,139,0.2)', borderRadius: '12px', padding: '8px 14px' }}>
+                        <Zap size={16} color="#118a8b" />
+                        <span style={{ fontSize: '0.8rem', color: '#118a8b', fontWeight: '700' }}>FIREBASE LIVE</span>
+                    </div>
                 </header>
 
-                {activeTab === 'Overview' && (
+                {/* Loading State */}
+                {isLoading && (
+                    <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+                        <div style={{ width: '40px', height: '40px', border: '3px solid rgba(17,138,139,0.2)', borderTopColor: '#118a8b', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 20px' }}></div>
+                        <p style={{ color: '#64748b' }}>Connecting to Firestore...</p>
+                    </div>
+                )}
+
+                {/* OVERVIEW */}
+                {!isLoading && activeTab === 'Overview' && (
                     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '25px', marginBottom: '45px' }}>
                             <StatCard label="Total Students" value={enrollments.length} subtext="Active Enrollments" icon={<Users size={85} />} color="#118a8b" />
-                            <StatCard label="Enquiries" value={messages.length} subtext="Pending Messages" icon={<MessageSquare size={85} />} color="#118a8b" />
-                            <StatCard label="Network Health" value={networkHealth} subtext="Cloud Gateway Status" icon={<Zap size={85} />} color={networkHealth === 'Optimal' ? '#118a8b' : '#ef4444'} />
+                            <StatCard label="Enquiries" value={messages.length} subtext="Total Messages" icon={<MessageSquare size={85} />} color="#118a8b" />
+                            <StatCard label="Database" value="Firestore" subtext="Real-time Cloud Sync" icon={<Zap size={85} />} color="#118a8b" />
                             <StatCard label="Access Level" value="Root" subtext={user?.role || 'Admin'} icon={<ShieldCheck size={85} />} color="#f59e0b" />
                         </div>
 
                         <div className="glass-panel" style={{ padding: '30px' }}>
                             <h3 style={{ fontSize: '1.2rem', marginBottom: '20px', fontWeight: '700' }}>Recent Activity</h3>
-                            {enrollments.slice(0, 5).map(e => (
-                                <div key={e.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(17, 138, 139, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#118a8b' }}>
-                                            <UserPlus size={20} />
+                            {enrollments.length === 0 ? (
+                                <p style={{ color: '#64748b', textAlign: 'center', padding: '30px' }}>No enrollments yet. Data will appear here instantly when students apply.</p>
+                            ) : (
+                                enrollments.slice(0, 5).map(e => (
+                                    <div key={e.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(17, 138, 139, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#118a8b' }}>
+                                                <UserPlus size={20} />
+                                            </div>
+                                            <div>
+                                                <p style={{ fontWeight: '600' }}>{e.fullName} enrolled</p>
+                                                <p style={{ fontSize: '0.8rem', color: '#64748b' }}>{e.course} • {e.date}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p style={{ fontWeight: '600' }}>{e.fullName} enrolled</p>
-                                            <p style={{ fontSize: '0.8rem', color: '#64748b' }}>{e.course} • {e.date}</p>
-                                        </div>
+                                        <div style={{ fontSize: '0.8rem', color: '#118a8b', fontWeight: '700' }}>NEW</div>
                                     </div>
-                                    <div style={{ fontSize: '0.8rem', color: '#118a8b', fontWeight: '700' }}>NEW</div>
-                                </div>
-                            ))}
+                                ))
+                            )}
                         </div>
                     </div>
                 )}
 
-                {activeTab === 'Participants' && (
+                {/* STUDENT LEDGER */}
+                {!isLoading && activeTab === 'Participants' && (
                     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
                         <div style={{ display: 'flex', gap: '15px', marginBottom: '30px', flexWrap: 'wrap' }}>
                             <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
@@ -267,114 +280,109 @@ const Admin = () => {
                         </div>
 
                         <div className="glass-panel" style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                                <thead>
-                                    <tr style={{ borderBottom: '1px solid rgba(30, 41, 59, 1)' }}>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '30%' }}>Student</th>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '25%' }}>Contact</th>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '20%' }}>Course</th>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '15%' }}>Remarks</th>
-                                        <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', width: '10%', textAlign: 'center' }}>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {enrollments.filter(e => e.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || e.course.toLowerCase().includes(searchTerm.toLowerCase())).map(e => (
-                                        <tr key={e.id} style={{ borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
-                                            <td style={{ padding: '20px' }}>
-                                                <div style={{ fontWeight: '600' }}>{e.fullName}</div>
-                                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Joined {e.date}</div>
-                                            </td>
-                                            <td style={{ padding: '20px' }}>
-                                                <div>{e.phone}</div>
-                                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{e.email}</div>
-                                            </td>
-                                            <td style={{ padding: '20px' }}>
-                                                <span style={{ padding: '5px 12px', borderRadius: '8px', background: 'rgba(17, 138, 139, 0.1)', color: '#118a8b', fontSize: '0.8rem', fontWeight: '600' }}>{e.course}</span>
-                                            </td>
-                                            <td style={{ padding: '20px', color: '#94a3b8', fontSize: '0.9rem', maxWidth: '200px' }}>{e.remarks || '---'}</td>
-                                            <td style={{ padding: '20px', textAlign: 'center' }}>
-                                                <button onClick={() => handleDeleteEnrollment(e.id)} style={{ padding: '10px', borderRadius: '10px', color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </td>
+                            {enrollments.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+                                    <Users size={48} color="#1e293b" style={{ margin: '0 auto 15px' }} />
+                                    <p style={{ color: '#64748b' }}>No students enrolled yet.<br />Data appears here instantly when someone submits the Admission form.</p>
+                                </div>
+                            ) : (
+                                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                    <thead>
+                                        <tr style={{ borderBottom: '1px solid rgba(30, 41, 59, 1)' }}>
+                                            <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Student</th>
+                                            <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Contact</th>
+                                            <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Course</th>
+                                            <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Remarks</th>
+                                            <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', textAlign: 'center' }}>Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {enrollments
+                                            .filter(e => 
+                                                (e.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                                (e.course || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                (e.email || '').toLowerCase().includes(searchTerm.toLowerCase())
+                                            )
+                                            .map(e => (
+                                                <tr key={e.id} style={{ borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
+                                                    <td style={{ padding: '20px' }}>
+                                                        <div style={{ fontWeight: '600' }}>{e.fullName}</div>
+                                                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Joined {e.date}</div>
+                                                    </td>
+                                                    <td style={{ padding: '20px' }}>
+                                                        <div>{e.phone}</div>
+                                                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{e.email}</div>
+                                                    </td>
+                                                    <td style={{ padding: '20px' }}>
+                                                        <span style={{ padding: '5px 12px', borderRadius: '8px', background: 'rgba(17, 138, 139, 0.1)', color: '#118a8b', fontSize: '0.8rem', fontWeight: '600' }}>{e.course}</span>
+                                                    </td>
+                                                    <td style={{ padding: '20px', color: '#94a3b8', fontSize: '0.9rem' }}>{e.remarks || '---'}</td>
+                                                    <td style={{ padding: '20px', textAlign: 'center' }}>
+                                                        <button onClick={() => handleDeleteEnrollment(e.id)} style={{ padding: '10px', borderRadius: '10px', color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            )}
                         </div>
                     </div>
                 )}
 
-                {/* MODALS */}
-                {showAddModal && (
-                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000, padding: '20px' }}>
-                        <div className="glass-panel" style={{ width: '100%', maxWidth: '500px', padding: '40px', animation: 'fadeIn 0.3s ease-out' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                                <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Add New Student</h2>
-                                <button onClick={() => setShowAddModal(false)} style={{ color: '#94a3b8', background: 'none', border: 'none' }}><X size={24} /></button>
+                {/* INQUIRIES / MESSAGES */}
+                {!isLoading && activeTab === 'Messages' && (
+                    <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
+                        {messages.length === 0 ? (
+                            <div className="glass-panel" style={{ textAlign: 'center', padding: '60px 20px' }}>
+                                <MessageSquare size={48} color="#1e293b" style={{ margin: '0 auto 15px' }} />
+                                <p style={{ color: '#64748b' }}>No messages yet.<br />Messages from the Contact page appear here instantly.</p>
                             </div>
-                            <form onSubmit={handleAddStudent}>
-                                <input placeholder="Full Name" className="form-input" required value={newStudent.fullName} onChange={e => setNewStudent({...newStudent, fullName: e.target.value})} />
-                                <input placeholder="Email Address" type="email" className="form-input" required value={newStudent.email} onChange={e => setNewStudent({...newStudent, email: e.target.value})} />
-                                <input placeholder="Phone Number" className="form-input" required value={newStudent.phone} onChange={e => setNewStudent({...newStudent, phone: e.target.value})} />
-                                <select className="form-input" value={newStudent.course} onChange={e => setNewStudent({...newStudent, course: e.target.value})}>
-                                    <option>Web Development</option>
-                                    <option>Cyber Security</option>
-                                    <option>Python Data Science</option>
-                                    <option>Artificial Intelligence</option>
-                                    <option>Cloud Computing</option>
-                                </select>
-                                <textarea placeholder="Remarks (Optional)" className="form-input" rows="3" style={{ resize: 'none' }} value={newStudent.remarks} onChange={e => setNewStudent({...newStudent, remarks: e.target.value})}></textarea>
-                                <button 
-                                    type="submit" 
-                                    disabled={isLoading}
-                                    style={{ 
-                                        width: '100%', 
-                                        padding: '15px', 
-                                        background: isLoading ? '#1e293b' : '#118a8b', 
-                                        color: isLoading ? '#94a3b8' : '#020617', 
-                                        border: 'none', 
-                                        borderRadius: '12px', 
-                                        fontWeight: '800', 
-                                        marginTop: '10px', 
-                                        cursor: isLoading ? 'not-allowed' : 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '10px'
-                                    }}
-                                >
-                                    {isLoading ? (
-                                        <>
-                                            <RefreshCw size={20} className="spin" />
-                                            SAVING TO MAINFRAME...
-                                        </>
-                                    ) : (
-                                        'PERMANENTLY REGISTER STUDENT'
-                                    )}
-                                </button>
-                            </form>
-                        </div>
+                        ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                {messages.map(m => (
+                                    <div key={m.id} className="glass-panel" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '20px' }}>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                                                <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(17,138,139,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Mail size={16} color="#118a8b" />
+                                                </div>
+                                                <div>
+                                                    <p style={{ fontWeight: '700', margin: 0 }}>{m.name}</p>
+                                                    <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>{m.email} • {m.date}</p>
+                                                </div>
+                                            </div>
+                                            <p style={{ color: '#94a3b8', marginLeft: '46px', lineHeight: '1.6' }}>{m.message}</p>
+                                        </div>
+                                        <button onClick={() => handleDeleteMessage(m.id)} style={{ padding: '8px', borderRadius: '8px', color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)', cursor: 'pointer', flexShrink: 0 }}>
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
-                {activeTab === 'Config' && (
+
+                {/* SYSTEM CONFIG */}
+                {!isLoading && activeTab === 'Config' && (
                     <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
                         <div className="glass-panel" style={{ padding: '40px', maxWidth: '800px' }}>
                             <h2 style={{ marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '15px' }}>
                                 <ShieldCheck color="#118a8b" size={32} /> Admin Management
                             </h2>
-                            <p style={{ color: '#94a3b8', marginBottom: '30px' }}>Authorize new administrators or manage existing staff access. Use this to give access to your CIO or team members.</p>
+                            <p style={{ color: '#94a3b8', marginBottom: '30px' }}>Authorize new administrators or manage existing staff access.</p>
                             
                             <form onSubmit={async (e) => {
                                 e.preventDefault();
                                 const email = e.target.email.value;
                                 const username = e.target.username.value;
                                 const role = e.target.role.value;
-                                
-                                const newAdmins = [...admins, { email, username, role, id: Date.now().toString() }];
-                                const success = await updateDB({ enrollments, messages, admins: newAdmins });
-                                if (success) {
-                                    setAdmins(newAdmins);
+                                const result = await addAdmin({ email, username, role });
+                                if (result.success) {
+                                    setAdmins(prev => [...prev, { id: result.id, email, username, role }]);
                                     e.target.reset();
                                     alert("Admin Authorized Successfully.");
                                 }
@@ -402,7 +410,7 @@ const Admin = () => {
                                 </button>
                             </form>
 
-                            <div style={{ marginTop: '40px' }}>
+                            <div>
                                 <h3 style={{ fontSize: '1rem', marginBottom: '20px', color: 'white' }}>Current Authorized Personnel</h3>
                                 {admins.map(a => (
                                     <div key={a.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', marginBottom: '10px' }}>
@@ -415,9 +423,8 @@ const Admin = () => {
                                             <button 
                                                 onClick={async () => {
                                                     if(confirm('Revoke access for this admin?')){
-                                                        const updated = admins.filter(x => x.id !== a.id);
-                                                        const success = await updateDB({ enrollments, messages, admins: updated });
-                                                        if (success) setAdmins(updated);
+                                                        const success = await deleteAdmin(a.id);
+                                                        if (success) setAdmins(prev => prev.filter(x => x.id !== a.id));
                                                     }
                                                 }}
                                                 style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
@@ -427,7 +434,46 @@ const Admin = () => {
                                         </div>
                                     </div>
                                 ))}
+                                {admins.length === 0 && <p style={{ color: '#64748b', fontSize: '0.9rem' }}>No additional admins configured.</p>}
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* ADD STUDENT MODAL */}
+                {showAddModal && (
+                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000, padding: '20px' }}>
+                        <div className="glass-panel" style={{ width: '100%', maxWidth: '500px', padding: '40px', animation: 'fadeIn 0.3s ease-out' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Add New Student</h2>
+                                <button onClick={() => setShowAddModal(false)} style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} /></button>
+                            </div>
+                            <form onSubmit={handleAddStudent}>
+                                <input placeholder="Full Name" className="form-input" required value={newStudent.fullName} onChange={e => setNewStudent({...newStudent, fullName: e.target.value})} />
+                                <input placeholder="Email Address" type="email" className="form-input" required value={newStudent.email} onChange={e => setNewStudent({...newStudent, email: e.target.value})} />
+                                <input placeholder="Phone Number" className="form-input" required value={newStudent.phone} onChange={e => setNewStudent({...newStudent, phone: e.target.value})} />
+                                <select className="form-input" value={newStudent.course} onChange={e => setNewStudent({...newStudent, course: e.target.value})}>
+                                    <option>Web Development</option>
+                                    <option>Cyber Security</option>
+                                    <option>Data Science & AI</option>
+                                    <option>Artificial Intelligence</option>
+                                    <option>Cloud Computing</option>
+                                    <option>Mobile App Dev</option>
+                                </select>
+                                <textarea placeholder="Remarks (Optional)" className="form-input" rows="3" style={{ resize: 'none' }} value={newStudent.remarks} onChange={e => setNewStudent({...newStudent, remarks: e.target.value})}></textarea>
+                                <button 
+                                    type="submit" 
+                                    disabled={isLoading}
+                                    style={{ width: '100%', padding: '15px', background: isLoading ? '#1e293b' : '#118a8b', color: isLoading ? '#94a3b8' : '#020617', border: 'none', borderRadius: '12px', fontWeight: '800', marginTop: '10px', cursor: isLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <div style={{ width: '20px', height: '20px', border: '2px solid rgba(255,255,255,0.2)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+                                            SAVING...
+                                        </>
+                                    ) : 'PERMANENTLY REGISTER STUDENT'}
+                                </button>
+                            </form>
                         </div>
                     </div>
                 )}

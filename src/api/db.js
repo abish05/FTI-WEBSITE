@@ -1,102 +1,160 @@
-// LOCAL-FIRST DATABASE ENGINE
-// This ensures 100% reliability by using LocalStorage as the primary source of truth,
-// while attempting to sync with the cloud in the background.
+// ============================================================
+//  FIRESTORE DATABASE ENGINE
+//  All data is stored in Firebase Firestore — a real-time
+//  cloud database. Data entered on any page (Admission,
+//  Contact) is immediately visible in the Admin dashboard
+//  from any browser or device.
+// ============================================================
 
-const BLOB_ID = '019dec9d-e994-7076-8175-c68ba24b4c87';
-const BASE_URL = `https://api.jsonblob.com/${BLOB_ID}`;
-const PROXIES = [
-    'https://corsproxy.io/?',
-    'https://api.allorigins.win/raw?url=',
-    'https://thingproxy.freeboard.io/fetch/'
-];
+import { db } from '../firebase';
+import {
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    query,
+    orderBy,
+    serverTimestamp,
+    onSnapshot
+} from 'firebase/firestore';
 
-// Helper to get local data safely
-const getLocalData = () => {
+// ---- LOCAL CACHE (for instant UI, while Firestore loads) ----
+const getLocalCache = () => {
     try {
-        const stored = localStorage.getItem('fti_mainframe_db');
+        const stored = localStorage.getItem('fti_cache');
         if (stored) return JSON.parse(stored);
-    } catch (e) {
-        console.warn("Local storage read failed", e);
-    }
+    } catch (e) {}
     return { enrollments: [], messages: [], admins: [] };
 };
 
-// Helper to save local data
-const saveLocalData = (data) => {
+const saveLocalCache = (data) => {
     try {
-        localStorage.setItem('fti_mainframe_db', JSON.stringify(data));
+        localStorage.setItem('fti_cache', JSON.stringify(data));
+    } catch (e) {}
+};
+
+// ---- FETCH ALL DATA FROM FIRESTORE ----
+export const fetchDB = async () => {
+    try {
+        const [enrollSnap, msgSnap, adminSnap] = await Promise.all([
+            getDocs(query(collection(db, 'enrollments'), orderBy('createdAt', 'desc'))),
+            getDocs(query(collection(db, 'messages'), orderBy('createdAt', 'desc'))),
+            getDocs(collection(db, 'admins'))
+        ]);
+
+        const enrollments = enrollSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const messages = msgSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const admins = adminSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        const data = { enrollments, messages, admins };
+        saveLocalCache(data);
+        return data;
+    } catch (err) {
+        console.error('Firestore fetchDB error:', err);
+        // Return local cache as fallback if offline
+        return getLocalCache();
+    }
+};
+
+// ---- SUBSCRIBE TO REAL-TIME UPDATES (Admin dashboard) ----
+// Returns an unsubscribe function. Call it on component unmount.
+export const subscribeToEnrollments = (callback) => {
+    const q = query(collection(db, 'enrollments'), orderBy('createdAt', 'desc'));
+    return onSnapshot(q, (snap) => {
+        const enrollments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        callback(enrollments);
+    }, (err) => {
+        console.error('Enrollment subscription error:', err);
+    });
+};
+
+export const subscribeToMessages = (callback) => {
+    const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
+    return onSnapshot(q, (snap) => {
+        const messages = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        callback(messages);
+    }, (err) => {
+        console.error('Message subscription error:', err);
+    });
+};
+
+// ---- ADD ENROLLMENT (from Admission page) ----
+export const addEnrollment = async (formData) => {
+    try {
+        const docRef = await addDoc(collection(db, 'enrollments'), {
+            ...formData,
+            createdAt: serverTimestamp(),
+            date: new Date().toLocaleString('en-IN')
+        });
+        return { success: true, id: docRef.id };
+    } catch (err) {
+        console.error('addEnrollment error:', err);
+        return { success: false, error: err.message };
+    }
+};
+
+// ---- ADD MESSAGE (from Contact page) ----
+export const addMessage = async (formData) => {
+    try {
+        const docRef = await addDoc(collection(db, 'messages'), {
+            ...formData,
+            createdAt: serverTimestamp(),
+            date: new Date().toLocaleDateString('en-IN')
+        });
+        return { success: true, id: docRef.id };
+    } catch (err) {
+        console.error('addMessage error:', err);
+        return { success: false, error: err.message };
+    }
+};
+
+// ---- DELETE ENROLLMENT (from Admin page) ----
+export const deleteEnrollment = async (id) => {
+    try {
+        await deleteDoc(doc(db, 'enrollments', id));
         return true;
-    } catch (e) {
-        console.error("Local storage write failed", e);
+    } catch (err) {
+        console.error('deleteEnrollment error:', err);
         return false;
     }
 };
 
-export const fetchDB = async () => {
-    const localData = getLocalData();
-    
-    // FAST-PATH: Return local data immediately to the UI for instant speed
-    // We don't await the cloud sync here to keep the app lightning fast
-    syncCloudInBackgroundTask();
-    
-    return localData;
-};
-
-// BACKGROUND SYNC: Try each proxy without blocking the UI
-const syncCloudInBackgroundTask = async () => {
-    const localData = getLocalData();
-    for (const proxy of PROXIES) {
-        try {
-            const url = `${proxy}${encodeURIComponent(BASE_URL + '?t=' + Date.now())}`;
-            const response = await fetch(url, { cache: 'no-store' });
-            
-            if (response.ok) {
-                const cloudData = await response.json();
-                if (cloudData) {
-                    const merged = {
-                        enrollments: mergeCollections(localData.enrollments, cloudData.enrollments),
-                        messages: mergeCollections(localData.messages, cloudData.messages),
-                        admins: cloudData.admins || localData.admins || []
-                    };
-                    saveLocalData(merged);
-                    // Dispatch event so UI can update if it was waiting
-                    window.dispatchEvent(new Event('fti_db_updated'));
-                    return;
-                }
-            }
-        } catch (e) {}
+// ---- DELETE MESSAGE ----
+export const deleteMessage = async (id) => {
+    try {
+        await deleteDoc(doc(db, 'messages', id));
+        return true;
+    } catch (err) {
+        console.error('deleteMessage error:', err);
+        return false;
     }
 };
 
-// Helper to merge arrays of objects by ID, keeping the most recent
-const mergeCollections = (local = [], cloud = []) => {
-    const map = new Map();
-    [...cloud, ...local].forEach(item => {
-        if (item && item.id) map.set(item.id, item);
-    });
-    return Array.from(map.values()).sort((a, b) => b.id - a.id);
+// ---- ADD ADMIN ----
+export const addAdmin = async (adminData) => {
+    try {
+        const docRef = await addDoc(collection(db, 'admins'), {
+            ...adminData,
+            createdAt: serverTimestamp()
+        });
+        return { success: true, id: docRef.id };
+    } catch (err) {
+        console.error('addAdmin error:', err);
+        return { success: false, error: err.message };
+    }
 };
 
-export const updateDB = async (data) => {
-    saveLocalData(data);
-    
-    for (const proxy of PROXIES) {
-        try {
-            const url = `${proxy}${encodeURIComponent(BASE_URL)}`;
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            
-            if (response.ok) {
-                console.log("Cloud sync successful via " + proxy);
-                return true;
-            }
-        } catch (error) {
-            console.log(`Push failed via ${proxy}, trying next...`);
-        }
+// ---- DELETE ADMIN ----
+export const deleteAdmin = async (id) => {
+    try {
+        await deleteDoc(doc(db, 'admins', id));
+        return true;
+    } catch (err) {
+        console.error('deleteAdmin error:', err);
+        return false;
     }
-    
-    return false;
 };
+
+// ---- LEGACY COMPATIBILITY (updateDB is no longer needed) ----
+export const updateDB = async () => true;

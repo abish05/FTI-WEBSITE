@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { fetchDB, updateDB } from '../api/db';
+import { addEnrollment } from '../api/db';
 
 const Admission = () => {
     const [formData, setFormData] = useState({
@@ -12,44 +12,33 @@ const Admission = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSyncing(true);
-        
+        setError('');
+
         try {
-            // Fetch latest DB with retry logic built-in to fetchDB
-            const db = await fetchDB();
-            const existing = db.enrollments || [];
-            
-            const newEnrollment = {
-                ...formData,
-                id: Date.now().toString(),
-                date: new Date().toLocaleString()
-            };
-            
-            // 1. Submit to Formspree (Primary Backup)
-            await fetch("https://formspree.io/f/meenezll", {
+            // 1. Save to Firestore (real-time cloud DB — instantly visible in Admin)
+            const result = await addEnrollment(formData);
+
+            // 2. Also submit to Formspree as email backup
+            fetch("https://formspree.io/f/meenezll", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                body: JSON.stringify(newEnrollment)
-            });
+                body: JSON.stringify(formData)
+            }).catch(() => {}); // Fire and forget backup
 
-            // 2. Update remote DB for Admin Dashboard (Sync for Dashboard)
-            db.enrollments = [newEnrollment, ...existing];
-            const dbSuccess = await updateDB(db);
-            
-            if (dbSuccess) {
+            if (result.success) {
                 setSubmitted(true);
                 setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
             } else {
-                // Fallback: If cloud fails but local is saved
-                alert("Data saved locally but cloud sync is slow. Our team will still receive your application via backup protocols.");
-                setSubmitted(true);
+                setError('Unable to submit. Please check your internet and try again.');
             }
         } catch (err) {
             console.error("Error submitting application:", err);
-            alert("SYSTEM ERROR: UNABLE TO REACH CLOUD MAINFRAME. Please check your internet.");
+            setError('There was an error submitting your application. Please try again.');
         } finally {
             setIsSyncing(false);
             setTimeout(() => setSubmitted(false), 8000);
@@ -78,6 +67,12 @@ const Admission = () => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>
+                        {error && (
+                            <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: '#ef4444', fontSize: '0.9rem' }}>
+                                {error}
+                            </div>
+                        )}
+
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                             <div className="form-group">
                                 <label className="form-label">Full Name</label>
@@ -116,7 +111,7 @@ const Admission = () => {
                             {isSyncing ? (
                                 <>
                                     <div className="spinner" style={{ width: '20px', height: '20px', border: '2px solid rgba(0,0,0,0.1)', borderTopColor: 'black', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
-                                    VERIFYING WITH MAINFRAME...
+                                    SAVING YOUR APPLICATION...
                                 </>
                             ) : 'Submit Application'}
                         </button>

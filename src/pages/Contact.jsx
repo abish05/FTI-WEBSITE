@@ -1,42 +1,48 @@
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { useState } from 'react';
-import { fetchDB, updateDB } from '../api/db';
+import { addMessage } from '../api/db';
 
 const Contact = () => {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [submitted, setSubmitted] = useState(false);
+    const [isSending, setIsSending] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        setIsSending(true);
+        setError('');
+
         try {
-            const db = await fetchDB();
-            const existing = db.messages || [];
-            const newMessage = { ...formData, id: Date.now().toString(), date: new Date().toLocaleDateString() };
-            
-            // 1. Submit to Formspree
-            await fetch("https://formspree.io/f/meenezll", {
+            // Save to Firestore — instantly visible in Admin dashboard
+            const result = await addMessage(formData);
+
+            // Formspree email backup (fire and forget)
+            fetch("https://formspree.io/f/meenezll", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newMessage)
-            });
+                body: JSON.stringify(formData)
+            }).catch(() => {});
 
-            // 2. Update DB
-            db.messages = [newMessage, ...existing];
-            await updateDB(db);
-            
-            setSubmitted(true);
-            setFormData({ name: '', email: '', message: '' });
-            setTimeout(() => setSubmitted(false), 5000);
+            if (result.success) {
+                setSubmitted(true);
+                setFormData({ name: '', email: '', message: '' });
+                setTimeout(() => setSubmitted(false), 5000);
+            } else {
+                setError('Failed to send message. Please try again.');
+            }
         } catch (err) {
             console.error("Error sending message:", err);
-            alert("There was an error sending your message. Please try again.");
+            setError('There was an error sending your message. Please try again.');
+        } finally {
+            setIsSending(false);
         }
     };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
     return (
         <div className="section" style={{ maxWidth: '1000px' }}>
             <div style={{ textAlign: 'center', marginBottom: '60px' }}>
@@ -101,6 +107,11 @@ const Contact = () => {
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit}>
+                            {error && (
+                                <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '12px 16px', marginBottom: '16px', color: '#ef4444', fontSize: '0.9rem' }}>
+                                    {error}
+                                </div>
+                            )}
                             <div className="form-group">
                                 <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" placeholder="Your Name" required />
                             </div>
@@ -110,7 +121,14 @@ const Contact = () => {
                             <div className="form-group">
                                 <textarea name="message" value={formData.message} onChange={handleChange} className="form-input" rows="5" placeholder="How can we help you?" required></textarea>
                             </div>
-                            <button type="submit" className="btn-primary" style={{ width: '100%' }}>Send Message</button>
+                            <button type="submit" disabled={isSending} className="btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                                {isSending ? (
+                                    <>
+                                        <div style={{ width: '18px', height: '18px', border: '2px solid rgba(0,0,0,0.2)', borderTopColor: 'black', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+                                        Sending...
+                                    </>
+                                ) : 'Send Message'}
+                            </button>
                         </form>
                     )}
                 </div>
