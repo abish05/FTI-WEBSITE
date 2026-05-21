@@ -101,6 +101,23 @@ const Layout = () => {
                         </ul>
                     </div>
 
+                    <div>
+                        <h4 style={{ color: 'var(--text-primary)', fontSize: '1.2rem', marginBottom: '20px' }}>Location</h4>
+                        <div style={{ width: '100%', height: '200px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
+                            <iframe 
+                                title="Future Tech Institute Location"
+                                width="100%" 
+                                height="100%" 
+                                frameBorder="0" 
+                                style={{ border: 0 }} 
+                                src="https://maps.google.com/maps?q=Canara+Bank,+Karunya+Nagar,+Coimbatore&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                                allowFullScreen 
+                                loading="lazy" 
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div style={{ maxWidth: '1200px', margin: '40px auto 0', paddingTop: '20px', borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px', alignItems: 'center' }}>
