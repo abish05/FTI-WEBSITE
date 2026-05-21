@@ -12,37 +12,29 @@ const Admission = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
-    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSyncing(true);
-        setError('');
 
-        try {
-            // 1. Save to Firestore (real-time cloud DB — instantly visible in Admin)
-            const result = await addEnrollment(formData);
+        // ✅ OPTIMISTIC UI — show success INSTANTLY, don't wait for cloud
+        setSubmitted(true);
+        setIsSyncing(false);
 
-            // 2. Also submit to Formspree as email backup
-            fetch("https://formspree.io/f/meenezll", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                body: JSON.stringify(formData)
-            }).catch(() => {}); // Fire and forget backup
+        const snapshot = { ...formData };
+        setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
 
-            if (result.success) {
-                setSubmitted(true);
-                setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
-            } else {
-                setError('Unable to submit. Please check your internet and try again.');
-            }
-        } catch (err) {
-            console.error("Error submitting application:", err);
-            setError('There was an error submitting your application. Please try again.');
-        } finally {
-            setIsSyncing(false);
-            setTimeout(() => setSubmitted(false), 8000);
-        }
+        // Save to Firestore in background (non-blocking)
+        addEnrollment(snapshot).catch(err => console.error('Firestore save error:', err));
+
+        // Send Formspree email backup in background (non-blocking)
+        fetch("https://formspree.io/f/meenezll", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify(snapshot)
+        }).catch(() => {});
+
+        setTimeout(() => setSubmitted(false), 8000);
     };
 
     const handleChange = (e) => {
@@ -67,18 +59,11 @@ const Admission = () => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>
-                        {error && (
-                            <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: '#ef4444', fontSize: '0.9rem' }}>
-                                {error}
-                            </div>
-                        )}
-
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                             <div className="form-group">
                                 <label className="form-label">Full Name</label>
                                 <input required type="text" name="fullName" value={formData.fullName} onChange={handleChange} className="form-input" />
                             </div>
-
                             <div className="form-group">
                                 <label className="form-label">Phone Number</label>
                                 <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} className="form-input" />
@@ -107,13 +92,13 @@ const Admission = () => {
                             <textarea name="remarks" value={formData.remarks} onChange={handleChange} className="form-input" rows="4" placeholder="Any specific requirements or questions?"></textarea>
                         </div>
 
-                        <button type="submit" disabled={isSyncing} className="btn-primary" style={{ width: '100%', marginTop: '20px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                            {isSyncing ? (
-                                <>
-                                    <div className="spinner" style={{ width: '20px', height: '20px', border: '2px solid rgba(0,0,0,0.1)', borderTopColor: 'black', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
-                                    SAVING YOUR APPLICATION...
-                                </>
-                            ) : 'Submit Application'}
+                        <button
+                            type="submit"
+                            disabled={isSyncing}
+                            className="btn-primary"
+                            style={{ width: '100%', marginTop: '20px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                        >
+                            Submit Application
                         </button>
                     </form>
                 )}

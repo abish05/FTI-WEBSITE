@@ -5,38 +5,25 @@ import { addMessage } from '../api/db';
 const Contact = () => {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [submitted, setSubmitted] = useState(false);
-    const [isSending, setIsSending] = useState(false);
-    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSending(true);
-        setError('');
 
-        try {
-            // Save to Firestore — instantly visible in Admin dashboard
-            const result = await addMessage(formData);
+        // ✅ OPTIMISTIC UI — show success instantly, save in background
+        const snapshot = { ...formData };
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setSubmitted(false), 5000);
 
-            // Formspree email backup (fire and forget)
-            fetch("https://formspree.io/f/meenezll", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            }).catch(() => {});
+        // Save to Firestore in background (non-blocking)
+        addMessage(snapshot).catch(err => console.error('Firestore save error:', err));
 
-            if (result.success) {
-                setSubmitted(true);
-                setFormData({ name: '', email: '', message: '' });
-                setTimeout(() => setSubmitted(false), 5000);
-            } else {
-                setError('Failed to send message. Please try again.');
-            }
-        } catch (err) {
-            console.error("Error sending message:", err);
-            setError('There was an error sending your message. Please try again.');
-        } finally {
-            setIsSending(false);
-        }
+        // Formspree email backup in background (non-blocking)
+        fetch("https://formspree.io/f/meenezll", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(snapshot)
+        }).catch(() => {});
     };
 
     const handleChange = (e) => {
