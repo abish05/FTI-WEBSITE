@@ -104,7 +104,7 @@ const AdminLogin = () => {
                     fontWeight: '800', 
                     marginBottom: '8px', 
                     letterSpacing: '2px',
-                    color: 'white'
+                    color: 'var(--text-primary)'
                 }}>SYSTEM ENTRY</h2>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '32px' }}>
                     Select your access level to penetrate the FTI mainframe.
@@ -112,14 +112,14 @@ const AdminLogin = () => {
 
                 <form onSubmit={handleLogin} style={{ textAlign: 'left' }}>
                     <div style={{ marginBottom: '20px' }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: 'rgba(255,255,255,0.5)', marginBottom: '8px', letterSpacing: '1px' }}>ADMIN ID</label>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--text-secondary)', marginBottom: '8px', letterSpacing: '1px' }}>ADMIN ID</label>
                         <div style={{ position: 'relative' }}>
-                            <Mail size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
+                            <Mail size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
                             <input 
                                 type="email" 
                                 placeholder="Enter admin email"
                                 className="form-input"
-                                style={{ paddingLeft: '45px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}
+                                style={{ paddingLeft: '45px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
                                 value={credentials.email}
                                 onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                                 required
@@ -128,14 +128,14 @@ const AdminLogin = () => {
                     </div>
 
                     <div style={{ marginBottom: '30px' }}>
-                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: 'rgba(255,255,255,0.5)', marginBottom: '8px', letterSpacing: '1px' }}>PASSCODE</label>
+                        <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--text-secondary)', marginBottom: '8px', letterSpacing: '1px' }}>PASSCODE</label>
                         <div style={{ position: 'relative' }}>
-                            <Lock size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
+                            <Lock size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
                             <input 
                                 type="password" 
                                 placeholder="Enter passcode"
                                 className="form-input"
-                                style={{ paddingLeft: '45px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}
+                                style={{ paddingLeft: '45px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
                                 value={credentials.password}
                                 onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                                 required
@@ -183,7 +183,7 @@ const AdminLogin = () => {
                     </button>
                 </form>
 
-                <div style={{ marginTop: '30px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.2)', letterSpacing: '1px' }}>
+                <div style={{ marginTop: '30px', fontSize: '0.75rem', color: 'var(--text-secondary)', letterSpacing: '1px' }}>
                     SECURE MAINFRAME v4.2.0 | ENCRYPTION ACTIVE
                 </div>
             </div>

@@ -1,15 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;700&display=swap');
 
 :root {
-  --bg-primary: #05050a;
-  --bg-secondary: #0f111a;
-  --background-gradient: radial-gradient(circle at top left, #1a1a2e 0%, #05050a 100%);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --accent: #118a8b;
-  --accent-secondary: #0d6b6b;
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --background-gradient: linear-gradient(135deg, #f0fdfd 0%, #ffffff 100%);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --accent: #0f766e;
+  --accent-secondary: #0d9488;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.1);
   --modal-padding: 50px;
 }
 
@@ -36,7 +36,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
-  color: white;
+  color: var(--text-primary);
 }
 
 .glass-panel {
@@ -113,10 +113,10 @@ h1, h2, h3, h4, h5, h6 {
 .form-input {
   width: 100%;
   padding: 14px 20px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
-  color: white;
+  color: var(--text-primary);
   font-family: inherit;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -125,7 +125,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-input:focus {
   outline: none;
   border-color: var(--accent);
-  background: rgba(255, 255, 255, 0.05);
+  background: #ffffff;
 }
 
 nav {
@@ -133,7 +133,7 @@ nav {
   top: 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(5, 5, 10, 0.8);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--glass-border);
 }
@@ -155,7 +155,7 @@ nav {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
   font-size: 1.5rem;
-  color: white;
+  color: var(--text-primary);
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -175,7 +175,7 @@ nav {
 }
 
 .nav-link:hover, .nav-link.active {
-  color: white;
+  color: var(--text-primary);
 }
 
 @media (max-width: 768px) {
@@ -251,7 +251,7 @@ nav {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+  background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.4) 100%);
   pointer-events: none;
 }
 

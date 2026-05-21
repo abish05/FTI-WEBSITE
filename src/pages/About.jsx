@@ -8,7 +8,7 @@ const About = () => {
             <div style={{ textAlign: 'center', marginBottom: '60px' }}>
                 <h1 className="gradient-text" style={{ fontSize: '3.5rem', marginBottom: '20px' }}>Our Mission</h1>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem', maxWidth: '800px', margin: '0 auto 40px', lineHeight: '1.8' }}>
-                    To <strong style={{ color: 'white' }}>democratize high-end technical education.</strong> We provide local talent with the same level of expertise, tools, and opportunities found in global tech hubs, ensuring our students are "Industry-Ready" from day one.
+                    To <strong style={{ color: 'var(--text-primary)' }}>democratize high-end technical education.</strong> We provide local talent with the same level of expertise, tools, and opportunities found in global tech hubs, ensuring our students are "Industry-Ready" from day one.
                 </p>
                 <div className="image-container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
                     <img src={classroomLife} alt="FTI Classroom" className="premium-image" style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }} />
@@ -21,21 +21,21 @@ const About = () => {
                     <Rocket color="var(--accent)" size={32} /> Why We Are Different
                 </h2>
                 <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: '1.8', marginBottom: '40px' }}>
-                    Unlike traditional academic settings, FTI Training operates on a <strong style={{ color: 'white' }}>"Project-First" philosophy.</strong> Whether you are diving into Python Development, mastering Cyber Security, or exploring the creative world of Video Production, your journey here is defined by:
+                    Unlike traditional academic settings, FTI Training operates on a <strong style={{ color: 'var(--text-primary)' }}>"Project-First" philosophy.</strong> Whether you are diving into Python Development, mastering Cyber Security, or exploring the creative world of Video Production, your journey here is defined by:
                 </p>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '30px', borderRadius: '16px' }}>
+                    <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', padding: '30px', borderRadius: '16px' }}>
                         <BookOpen color="#118a8b" size={28} style={{ marginBottom: '15px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '10px' }}>Engineering Excellence</h3>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>Our curriculum is influenced by the rigorous standards of top engineering pedagogy, translated into practical, hands-on modules.</p>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '30px', borderRadius: '16px' }}>
+                    <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', padding: '30px', borderRadius: '16px' }}>
                         <ShieldCheck color="#118a8b" size={28} style={{ marginBottom: '15px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '10px' }}>The Pro-Tech Advantage</h3>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>We utilize professional-grade environments—from advanced firewalls for security training to high-end editing suites—giving you a competitive edge.</p>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '30px', borderRadius: '16px' }}>
+                    <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', padding: '30px', borderRadius: '16px' }}>
                         <Users color="#f59e0b" size={28} style={{ marginBottom: '15px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '10px' }}>Mentorship, Not Lectures</h3>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>Learn from industry veterans. We don't just teach code; we teach the logic and soft skills required to survive and thrive in tech.</p>
@@ -54,7 +54,7 @@ const About = () => {
                     </p>
                 </div>
 
-                <div className="glass-panel" style={{ padding: '45px', background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.2) 100%)' }}>
+                <div className="glass-panel" style={{ padding: '45px', background: 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, var(--bg-secondary) 100%)' }}>
                     <h2 style={{ fontSize: '2rem', marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
                         <Award color="#c084fc" size={28} /> Pillars of Success
                     </h2>
@@ -62,21 +62,21 @@ const About = () => {
                         <li style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
                             <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '10px', borderRadius: '10px' }}><Zap color="#118a8b" size={20} /></div>
                             <div>
-                                <strong style={{ color: 'white', fontSize: '1.1rem' }}>Practical Mastery:</strong>
+                                <strong style={{ color: 'var(--text-primary)', fontSize: '1.1rem' }}>Practical Mastery:</strong>
                                 <p style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>20% Theory, 80% Live Lab Work.</p>
                             </div>
                         </li>
                         <li style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
                             <div style={{ background: 'rgba(17, 138, 139, 0.1)', padding: '10px', borderRadius: '10px' }}><Target color="#118a8b" size={20} /></div>
                             <div>
-                                <strong style={{ color: 'white', fontSize: '1.1rem' }}>Portfolio Driven:</strong>
+                                <strong style={{ color: 'var(--text-primary)', fontSize: '1.1rem' }}>Portfolio Driven:</strong>
                                 <p style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>You graduate with a body of work, not just a piece of paper.</p>
                             </div>
                         </li>
                         <li style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
                             <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '10px', borderRadius: '10px' }}><Code color="#f59e0b" size={20} /></div>
                             <div>
-                                <strong style={{ color: 'white', fontSize: '1.1rem' }}>Future-Proof Skills:</strong>
+                                <strong style={{ color: 'var(--text-primary)', fontSize: '1.1rem' }}>Future-Proof Skills:</strong>
                                 <p style={{ color: 'var(--text-secondary)', marginTop: '5px' }}>We constantly update our syllabus to include AI, Big Data, and Cloud technologies.</p>
                             </div>
                         </li>

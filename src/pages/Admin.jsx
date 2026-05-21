@@ -166,21 +166,21 @@ const Admin = () => {
     );
 
     return (
-        <div style={{ minHeight: '100vh', background: '#020617', color: 'white', display: 'flex' }}>
+        <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)', display: 'flex' }}>
             <style>{`
                 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
                 @keyframes spin { to { transform: rotate(360deg); } }
                 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-                .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(30, 41, 59, 1); border-radius: 24px; }
-                .admin-sidebar { width: 280px; height: 100vh; position: fixed; left: 0; top: 0; background: #0b0f1a; border-right: 1px solid rgba(30, 41, 59, 1); padding: 35px 22px; display: flex; flex-direction: column; z-index: 1000; transition: transform 0.3s; }
+                .glass-panel { background: var(--bg-secondary); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; }
+                .admin-sidebar { width: 280px; height: 100vh; position: fixed; left: 0; top: 0; background: var(--bg-secondary); border-right: 1px solid var(--glass-border); padding: 35px 22px; display: flex; flex-direction: column; z-index: 1000; transition: transform 0.3s; }
                 .admin-main { flex: 1; margin-left: 280px; padding: 50px 60px; min-width: 0; }
-                .sidebar-item:hover { background: rgba(255,255,255,0.03); color: white; }
+                .sidebar-item:hover { background: rgba(0,0,0,0.05); color: var(--text-primary); }
                 @media (max-width: 1024px) {
                     .admin-sidebar { transform: translateX(-100%); }
                     .admin-sidebar.open { transform: translateX(0); }
                     .admin-main { margin-left: 0; padding: 20px; }
                 }
-                .form-input { width: 100%; background: rgba(2, 6, 23, 0.8); border: 1px solid rgba(30, 41, 59, 1); border-radius: 12px; padding: 12px 15px; color: white; margin-bottom: 15px; outline: none; transition: border 0.3s; box-sizing: border-box; }
+                .form-input { width: 100%; background: var(--bg-secondary); border: 1px solid var(--glass-border); border-radius: 12px; padding: 12px 15px; color: var(--text-primary); margin-bottom: 15px; outline: none; transition: border 0.3s; box-sizing: border-box; }
                 .form-input:focus { border-color: #118a8b; }
                 .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #118a8b; box-shadow: 0 0 10px #118a8b; animation: pulse 2s infinite; }
             `}</style>
@@ -259,7 +259,7 @@ const Admin = () => {
                                 <p style={{ color: '#64748b', textAlign: 'center', padding: '30px' }}>No enrollments yet. Data will appear here instantly when students apply.</p>
                             ) : (
                                 enrollments.slice(0, 5).map(e => (
-                                    <div key={e.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
+                                    <div key={e.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid var(--glass-border)' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                                             <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(17, 138, 139, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#118a8b' }}>
                                                 <UserPlus size={20} />
@@ -292,10 +292,10 @@ const Admin = () => {
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                             </div>
-                            <button onClick={() => setShowAddModal(true)} style={{ background: '#118a8b', color: '#020617', border: 'none', borderRadius: '12px', padding: '0 20px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                            <button onClick={() => setShowAddModal(true)} style={{ background: '#118a8b', color: 'white', border: 'none', borderRadius: '12px', padding: '0 20px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                                 <Plus size={20} /> Add Student
                             </button>
-                            <button onClick={exportCSV} style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '0 20px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                            <button onClick={exportCSV} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '0 20px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                                 <Download size={18} /> Export CSV
                             </button>
                         </div>
@@ -309,7 +309,7 @@ const Admin = () => {
                             ) : (
                                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                     <thead>
-                                        <tr style={{ borderBottom: '1px solid rgba(30, 41, 59, 1)' }}>
+                                        <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
                                             <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Student</th>
                                             <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Contact</th>
                                             <th style={{ padding: '20px', color: '#64748b', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase' }}>Course</th>
@@ -325,7 +325,7 @@ const Admin = () => {
                                                 (e.email || '').toLowerCase().includes(searchTerm.toLowerCase())
                                             )
                                             .map(e => (
-                                                <tr key={e.id} style={{ borderBottom: '1px solid rgba(30, 41, 59, 0.5)' }}>
+                                                <tr key={e.id} style={{ borderBottom: '1px solid var(--glass-border)' }}>
                                                     <td style={{ padding: '20px' }}>
                                                         <div style={{ fontWeight: '600' }}>{e.fullName}</div>
                                                         <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Joined {e.date}</div>
@@ -416,7 +416,7 @@ const Admin = () => {
                                         alert("Failed to add admin.");
                                     }
                                 }
-                            }} style={{ marginBottom: '40px', padding: '25px', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            }} style={{ marginBottom: '40px', padding: '25px', background: 'var(--bg-secondary)', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b' }}>Full Name / Display Name</label>
@@ -450,7 +450,7 @@ const Admin = () => {
                                         <button type="button" onClick={() => {
                                             setEditingAdminId(null);
                                             setAdminForm({ username: '', email: '', role: 'Admin', password: '' });
-                                        }} style={{ flex: 1, padding: '14px', background: 'rgba(255,255,255,0.1)', color: 'white', fontWeight: 'bold', border: 'none', borderRadius: '12px', cursor: 'pointer' }}>
+                                        }} style={{ flex: 1, padding: '14px', background: 'var(--bg-secondary)', color: 'var(--text-primary)', fontWeight: 'bold', border: '1px solid var(--glass-border)', borderRadius: '12px', cursor: 'pointer' }}>
                                             Cancel Edit
                                         </button>
                                     )}
@@ -458,9 +458,9 @@ const Admin = () => {
                             </form>
 
                             <div>
-                                <h3 style={{ fontSize: '1rem', marginBottom: '20px', color: 'white' }}>Current Authorized Personnel</h3>
+                                <h3 style={{ fontSize: '1rem', marginBottom: '20px', color: 'var(--text-primary)' }}>Current Authorized Personnel</h3>
                                 {admins.map(a => (
-                                    <div key={a.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', marginBottom: '10px' }}>
+                                    <div key={a.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '12px', marginBottom: '10px' }}>
                                         <div>
                                             <p style={{ fontWeight: 'bold', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 {a.username}

@@ -41,8 +41,8 @@ const Layout = () => {
                             <rect x="42" y="38" width="5" height="4" rx="1" fill="#118a8b" />
                             
                             {/* Text */}
-                            <text x="80" y="35" fontFamily="Outfit, sans-serif" fontWeight="500" fontSize="22" fill="#118a8b">Future Tech</text>
-                            <text x="80" y="65" fontFamily="Outfit, sans-serif" fontWeight="800" fontSize="36" fill="white">Institute</text>
+                            <text x="80" y="35" fontFamily="Outfit, sans-serif" fontWeight="500" fontSize="22" fill="var(--accent)">Future Tech</text>
+                            <text x="80" y="65" fontFamily="Outfit, sans-serif" fontWeight="800" fontSize="36" fill="var(--text-primary)">Institute</text>
                         </svg>
                     </Link>
 
@@ -69,7 +69,7 @@ const Layout = () => {
                         )}
                     </div>
 
-                    <button className="mobile-menu-btn" style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                    <button className="mobile-menu-btn" style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                         {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
                 </div>
@@ -79,7 +79,7 @@ const Layout = () => {
                 <Outlet />
             </main>
 
-            <footer style={{ marginTop: 'auto', padding: '60px 20px', borderTop: '1px solid var(--glass-border)', background: 'linear-gradient(180deg, rgba(15,23,42,0.3) 0%, rgba(0,0,0,0.8) 100%)', backdropFilter: 'blur(10px)' }}>
+            <footer style={{ marginTop: 'auto', padding: '60px 20px', borderTop: '1px solid var(--glass-border)', background: 'var(--bg-secondary)' }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '40px', textAlign: 'left', alignItems: 'start' }}>
 
                     <div>
@@ -93,8 +93,8 @@ const Layout = () => {
                                 <rect x="38" y="22" width="4" height="10" fill="white" />
                                 <rect x="33" y="38" width="5" height="4" rx="1" fill="#118a8b" />
                                 <rect x="42" y="38" width="5" height="4" rx="1" fill="#118a8b" />
-                                <text x="80" y="35" fontFamily="Outfit, sans-serif" fontWeight="500" fontSize="22" fill="#118a8b">Future Tech</text>
-                                <text x="80" y="65" fontFamily="Outfit, sans-serif" fontWeight="800" fontSize="36" fill="white">Institute</text>
+                                <text x="80" y="35" fontFamily="Outfit, sans-serif" fontWeight="500" fontSize="22" fill="var(--accent)">Future Tech</text>
+                                <text x="80" y="65" fontFamily="Outfit, sans-serif" fontWeight="800" fontSize="36" fill="var(--text-primary)">Institute</text>
                             </svg>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
@@ -108,7 +108,7 @@ const Layout = () => {
                     </div>
 
                     <div>
-                        <h4 style={{ color: 'white', fontSize: '1.2rem', marginBottom: '20px' }}>Quick Links</h4>
+                        <h4 style={{ color: 'var(--text-primary)', fontSize: '1.2rem', marginBottom: '20px' }}>Quick Links</h4>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             <li><Link to="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</Link></li>
                             <li><Link to="/about" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>About</Link></li>
@@ -119,7 +119,7 @@ const Layout = () => {
                     </div>
 
                     <div>
-                        <h4 style={{ color: 'white', fontSize: '1.2rem', marginBottom: '20px' }}>Contact Info</h4>
+                        <h4 style={{ color: 'var(--text-primary)', fontSize: '1.2rem', marginBottom: '20px' }}>Contact Info</h4>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
                             <li style={{ color: 'var(--text-secondary)' }}>Opp to Canara Bank, Near JM Mobiles, Karunya Nagar, Coimbatore – 641114</li>
                             <li style={{ color: 'var(--text-secondary)' }}>Phone: +91 77085 88508</li>
@@ -129,10 +129,10 @@ const Layout = () => {
 
                 </div>
 
-                <div style={{ maxWidth: '1200px', margin: '40px auto 0', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px', alignItems: 'center' }}>
-                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem' }}>© {new Date().getFullYear()} FutureTech Training Institute. All rights reserved.</p>
+                <div style={{ maxWidth: '1200px', margin: '40px auto 0', paddingTop: '20px', borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px', alignItems: 'center' }}>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>© {new Date().getFullYear()} FutureTech Training Institute. All rights reserved.</p>
                     <div style={{ display: 'flex', gap: '20px' }}>
-                        <a href="https://futuretechinstitute-privacypolicy.edgeone.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', textDecoration: 'none' }}>Privacy Policy</a>
+                        <a href="https://futuretechinstitute-privacypolicy.edgeone.app/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', textDecoration: 'none' }}>Privacy Policy</a>
                     </div>
                 </div>
             </footer>

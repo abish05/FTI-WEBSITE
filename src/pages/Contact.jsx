@@ -192,7 +192,7 @@ const Contact = () => {
                                 </svg>
                             </div>
                             <div style={{ flex: 1 }}>
-                                <p style={{ fontWeight: '700', color: 'white', marginBottom: '3px' }}>Chat on WhatsApp</p>
+                                <p style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '3px' }}>Chat on WhatsApp</p>
                                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Quick replies • Usually within minutes</p>
                             </div>
                             <ExternalLink size={18} color="#25D366" />
@@ -214,7 +214,7 @@ const Contact = () => {
                                 </svg>
                             </div>
                             <div style={{ flex: 1 }}>
-                                <p style={{ fontWeight: '700', color: 'white', marginBottom: '3px' }}>Follow on Instagram</p>
+                                <p style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '3px' }}>Follow on Instagram</p>
                                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>@futuretech_karunya • Updates & news</p>
                             </div>
                             <ExternalLink size={18} color="#ec4899" />

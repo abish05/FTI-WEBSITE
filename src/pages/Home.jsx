@@ -24,7 +24,7 @@ const Home = () => {
                         Bridge the Gap Between <br />Learning and Earning.
                     </h1>
                     <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', marginBottom: '40px', lineHeight: '1.8' }}>
-                        <strong style={{ color: 'white' }}>Industry-aligned technical training.</strong> Master in-demand skills with 100% practical sessions and dedicated placement support.
+                        <strong style={{ color: 'var(--text-primary)' }}>Industry-aligned technical training.</strong> Master in-demand skills with 100% practical sessions and dedicated placement support.
                     </p>
                     <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                         <Link to="/courses" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -77,9 +77,9 @@ const Home = () => {
                 <h2 style={{ fontSize: '2rem', marginBottom: '15px' }}>Interactive Career Path Finder</h2>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '30px' }}>Unsure where to start? Tell us your primary interest and we'll suggest the right course for you.</p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap' }}>
-                    <button onClick={() => setQuizInterest('Design')} className="btn-primary" style={{ background: quizInterest === 'Design' ? '#ec4899' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>🎨 Visuals & Design</button>
-                    <button onClick={() => setQuizInterest('Logic')} className="btn-primary" style={{ background: quizInterest === 'Logic' ? '#118a8b' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>💻 Code & Logic</button>
-                    <button onClick={() => setQuizInterest('Security')} className="btn-primary" style={{ background: quizInterest === 'Security' ? '#118a8b' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>🛡️ Hack & Security</button>
+                    <button onClick={() => setQuizInterest('Design')} className="btn-primary" style={{ background: quizInterest === 'Design' ? '#ec4899' : 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)', color: quizInterest === 'Design' ? 'white' : 'var(--text-primary)' }}>🎨 Visuals & Design</button>
+                    <button onClick={() => setQuizInterest('Logic')} className="btn-primary" style={{ background: quizInterest === 'Logic' ? '#118a8b' : 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)', color: quizInterest === 'Logic' ? 'white' : 'var(--text-primary)' }}>💻 Code & Logic</button>
+                    <button onClick={() => setQuizInterest('Security')} className="btn-primary" style={{ background: quizInterest === 'Security' ? '#118a8b' : 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)', color: quizInterest === 'Security' ? 'white' : 'var(--text-primary)' }}>🛡️ Hack & Security</button>
                 </div>
                 {quizInterest && (
                     <div style={{ marginTop: '30px', animation: 'fadeIn 0.5s ease' }}>
