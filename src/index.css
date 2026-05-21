@@ -8,8 +8,9 @@
   --text-secondary: #475569;
   --accent: #0f766e;
   --accent-secondary: #0d9488;
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(17, 138, 139, 0.15);
+  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   --modal-padding: 50px;
 }
 
@@ -41,32 +42,35 @@ h1, h2, h3, h4, h5, h6 {
 
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: 20px;
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
   color: white;
-  padding: 12px 28px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 1rem;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(17, 138, 139, 0.2);
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(17, 138, 139, 0.4);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(17, 138, 139, 0.4);
 }
 
 .section {
@@ -88,14 +92,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #16b8b8, #0a5454);
+  background: linear-gradient(135deg, #0f766e, #064e3b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
 @keyframes pagetransition {
   from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
   to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 
 /* Base form styles */

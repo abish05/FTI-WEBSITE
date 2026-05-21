@@ -1,4 +1,4 @@
-import { ArrowRight, Code, Briefcase, Zap, MonitorPlay, ShieldCheck, Users, Trophy, ChevronRight, PenTool, Image as ImageIcon } from 'lucide-react';
+import { ArrowRight, Code, Briefcase, Zap, MonitorPlay, ShieldCheck, Users, Trophy, ChevronRight, PenTool, Image as ImageIcon, Star, PlayCircle, TrendingUp } from 'lucide-react';
 import heroV2 from '../assets/hero_v2.png';
 import classroomLife from '../assets/classroom_life.png';
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,10 +18,13 @@ const Home = () => {
     return (
         <div className="section" style={{ display: 'flex', flexDirection: 'column', gap: '80px' }}>
             {/* HERO SECTION */}
-            <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px', alignItems: 'center', marginTop: '40px', animation: 'fadeIn 0.8s ease-out' }}>
+            <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px', alignItems: 'center', marginTop: '20px', animation: 'fadeInUp 0.8s ease-out' }}>
                 <div style={{ textAlign: 'left' }}>
-                    <h1 className="gradient-text" style={{ fontSize: '4rem', marginBottom: '24px', letterSpacing: '-1px', lineHeight: '1.1' }}>
-                        Bridge the Gap Between <br />Learning and Earning.
+                    <div style={{ display: 'inline-block', padding: '8px 16px', background: 'rgba(15, 118, 110, 0.1)', color: 'var(--accent)', borderRadius: '30px', fontWeight: '600', marginBottom: '20px', fontSize: '0.9rem', border: '1px solid rgba(15, 118, 110, 0.2)' }}>
+                        🚀 Trusted by 500+ Students & 50+ Hiring Partners
+                    </div>
+                    <h1 className="gradient-text" style={{ fontSize: '4.5rem', marginBottom: '24px', letterSpacing: '-1.5px', lineHeight: '1.1' }}>
+                        Bridge the Gap Between <br />Learning & Earning.
                     </h1>
                     <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', marginBottom: '40px', lineHeight: '1.8' }}>
                         <strong style={{ color: 'var(--text-primary)' }}>Industry-aligned technical training.</strong> Master in-demand skills with 100% practical sessions and dedicated placement support.
@@ -30,15 +33,35 @@ const Home = () => {
                         <Link to="/courses" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             View Our Courses <ArrowRight size={20} />
                         </Link>
-                        <Link to="/admission" className="btn-primary" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
+                        <Link to="/admission" className="btn-primary" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
                             Book a Free Demo Class
                         </Link>
                     </div>
                 </div>
-                <div style={{ position: 'relative' }} className="image-container">
-                    <div style={{ position: 'absolute', top: '-20px', left: '-20px', right: '20px', bottom: '20px', background: 'var(--accent)', filter: 'blur(100px)', opacity: '0.1', zIndex: -1 }}></div>
-                    <img src={heroV2} alt="FutureTech Classroom" className="premium-image" style={{ width: '100%', borderRadius: '24px', border: '1px solid var(--glass-border)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }} loading="lazy" />
+                <div style={{ position: 'relative', animation: 'float 6s ease-in-out infinite' }} className="image-container">
+                    <div style={{ position: 'absolute', top: '-20px', left: '-20px', right: '20px', bottom: '20px', background: 'var(--accent)', filter: 'blur(80px)', opacity: '0.15', zIndex: -1 }}></div>
+                    <img src={heroV2} alt="FutureTech Classroom" className="premium-image" style={{ width: '100%', borderRadius: '24px', border: '1px solid var(--glass-border)', boxShadow: 'var(--glass-shadow)' }} loading="lazy" />
                     <div className="image-overlay"></div>
+                </div>
+            </div>
+
+            {/* PLACEMENT STATS */}
+            <div style={{ margin: '40px 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '30px', textAlign: 'center', animation: 'fadeInUp 1s ease-out' }}>
+                <div className="glass-panel" style={{ padding: '30px' }}>
+                    <h2 className="gradient-text" style={{ fontSize: '3rem', margin: 0 }}>98%</h2>
+                    <p style={{ color: 'var(--text-secondary)', fontWeight: '500', marginTop: '10px' }}>Placement Rate</p>
+                </div>
+                <div className="glass-panel" style={{ padding: '30px' }}>
+                    <h2 className="gradient-text" style={{ fontSize: '3rem', margin: 0 }}>6 LPA</h2>
+                    <p style={{ color: 'var(--text-secondary)', fontWeight: '500', marginTop: '10px' }}>Average Package</p>
+                </div>
+                <div className="glass-panel" style={{ padding: '30px' }}>
+                    <h2 className="gradient-text" style={{ fontSize: '3rem', margin: 0 }}>50+</h2>
+                    <p style={{ color: 'var(--text-secondary)', fontWeight: '500', marginTop: '10px' }}>Hiring Partners</p>
+                </div>
+                <div className="glass-panel" style={{ padding: '30px' }}>
+                    <h2 className="gradient-text" style={{ fontSize: '3rem', margin: 0 }}>10+</h2>
+                    <p style={{ color: 'var(--text-secondary)', fontWeight: '500', marginTop: '10px' }}>Expert Mentors</p>
                 </div>
             </div>
 
@@ -118,6 +141,38 @@ const Home = () => {
                             <span>Collaborative Spaces</span>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* STUDENT TESTIMONIALS */}
+            <div style={{ marginTop: '80px', marginBottom: '40px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+                    <h2 style={{ fontSize: '2.5rem', marginBottom: '15px' }}>Student Success Stories</h2>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Hear directly from our alumni who transformed their careers.</p>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+                    {[1, 2, 3].map((item) => (
+                        <div key={item} className="glass-panel" style={{ padding: '40px', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ position: 'absolute', top: '20px', right: '20px', color: 'rgba(15, 118, 110, 0.1)' }}>
+                                <PlayCircle size={60} />
+                            </div>
+                            <div style={{ display: 'flex', gap: '5px', marginBottom: '20px' }}>
+                                {[1, 2, 3, 4, 5].map((s) => <Star key={s} size={18} fill="#f59e0b" color="#f59e0b" />)}
+                            </div>
+                            <p style={{ color: 'var(--text-primary)', fontSize: '1.1rem', fontStyle: 'italic', marginBottom: '30px', lineHeight: '1.7' }}>
+                                "The practical approach at FTI completely changed my trajectory. I went from having zero coding knowledge to landing a job as a Full Stack Developer in just 6 months!"
+                            </p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent), var(--accent-secondary))', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontWeight: 'bold' }}>
+                                    A{item}
+                                </div>
+                                <div>
+                                    <h4 style={{ margin: 0, fontSize: '1.1rem' }}>Alumni Name {item}</h4>
+                                    <p style={{ margin: 0, color: 'var(--accent)', fontSize: '0.9rem', fontWeight: '500' }}>Placed at TechCorp</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 

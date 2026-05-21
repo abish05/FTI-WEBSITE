@@ -1,11 +1,12 @@
 import { Outlet, NavLink, Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, MessageCircle, Send } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import logoImg from '../assets/logo.png';
 
 const Layout = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     useEffect(() => {
         const checkUser = () => {
@@ -35,6 +36,7 @@ const Layout = () => {
                         <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Home</NavLink>
                         <NavLink to="/about" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>About Us</NavLink>
                         <NavLink to="/courses" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Courses</NavLink>
+                        <NavLink to="/blog" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Blog</NavLink>
                         <NavLink to="/admission" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Admission</NavLink>
                         <NavLink to="/contact" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Contact</NavLink>
                         {user && (
@@ -47,6 +49,7 @@ const Layout = () => {
                         <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Home</NavLink>
                         <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>About Us</NavLink>
                         <NavLink to="/courses" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Courses</NavLink>
+                        <NavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Blog</NavLink>
                         <NavLink to="/admission" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Admission</NavLink>
                         <NavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => isActive ? "nav-link mobile active" : "nav-link mobile"}>Contact</NavLink>
                         {user && (
@@ -87,6 +90,7 @@ const Layout = () => {
                             <li><Link to="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</Link></li>
                             <li><Link to="/about" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>About</Link></li>
                             <li><Link to="/courses" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>All Courses</Link></li>
+                            <li><Link to="/blog" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Blog & News</Link></li>
                             <li><Link to="/admission" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Admission</Link></li>
                             <li><Link to="/contact" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Contact</Link></li>
                         </ul>
@@ -127,6 +131,34 @@ const Layout = () => {
                     </div>
                 </div>
             </footer>
+
+            {/* FLOATING CHAT WIDGET */}
+            <div style={{ position: 'fixed', bottom: '30px', right: '30px', zIndex: 9999 }}>
+                {isChatOpen ? (
+                    <div style={{ width: '320px', height: '400px', background: 'var(--bg-primary)', borderRadius: '20px', border: '1px solid var(--glass-border)', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', overflow: 'hidden', animation: 'fadeInUp 0.3s ease-out' }}>
+                        <div style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-secondary))', padding: '15px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div style={{ width: '10px', height: '10px', background: '#4ade80', borderRadius: '50%' }}></div>
+                                <span style={{ fontWeight: '600' }}>FTI Support</span>
+                            </div>
+                            <button onClick={() => setIsChatOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}><X size={20} /></button>
+                        </div>
+                        <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px', overflowY: 'auto', background: 'rgba(15, 118, 110, 0.02)' }}>
+                            <div style={{ background: 'white', padding: '12px 16px', borderRadius: '15px 15px 15px 0', border: '1px solid var(--glass-border)', fontSize: '0.9rem', color: 'var(--text-primary)', alignSelf: 'flex-start', maxWidth: '85%', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
+                                👋 Hi there! Welcome to Future Tech Institute. Are you looking to upskill or find a specific course?
+                            </div>
+                        </div>
+                        <div style={{ padding: '15px', borderTop: '1px solid var(--glass-border)', background: 'white', display: 'flex', gap: '10px' }}>
+                            <input type="text" placeholder="Type your message..." style={{ flex: 1, border: 'none', outline: 'none', background: 'rgba(0,0,0,0.05)', padding: '10px 15px', borderRadius: '20px', fontSize: '0.9rem', color: 'var(--text-primary)' }} />
+                            <button style={{ background: 'var(--accent)', border: 'none', width: '40px', height: '40px', borderRadius: '50%', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}><Send size={18} /></button>
+                        </div>
+                    </div>
+                ) : (
+                    <button onClick={() => setIsChatOpen(true)} className="btn-primary" style={{ width: '60px', height: '60px', borderRadius: '50%', padding: 0, boxShadow: '0 10px 25px rgba(15, 118, 110, 0.4)' }}>
+                        <MessageCircle size={28} />
+                    </button>
+                )}
+            </div>
         </>
     );
 };

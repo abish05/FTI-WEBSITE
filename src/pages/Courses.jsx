@@ -17,6 +17,8 @@ const Courses = () => {
             icon: <Layout size={40} color="#118a8b" />,
             image: webDevImg,
             desc: 'Master front-end and back-end technologies to build modern web applications.',
+            price: '₹25,000',
+            duration: '3 Months',
             details: {
                 subtitle: 'Master the Full Stack',
                 description: 'Build responsive, high-performance websites from scratch. This course takes you from basic HTML to complex database management.',
@@ -30,6 +32,8 @@ const Courses = () => {
             icon: <Smartphone size={40} color="#f59e0b" />,
             image: mobileDevImg,
             desc: 'Learn to build native and cross-platform applications for iOS and Android.',
+            price: '₹30,000',
+            duration: '4 Months',
             details: {
                 subtitle: 'Build for the Pocket-Sized World',
                 description: 'Learn to create seamless user experiences for both iOS and Android using industry-standard frameworks.',
@@ -43,6 +47,8 @@ const Courses = () => {
             icon: <Database size={40} color="#118a8b" />,
             image: fullStackImg,
             desc: 'Master the complete ecosystem of modern software development, from UI to robust backends.',
+            price: '₹45,000',
+            duration: '6 Months',
             details: {
                 subtitle: 'Build End-to-End Applications',
                 description: 'Master the complete ecosystem of modern software development, from crafting intuitive user interfaces to architecting robust server-side infrastructures.',
@@ -56,6 +62,8 @@ const Courses = () => {
             icon: <Shield size={40} color="#ef4444" />,
             image: cyberSecurityImg,
             desc: 'Protect systems and networks from digital attacks with advanced security protocols.',
+            price: '₹35,000',
+            duration: '4 Months',
             details: {
                 subtitle: 'Protect the Digital Frontier',
                 description: 'Learn to think like a hacker to build unbreakable defenses. Gain the skills needed to protect sensitive corporate data.',
@@ -70,6 +78,8 @@ const Courses = () => {
             icon: <Settings size={40} color="#8b5cf6" />,
             image: cloudComputingImg,
             desc: 'Design, deploy, and manage scalable infrastructure on modern cloud platforms.',
+            price: '₹35,000',
+            duration: '4 Months',
             details: {
                 subtitle: 'The Backbone of Modern Tech',
                 description: 'Move beyond local servers. Learn to architect, deploy, and scale applications on the world’s most powerful cloud platforms.',
@@ -84,6 +94,8 @@ const Courses = () => {
             icon: <MonitorPlay size={40} color="#ec4899" />,
             image: digitalMarketingImg,
             desc: 'Leverage digital channels to grow businesses and improve online visibility.',
+            price: '₹20,000',
+            duration: '2 Months',
             details: {
                 subtitle: 'Master the Art of Online Growth',
                 description: 'In a crowded digital world, learn how to make brands stand out, convert clicks into customers, and track ROI.',
@@ -106,35 +118,38 @@ const Courses = () => {
 
             <div className="card-grid">
                 {domains.map((domain, index) => (
-                    <div key={index} className="glass-panel" style={{ padding: '0', overflow: 'hidden', transition: 'all 0.3s ease' }}
-                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(17, 138, 139, 0.5)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; }}>
-                        <div className="image-container" style={{ height: '200px', borderRadius: '0' }}>
+                    <div key={index} className="glass-panel" style={{ padding: '0', overflow: 'hidden', transition: 'all 0.3s ease', animation: `fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.1}s both` }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'rgba(17, 138, 139, 0.5)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.1)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.boxShadow = 'var(--glass-shadow)'; }}>
+                        <div className="image-container" style={{ height: '220px', borderRadius: '0' }}>
                             <img src={domain.image} alt={domain.title} className="premium-image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                             <div className="image-overlay"></div>
                         </div>
                         <div style={{ padding: '30px' }}>
-                            <div style={{ marginBottom: '20px', marginTop: '-50px', position: 'relative', zIndex: 2, background: 'var(--bg-primary)', width: 'fit-content', padding: '10px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>{domain.icon}</div>
-                            <h3 style={{ fontSize: '1.5rem', marginBottom: '15px' }}>{domain.title}</h3>
-                            <p style={{ color: 'var(--text-secondary)' }}>{domain.desc}</p>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginTop: '25px' }}>
-                                <button onClick={() => setSelectedCourse(domain)} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', padding: 0 }}>
-                                    Learn More <span style={{ fontSize: '1.2rem' }}>→</span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '-60px', position: 'relative', zIndex: 2 }}>
+                                <div style={{ background: 'var(--bg-primary)', width: 'fit-content', padding: '12px', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>{domain.icon}</div>
+                                <div style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-secondary))', color: 'white', padding: '6px 14px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold', boxShadow: '0 4px 15px rgba(17, 138, 139, 0.3)' }}>{domain.duration}</div>
+                            </div>
+                            <h3 style={{ fontSize: '1.6rem', marginBottom: '12px' }}>{domain.title}</h3>
+                            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px', minHeight: '50px' }}>{domain.desc}</p>
+                            
+                            <div style={{ padding: '15px', background: 'rgba(15, 118, 110, 0.05)', borderRadius: '12px', marginBottom: '25px', border: '1px solid rgba(15, 118, 110, 0.1)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                    <span style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: '500' }}>Course Fee</span>
+                                    <span style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '1.2rem' }}>{domain.price}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: '600' }}>✨ EMI Available</span>
+                                    <span style={{ fontSize: '0.85rem', color: '#f59e0b', fontWeight: '700' }}>100% Placement</span>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <button onClick={() => setSelectedCourse(domain)} style={{ flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontWeight: '600', cursor: 'pointer', padding: '12px', borderRadius: '10px', transition: 'all 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'} onMouseLeave={(e) => e.currentTarget.style.background = 'var(--bg-secondary)'}>
+                                    View Syllabus
                                 </button>
-                                <Link to="/admission" style={{ 
-                                    background: 'var(--accent)', 
-                                    color: 'black', 
-                                    textDecoration: 'none', 
-                                    padding: '8px 16px', 
-                                    borderRadius: '8px', 
-                                    fontSize: '0.9rem', 
-                                    fontWeight: '700',
-                                    transition: 'transform 0.2s'
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                                >
-                                    Apply Now
+                                <Link to="/admission" className="btn-primary" style={{ flex: 1, padding: '12px', borderRadius: '10px' }}>
+                                    Enroll Now
                                 </Link>
                             </div>
                         </div>
