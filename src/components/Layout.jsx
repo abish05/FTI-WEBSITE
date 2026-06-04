@@ -1,12 +1,12 @@
 import { Outlet, NavLink, Link } from 'react-router-dom';
-import { Menu, X, MessageCircle, Send } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import logoImg from '../assets/logo.png';
 
 const Layout = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
-    const [isChatOpen, setIsChatOpen] = useState(false);
+
 
     useEffect(() => {
         const checkUser = () => {
@@ -132,33 +132,40 @@ const Layout = () => {
                 </div>
             </footer>
 
-            {/* FLOATING CHAT WIDGET */}
-            <div style={{ position: 'fixed', bottom: '30px', right: '30px', zIndex: 9999 }}>
-                {isChatOpen ? (
-                    <div style={{ width: '320px', height: '400px', background: 'var(--bg-primary)', borderRadius: '20px', border: '1px solid var(--glass-border)', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', overflow: 'hidden', animation: 'fadeInUp 0.3s ease-out' }}>
-                        <div style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-secondary))', padding: '15px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <div style={{ width: '10px', height: '10px', background: '#4ade80', borderRadius: '50%' }}></div>
-                                <span style={{ fontWeight: '600' }}>FTI Support</span>
-                            </div>
-                            <button onClick={() => setIsChatOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}><X size={20} /></button>
-                        </div>
-                        <div style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px', overflowY: 'auto', background: 'rgba(15, 118, 110, 0.02)' }}>
-                            <div style={{ background: 'white', padding: '12px 16px', borderRadius: '15px 15px 15px 0', border: '1px solid var(--glass-border)', fontSize: '0.9rem', color: 'var(--text-primary)', alignSelf: 'flex-start', maxWidth: '85%', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
-                                👋 Hi there! Welcome to Future Tech Institute. Are you looking to upskill or find a specific course?
-                            </div>
-                        </div>
-                        <div style={{ padding: '15px', borderTop: '1px solid var(--glass-border)', background: 'white', display: 'flex', gap: '10px' }}>
-                            <input type="text" placeholder="Type your message..." style={{ flex: 1, border: 'none', outline: 'none', background: 'rgba(0,0,0,0.05)', padding: '10px 15px', borderRadius: '20px', fontSize: '0.9rem', color: 'var(--text-primary)' }} />
-                            <button style={{ background: 'var(--accent)', border: 'none', width: '40px', height: '40px', borderRadius: '50%', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}><Send size={18} /></button>
-                        </div>
-                    </div>
-                ) : (
-                    <button onClick={() => setIsChatOpen(true)} className="btn-primary" style={{ width: '60px', height: '60px', borderRadius: '50%', padding: 0, boxShadow: '0 10px 25px rgba(15, 118, 110, 0.4)' }}>
-                        <MessageCircle size={28} />
-                    </button>
-                )}
-            </div>
+            {/* FLOATING WHATSAPP BUTTON */}
+            <a 
+                href="https://wa.me/917708588508" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ 
+                    position: 'fixed', 
+                    bottom: '30px', 
+                    right: '30px', 
+                    zIndex: 9999,
+                    width: '60px', 
+                    height: '60px', 
+                    borderRadius: '50%', 
+                    background: '#25D366', 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center', 
+                    boxShadow: '0 10px 25px rgba(37, 211, 102, 0.4)',
+                    transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(37, 211, 102, 0.6)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 211, 102, 0.4)';
+                }}
+                title="Chat on WhatsApp"
+            >
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" style={{ color: 'white' }}>
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.488 2.012 14.032.99 11.457.99c-5.442 0-9.869 4.37-9.873 9.8-.002 1.905.513 3.766 1.49 5.397L1.96 20.572l4.687-1.418zM17.476 14.39c-.326-.163-1.93-.953-2.229-1.062-.299-.109-.517-.163-.734.163-.217.327-.84.953-1.03 1.17-.19.218-.38.245-.706.082-1.168-.584-1.957-1.01-2.748-1.698-.593-.515-.98-1.15-1.097-1.353-.117-.203-.012-.313.088-.413.09-.09.198-.232.298-.348.1-.116.133-.198.2-.33.067-.132.033-.248-.016-.348-.05-.1-.446-1.077-.611-1.474-.16-.388-.322-.335-.446-.341-.115-.006-.248-.007-.38-.007-.132 0-.348.049-.529.247-.182.198-.694.678-.694 1.654s.71 1.916.81 2.047c.099.13 1.398 2.135 3.387 2.99.473.204.842.326 1.129.418.475.152.907.13 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.508-.296z"/>
+                </svg>
+            </a>
         </>
     );
 };
