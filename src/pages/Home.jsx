@@ -20,9 +20,6 @@ const Home = () => {
             {/* HERO SECTION */}
             <div className="hero-split" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px', alignItems: 'center', marginTop: '20px', animation: 'fadeInUp 0.8s ease-out' }}>
                 <div style={{ textAlign: 'left' }}>
-                    <div style={{ display: 'inline-block', padding: '8px 16px', background: 'rgba(15, 118, 110, 0.1)', color: 'var(--accent)', borderRadius: '30px', fontWeight: '600', marginBottom: '20px', fontSize: '0.9rem', border: '1px solid rgba(15, 118, 110, 0.2)' }}>
-                        🚀 Trusted by 500+ Students & 50+ Hiring Partners
-                    </div>
                     <h1 className="gradient-text" style={{ fontSize: '4.5rem', marginBottom: '24px', letterSpacing: '-1.5px', lineHeight: '1.1' }}>
                         Bridge the Gap Between <br />Learning & Earning.
                     </h1>
