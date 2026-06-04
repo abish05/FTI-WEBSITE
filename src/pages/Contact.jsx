@@ -18,8 +18,8 @@ const Contact = () => {
         // Save to Firestore in background
         addMessage(snapshot).catch(err => console.error('Firestore save error:', err));
 
-        // Formspree email backup in background
-        fetch("https://formspree.io/f/meenezll", {
+        // Send email notification via Cloudflare Worker in background (non-blocking)
+        fetch("https://email-worker.ftitraining.workers.dev", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(snapshot)

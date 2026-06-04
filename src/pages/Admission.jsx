@@ -27,10 +27,10 @@ const Admission = () => {
         // Save to Firestore in background (non-blocking)
         addEnrollment(snapshot).catch(err => console.error('Firestore save error:', err));
 
-        // Send Formspree email backup in background (non-blocking)
-        fetch("https://formspree.io/f/meenezll", {
+        // Send email notification via Cloudflare Worker in background (non-blocking)
+        fetch("https://email-worker.ftitraining.workers.dev", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(snapshot)
         }).catch(() => {});
 
