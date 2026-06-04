@@ -81,7 +81,7 @@ const Admission = () => {
                                 <option value="Web Development">Web Development</option>
                                 <option value="Mobile App Dev">Mobile App Dev</option>
                                 <option value="Data Science & AI">Data Science & AI</option>
-                                <option value="Cloud Computing">Cloud Computing</option>
+                                <option value="Cloud Computing through AWS">Cloud Computing through AWS</option>
                                 <option value="Digital Marketing">Digital Marketing</option>
                                 <option value="Embedded Systems">Embedded Systems</option>
                                 <option value="PLC Automation">PLC Automation</option>

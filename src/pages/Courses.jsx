@@ -59,19 +59,19 @@ const Courses = () => {
             }
         },
         {
-            title: 'Cloud Computing',
+            title: 'Cloud Computing through AWS',
             icon: <Settings size={40} color="#8b5cf6" />,
             image: cloudComputingImg,
-            desc: 'Design, deploy, and manage scalable infrastructure on modern cloud platforms.',
+            desc: 'Design, deploy, and manage scalable infrastructure on the AWS cloud platform.',
             price: '₹35,000',
             duration: '4 Months',
             details: {
                 subtitle: 'The Backbone of Modern Tech',
-                description: 'Move beyond local servers. Learn to architect, deploy, and scale applications on the world’s most powerful cloud platforms.',
-                modules: ['AWS/Azure Fundamentals', 'Docker & Kubernetes (Containerization)', 'Cloud Security', 'Serverless Architecture', 'DevOps Pipelines'],
+                description: 'Move beyond local servers. Learn to architect, deploy, and scale applications on the world’s most powerful cloud platform, Amazon Web Services.',
+                modules: ['AWS Cloud Practitioner Essentials', 'EC2, S3, RDS & VPC Configuration', 'AWS Lambda & Serverless Architectures', 'IAM & Cloud Security Best Practices', 'CI/CD Pipelines with AWS Developer Tools'],
                 projectsLabel: "What you'll do:",
-                projects: 'Migrate a legacy system to the cloud and manage automated scaling for high-traffic apps.',
-                careers: 'Cloud Architect, DevOps Engineer, Systems Administrator.'
+                projects: 'Migrate a legacy system to AWS and manage automated scaling for high-traffic apps.',
+                careers: 'AWS Cloud Architect, DevOps Engineer, Systems Administrator.'
             }
         },
         {

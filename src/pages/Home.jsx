@@ -59,7 +59,7 @@ const Home = () => {
                     <div className="glass-panel" style={{ padding: '35px' }}>
                         <Users size={32} color="#8b5cf6" style={{ marginBottom: '20px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '15px' }}>Expert Mentorship</h3>
-                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>Learn directly from professionals with years of experience in Video Editing, Python Development, and Cloud Computing.</p>
+                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>Learn directly from professionals with years of experience in Video Editing, Python Development, and Cloud Computing through AWS.</p>
                     </div>
                     <div className="glass-panel" style={{ padding: '35px' }}>
                         <Code size={32} color="#118a8b" style={{ marginBottom: '20px' }} />
@@ -88,7 +88,7 @@ const Home = () => {
                         <p style={{ fontSize: '1.2rem', marginBottom: '15px' }}>
                             {quizInterest === 'Design' && "Recommendation: Web Development / UI/UX Design"}
                             {quizInterest === 'Logic' && "Recommendation: Full Stack / Data Science & AI"}
-                            {quizInterest === 'Cloud' && "Recommendation: Cloud Computing"}
+                            {quizInterest === 'Cloud' && "Recommendation: Cloud Computing through AWS"}
                         </p>
                         <button onClick={handleQuizSubmit} className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>Explore Match <ChevronRight size={18} /></button>
                     </div>

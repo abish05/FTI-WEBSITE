@@ -530,7 +530,7 @@ const Admin = () => {
                                     <option>Web Development</option>
                                     <option>Data Science & AI</option>
                                     <option>Artificial Intelligence</option>
-                                    <option>Cloud Computing</option>
+                                    <option>Cloud Computing through AWS</option>
                                     <option>Mobile App Dev</option>
                                     <option>Embedded Systems</option>
                                     <option>PLC Automation</option>
