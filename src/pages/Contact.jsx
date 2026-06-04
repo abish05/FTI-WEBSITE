@@ -52,8 +52,8 @@ const Contact = () => {
             color: '#ec4899',
             bg: 'rgba(236, 72, 153, 0.12)',
             label: 'Email Address',
-            value: 'varun10vikash@mail.com',
-            link: 'mailto:varun10vikash@mail.com'
+            value: 'contact@ftitraining.in',
+            link: 'mailto:contact@ftitraining.in'
         },
         {
             icon: <Clock size={22} />,

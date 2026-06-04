@@ -101,7 +101,7 @@ const Layout = () => {
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '15px' }}>
                             <li style={{ color: 'var(--text-secondary)' }}>Opp to Canara Bank, Near JM Mobiles, Karunya Nagar, Coimbatore – 641114</li>
                             <li style={{ color: 'var(--text-secondary)' }}>Phone: +91 77085 88508</li>
-                            <li style={{ color: 'var(--text-secondary)' }}>Email: varun10vikash@mail.com</li>
+                            <li style={{ color: 'var(--text-secondary)' }}>Email: contact@ftitraining.in</li>
                         </ul>
                     </div>
 
