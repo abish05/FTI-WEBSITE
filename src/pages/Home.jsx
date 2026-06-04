@@ -11,7 +11,7 @@ const Home = () => {
     const handleQuizSubmit = () => {
         if (quizInterest === 'Design') navigate('/courses');
         else if (quizInterest === 'Logic') navigate('/courses');
-        else if (quizInterest === 'Security') navigate('/courses');
+        else if (quizInterest === 'Cloud') navigate('/courses');
         else navigate('/courses');
     };
 
@@ -59,7 +59,7 @@ const Home = () => {
                     <div className="glass-panel" style={{ padding: '35px' }}>
                         <Users size={32} color="#8b5cf6" style={{ marginBottom: '20px' }} />
                         <h3 style={{ fontSize: '1.3rem', marginBottom: '15px' }}>Expert Mentorship</h3>
-                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>Learn directly from professionals with years of experience in Video Editing, Python Development, and Cyber Security.</p>
+                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>Learn directly from professionals with years of experience in Video Editing, Python Development, and Cloud Computing.</p>
                     </div>
                     <div className="glass-panel" style={{ padding: '35px' }}>
                         <Code size={32} color="#118a8b" style={{ marginBottom: '20px' }} />
@@ -81,14 +81,14 @@ const Home = () => {
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap' }}>
                     <button onClick={() => setQuizInterest('Design')} className="btn-primary" style={{ background: quizInterest === 'Design' ? '#ec4899' : 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)', color: quizInterest === 'Design' ? 'white' : 'var(--text-primary)' }}>🎨 Visuals & Design</button>
                     <button onClick={() => setQuizInterest('Logic')} className="btn-primary" style={{ background: quizInterest === 'Logic' ? '#118a8b' : 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)', color: quizInterest === 'Logic' ? 'white' : 'var(--text-primary)' }}>💻 Code & Logic</button>
-                    <button onClick={() => setQuizInterest('Security')} className="btn-primary" style={{ background: quizInterest === 'Security' ? '#118a8b' : 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)', color: quizInterest === 'Security' ? 'white' : 'var(--text-primary)' }}>🛡️ Hack & Security</button>
+                    <button onClick={() => setQuizInterest('Cloud')} className="btn-primary" style={{ background: quizInterest === 'Cloud' ? '#118a8b' : 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)', color: quizInterest === 'Cloud' ? 'white' : 'var(--text-primary)' }}>☁️ Cloud & Systems</button>
                 </div>
                 {quizInterest && (
                     <div style={{ marginTop: '30px', animation: 'fadeIn 0.5s ease' }}>
                         <p style={{ fontSize: '1.2rem', marginBottom: '15px' }}>
                             {quizInterest === 'Design' && "Recommendation: Web Development / UI/UX Design"}
                             {quizInterest === 'Logic' && "Recommendation: Full Stack / Data Science & AI"}
-                            {quizInterest === 'Security' && "Recommendation: Cyber Security & Cloud Computing"}
+                            {quizInterest === 'Cloud' && "Recommendation: Cloud Computing"}
                         </p>
                         <button onClick={handleQuizSubmit} className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>Explore Match <ChevronRight size={18} /></button>
                     </div>

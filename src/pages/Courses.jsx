@@ -1,12 +1,13 @@
-import { MonitorPlay, Smartphone, Database, Shield, Layout, Settings, X, CheckCircle2 } from 'lucide-react';
+import { MonitorPlay, Smartphone, Database, Layout, Settings, X, CheckCircle2, Cpu, Sliders } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import webDevImg from '../assets/web_dev.png';
 import mobileDevImg from '../assets/mobile_dev.png';
 import fullStackImg from '../assets/full_stack_dev.png';
-import cyberSecurityImg from '../assets/cyber_security.png';
 import cloudComputingImg from '../assets/cloud_computing.png';
 import digitalMarketingImg from '../assets/digital_marketing.png';
+import embeddedSystemsImg from '../assets/embedded_systems.png';
+import plcAutomationImg from '../assets/plc_automation.png';
 
 const Courses = () => {
     const [selectedCourse, setSelectedCourse] = useState(null);
@@ -58,22 +59,6 @@ const Courses = () => {
             }
         },
         {
-            title: 'Cyber Security',
-            icon: <Shield size={40} color="#ef4444" />,
-            image: cyberSecurityImg,
-            desc: 'Protect systems and networks from digital attacks with advanced security protocols.',
-            price: '₹35,000',
-            duration: '4 Months',
-            details: {
-                subtitle: 'Protect the Digital Frontier',
-                description: 'Learn to think like a hacker to build unbreakable defenses. Gain the skills needed to protect sensitive corporate data.',
-                modules: ['Ethical Hacking', 'Network Security', 'Cryptography', 'Incident Response', 'Penetration Testing'],
-                projectsLabel: "What you'll learn:",
-                projects: 'How to identify vulnerabilities, mitigate DDoS attacks, and secure cloud environments.',
-                careers: 'Security Consultant, Ethical Hacker, SOC Analyst.'
-            }
-        },
-        {
             title: 'Cloud Computing',
             icon: <Settings size={40} color="#8b5cf6" />,
             image: cloudComputingImg,
@@ -103,6 +88,38 @@ const Courses = () => {
                 projectsLabel: "What you'll do:",
                 projects: 'Create a 360-degree marketing campaign and optimize a live brand’s conversion rate.',
                 careers: 'Digital Marketing Manager, SEO Specialist, Performance Marketer.'
+            }
+        },
+        {
+            title: 'Embedded Systems',
+            icon: <Cpu size={40} color="#118a8b" />,
+            image: embeddedSystemsImg,
+            desc: 'Learn microcontrollers programming, circuit design, and hardware-software integration.',
+            price: '₹35,000',
+            duration: '4 Months',
+            details: {
+                subtitle: 'Program the Physical World',
+                description: 'Dive into the intersection of hardware and software. Master microcontrollers, sensors integration, and real-time operating systems.',
+                modules: ['Microcontroller Architecture (8051/ARM)', 'Embedded C Programming', 'Sensors & Actuators Interfacing', 'IoT Protocols (MQTT/HTTP)', 'PCB Design Fundamentals'],
+                projectsLabel: "What you'll build:",
+                projects: 'A smart home automation system and a self-navigating robotic prototype.',
+                careers: 'Embedded Software Engineer, Firmware Developer, IoT Architect.'
+            }
+        },
+        {
+            title: 'PLC Automation',
+            icon: <Sliders size={40} color="#f59e0b" />,
+            image: plcAutomationImg,
+            desc: 'Master industrial automation, PLC programming (SCADA), and control system design.',
+            price: '₹40,000',
+            duration: '4 Months',
+            details: {
+                subtitle: 'Powering Industrial Intelligence',
+                description: 'Learn to program and manage the brain of modern factory systems. Master industrial communication and control panels design.',
+                modules: ['PLC Programming (Ladder Logic/FBD)', 'SCADA & HMI Design', 'Industrial Sensors & Calibrations', 'Control Panel Designing', 'Industrial Networking Protocols'],
+                projectsLabel: "What you'll do:",
+                projects: 'Design and program a fully simulated automated bottling line and industrial conveyor control.',
+                careers: 'Automation Engineer, PLC Programmer, Control Systems Engineer.'
             }
         }
     ];

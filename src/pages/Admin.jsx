@@ -528,11 +528,12 @@ const Admin = () => {
                                 <input placeholder="Phone Number" className="form-input" required value={newStudent.phone} onChange={e => setNewStudent({...newStudent, phone: e.target.value})} />
                                 <select className="form-input" value={newStudent.course} onChange={e => setNewStudent({...newStudent, course: e.target.value})}>
                                     <option>Web Development</option>
-                                    <option>Cyber Security</option>
                                     <option>Data Science & AI</option>
                                     <option>Artificial Intelligence</option>
                                     <option>Cloud Computing</option>
                                     <option>Mobile App Dev</option>
+                                    <option>Embedded Systems</option>
+                                    <option>PLC Automation</option>
                                 </select>
                                 <textarea placeholder="Remarks (Optional)" className="form-input" rows="3" style={{ resize: 'none' }} value={newStudent.remarks} onChange={e => setNewStudent({...newStudent, remarks: e.target.value})}></textarea>
                                 <button 
