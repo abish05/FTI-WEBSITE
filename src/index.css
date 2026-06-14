@@ -88,7 +88,7 @@ h1, h2, h3, h4, h5, h6 {
 .page-container {
   min-height: 100vh;
   animation: pagetransition 0.5s ease-out;
-  padding-top: 220px; /* Offset for hero-scale fixed navbar */
+  padding-top: 120px; /* Offset for fixed navbar */
 }
 
 .gradient-text {
