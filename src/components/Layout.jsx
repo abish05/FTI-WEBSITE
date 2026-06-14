@@ -72,7 +72,9 @@ const Layout = () => {
 
                     <div>
                         <div style={{ marginBottom: '30px' }}>
-                            <img src={logoImg} alt="Future Tech Institute" style={{ height: '90px', objectFit: 'contain' }} />
+                            <Link to="/">
+                                <img src={logoImg} alt="Future Tech Institute" style={{ height: '90px', objectFit: 'contain', cursor: 'pointer' }} />
+                            </Link>
                         </div>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '20px' }}>
                             Bridge the gap between learning and earning at the best technical training institute in Coimbatore.
