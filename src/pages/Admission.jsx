@@ -6,7 +6,7 @@ const Admission = () => {
         fullName: '',
         email: '',
         phone: '',
-        course: 'Web Development',
+        course: '',
         remarks: ''
     });
 
@@ -22,7 +22,7 @@ const Admission = () => {
         setIsSyncing(false);
 
         const snapshot = { ...formData };
-        setFormData({ fullName: '', email: '', phone: '', course: 'Web Development', remarks: '' });
+        setFormData({ fullName: '', email: '', phone: '', course: '', remarks: '' });
 
         // Save to Firestore in background (non-blocking)
         addEnrollment(snapshot).catch(err => console.error('Firestore save error:', err));
@@ -77,7 +77,8 @@ const Admission = () => {
 
                         <div className="form-group">
                             <label className="form-label">Interested Course / Domain</label>
-                            <select name="course" value={formData.course} onChange={handleChange} className="form-input" style={{ appearance: 'none', cursor: 'pointer' }}>
+                            <select required name="course" value={formData.course} onChange={handleChange} className="form-input" style={{ appearance: 'none', cursor: 'pointer' }}>
+                                <option value="" disabled>Choose any one course</option>
                                 <option value="Web Development">Web Development</option>
                                 <option value="Mobile App Dev">Mobile App Dev</option>
                                 <option value="Data Science & AI">Data Science & AI</option>
