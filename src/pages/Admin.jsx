@@ -229,10 +229,6 @@ const Admin = () => {
                             </div>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', align: 'center', gap: '8px', background: 'rgba(17,138,139,0.1)', border: '1px solid rgba(17,138,139,0.2)', borderRadius: '12px', padding: '8px 14px' }}>
-                        <Zap size={16} color="#118a8b" />
-                        <span style={{ fontSize: '0.8rem', color: '#118a8b', fontWeight: '700' }}>FIREBASE LIVE</span>
-                    </div>
                 </header>
 
                 {/* Loading State */}
