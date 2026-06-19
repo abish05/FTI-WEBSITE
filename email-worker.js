@@ -1,31 +1,15 @@
 // =========================================================================
-//  CLOUDFLARE EMAIL WORKER SCRIPT
-// =========================================================================
-//  This script runs on Cloudflare Workers. It serves two purposes:
-//  1. Incoming Emails: Automatically forwards incoming emails sent to 
-//     your domain (e.g. admission@ftitraining.in) to your target inbox.
-//  2. HTTP API: Receives contact & admission form submissions from your
-//     website and sends a formatted notification email using Cloudflare's
-//     send_email binding.
-//
-//  How to deploy this on Cloudflare:
-//  1. Create a new Cloudflare Worker.
-//  2. Paste this code into the Worker editor.
-//  3. Under the Worker's Settings -> Variables, add an "Email Routing"
-//     binding named "SEND_EMAIL" connected to your domain.
-//  4. Deploy the Worker and note its URL (e.g., https://your-worker.workers.dev).
+//  CLOUDFLARE EMAIL WORKER (MAILCHANNELS)
 // =========================================================================
 
 export default {
   // 1. Handles incoming email events routed from Cloudflare Email Routing
   async email(message, env, ctx) {
-    // Automatically forward any incoming email to your destination inbox
     await message.forward("varun10vikash@mail.com");
   },
 
   // 2. Handles HTTP POST requests from the website forms
   async fetch(request, env, ctx) {
-    // Enable CORS so the website frontend can communicate with this worker
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -40,12 +24,17 @@ export default {
       try {
         const data = await request.json();
         
+        let toEmail = "varun10vikash@mail.com";
+        let subject = "New Website Submission";
+        let bodyText = "";
+
         // -------------------------------------------------------
         //  TYPE: Demo Booking Confirmation → send to STUDENT
         // -------------------------------------------------------
         if (data.type === "demo_confirmation") {
-          const subject = `✅ Your Demo Session is Confirmed — FutureTech Training Institute`;
-          const bodyText = `
+          toEmail = data.email; // Send to student
+          subject = `✅ Your Demo Session is Confirmed — FutureTech Training Institute`;
+          bodyText = `
 Dear ${data.fullName},
 
 Great news! Your free demo session request has been CONFIRMED. 🎉
@@ -79,68 +68,46 @@ Warm regards,
 The FutureTech Team
 https://ftitraining.in
           `.trim();
-
-          await env.SEND_EMAIL.send({
-            from: "noreply@ftitraining.in",
-            to: data.email,            // → Student's email
-            subject: subject,
-            text: bodyText,
-          });
-
-          return new Response(JSON.stringify({ success: true }), {
-            status: 200,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-
-        // -------------------------------------------------------
-        //  TYPE: Admission / Contact form → send to ADMIN
-        // -------------------------------------------------------
-        let subject = "New Website Submission";
-        let bodyText = "";
-
-        if (data.course) {
-          // Admission Form Submission
+        } else if (data.course) {
+          // Admission Form
           subject = `🎓 New Admission: ${data.fullName} (${data.course})`;
-          bodyText = `
-New student enrollment application received:
-
---------------------------------------------------
-Student Name: ${data.fullName}
-Email Address: ${data.email}
-Phone Number: ${data.phone}
-Course Selected: ${data.course}
-Date: ${data.date || new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
---------------------------------------------------
-
-Remarks/Message:
-${data.remarks || 'No additional remarks provided.'}
-          `.trim();
+          bodyText = `New student enrollment application received:\n\nStudent Name: ${data.fullName}\nEmail Address: ${data.email}\nPhone Number: ${data.phone}\nCourse Selected: ${data.course}\nDate: ${data.date || new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\nRemarks:\n${data.remarks || 'No additional remarks provided.'}`;
         } else {
-          // Contact Form Submission
+          // Contact Form
           subject = `✉️ New Contact Message from ${data.name}`;
-          bodyText = `
-New inquiry received from the contact form:
-
---------------------------------------------------
-Sender Name: ${data.name}
-Email Address: ${data.email}
-Phone Number: ${data.phone || 'Not provided'}
-Date: ${data.date || new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
---------------------------------------------------
-
-Message Content:
-${data.message}
-          `.trim();
+          bodyText = `New inquiry received from the contact form:\n\nSender Name: ${data.name}\nEmail Address: ${data.email}\nPhone Number: ${data.phone || 'Not provided'}\nDate: ${data.date || new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}\n\nMessage Content:\n${data.message}`;
         }
 
-        // Send the email using the Cloudflare SEND_EMAIL binding
-        await env.SEND_EMAIL.send({
-          from: "noreply@ftitraining.in", // Must be a verified address/domain in Cloudflare
-          to: "varun10vikash@mail.com",
-          subject: subject,
-          text: bodyText,
+        // Send via MailChannels API
+        const mailChannelsRes = await fetch("https://api.mailchannels.net/tx/v1/send", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            personalizations: [
+              {
+                to: [{ email: toEmail, name: data.fullName || data.name || "Recipient" }],
+              },
+            ],
+            from: {
+              email: "contact@ftitraining.in",
+              name: "FutureTech Training Institute",
+            },
+            subject: subject,
+            content: [
+              {
+                type: "text/plain",
+                value: bodyText,
+              },
+            ],
+          }),
         });
+
+        if (!mailChannelsRes.ok) {
+          const errText = await mailChannelsRes.text();
+          throw new Error(`MailChannels Error: ${errText}`);
+        }
 
         return new Response(JSON.stringify({ success: true }), {
           status: 200,
