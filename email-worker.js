@@ -40,6 +40,62 @@ export default {
       try {
         const data = await request.json();
         
+        // -------------------------------------------------------
+        //  TYPE: Demo Booking Confirmation → send to STUDENT
+        // -------------------------------------------------------
+        if (data.type === "demo_confirmation") {
+          const subject = `✅ Your Demo Session is Confirmed — FutureTech Training Institute`;
+          const bodyText = `
+Dear ${data.fullName},
+
+Great news! Your free demo session request has been CONFIRMED. 🎉
+
+--------------------------------------------------
+  BOOKING DETAILS
+--------------------------------------------------
+  Name          : ${data.fullName}
+  Phone         : ${data.phone}
+  Email         : ${data.email}
+  Course        : ${data.course}
+  Location      : ${data.location || 'N/A'}
+  Pincode       : ${data.pincode || 'N/A'}
+--------------------------------------------------
+
+Our team will reach out to you shortly on your phone number (${data.phone}) to confirm the exact date and time for your session.
+
+What to expect in your free demo:
+  • A personalised 1-on-1 walkthrough of the course
+  • Guidance from an industry expert
+  • Honest advice on whether the course is right for you
+  • No pressure, no obligation
+
+If you have any questions before your session, feel free to contact us:
+  📞 Phone   : +91 77085 88508
+  🌐 Website : https://ftitraining.in
+
+Thank you for choosing FutureTech Training Institute!
+
+Warm regards,
+The FutureTech Team
+https://ftitraining.in
+          `.trim();
+
+          await env.SEND_EMAIL.send({
+            from: "noreply@ftitraining.in",
+            to: data.email,            // → Student's email
+            subject: subject,
+            text: bodyText,
+          });
+
+          return new Response(JSON.stringify({ success: true }), {
+            status: 200,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // -------------------------------------------------------
+        //  TYPE: Admission / Contact form → send to ADMIN
+        // -------------------------------------------------------
         let subject = "New Website Submission";
         let bodyText = "";
 

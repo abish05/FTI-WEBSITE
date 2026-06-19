@@ -262,9 +262,40 @@ export const subscribeToDemoBookings = (callback) => {
     });
 };
 
+const EMAIL_WORKER_URL = 'https://email-worker.ftitraining.workers.dev';
+
 export const updateDemoBookingStatus = async (id, status) => {
     try {
-        await updateDoc(doc(db, 'demoBookings', id), { status });
+        // 1. Update status in Firestore
+        const bookingRef = doc(db, 'demoBookings', id);
+        await updateDoc(bookingRef, { status });
+
+        // 2. If confirmed → fetch booking data and email the student
+        if (status === 'confirmed') {
+            try {
+                const snap = await getDoc(bookingRef);
+                if (snap.exists()) {
+                    const b = snap.data();
+                    await fetch(EMAIL_WORKER_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            type: 'demo_confirmation',
+                            fullName: b.fullName,
+                            email:    b.email,
+                            phone:    b.phone,
+                            course:   b.course,
+                            location: b.location || '',
+                            pincode:  b.pincode  || '',
+                        }),
+                    });
+                }
+            } catch (emailErr) {
+                // Non-blocking — status was already updated
+                console.warn('Confirmation email failed (non-critical):', emailErr.message);
+            }
+        }
+
         return true;
     } catch (err) {
         console.error('updateDemoBookingStatus error:', err);
