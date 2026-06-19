@@ -3,7 +3,7 @@ import {
     LayoutDashboard, Users, MessageSquare,
     LogOut, Search, Download, Trash2, Menu, X, 
     ShieldCheck, Zap, RefreshCw, Plus, UserPlus, Mail, Edit,
-    Bell, BellOff, Calendar, CheckCircle, Clock, AlertCircle, ToggleLeft, ToggleRight, Eye
+    Bell, BellOff, Calendar, CheckCircle, Clock, AlertCircle, ToggleLeft, ToggleRight, Eye, ClipboardList
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -235,6 +235,7 @@ const Admin = () => {
                 <div style={{ flex: 1 }}>
                     <SidebarItem icon={<LayoutDashboard size={20} />} label="Overview" active={activeTab === 'Overview'} onClick={() => { setActiveTab('Overview'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<Users size={20} />} label="Student Ledger" active={activeTab === 'Participants'} onClick={() => { setActiveTab('Participants'); setIsSidebarOpen(false); }} />
+                    <SidebarItem icon={<ClipboardList size={20} />} label="Prospect Registry" active={activeTab === 'ProspectRegistry'} onClick={() => { setActiveTab('ProspectRegistry'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<MessageSquare size={20} />} label="Inquiries" active={activeTab === 'Messages'} onClick={() => { setActiveTab('Messages'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<Calendar size={20} />} label="Demo Bookings" active={activeTab === 'DemoBookings'} onClick={() => { setActiveTab('DemoBookings'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<Bell size={20} />} label="Popup Manager" active={activeTab === 'Popup'} onClick={() => { setActiveTab('Popup'); setIsSidebarOpen(false); }} />
@@ -526,6 +527,157 @@ const Admin = () => {
                                     })}
                             </div>
                         )}
+                    </div>
+                )}
+
+                {/* PROSPECT REGISTRY — Demo Class Bookings Ledger */}
+                {!isLoading && activeTab === 'ProspectRegistry' && (
+                    <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
+
+                        {/* Header bar */}
+                        <div style={{ display: 'flex', gap: '15px', marginBottom: '30px', flexWrap: 'wrap' }}>
+                            <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+                                <Search size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+                                <input
+                                    type="text"
+                                    placeholder="Search prospect registry..."
+                                    className="form-input"
+                                    style={{ paddingLeft: '45px', marginBottom: 0 }}
+                                    value={bookingSearch}
+                                    onChange={(e) => setBookingSearch(e.target.value)}
+                                />
+                            </div>
+                            <button
+                                onClick={() => {
+                                    const headers = ['Name', 'Email', 'Phone', 'Course', 'Preferred Date', 'Preferred Time', 'Status', 'Booked On', 'Notes'];
+                                    const rows = demoBookings.map(b => [
+                                        b.fullName, b.email, b.phone, b.course,
+                                        b.preferredDate || '—', b.preferredTime || '—',
+                                        b.status, b.date, b.message || ''
+                                    ]);
+                                    const csv = [headers, ...rows].map(r => r.map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+                                    const blob = new Blob([csv], { type: 'text/csv' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url; a.download = `FTI_Prospects_${new Date().toLocaleDateString()}.csv`; a.click();
+                                }}
+                                style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '0 20px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', minHeight: '48px' }}
+                            >
+                                <Download size={18} /> Export CSV
+                            </button>
+                        </div>
+
+                        {/* Summary chips */}
+                        <div style={{ display: 'flex', gap: '10px', marginBottom: '22px', flexWrap: 'wrap' }}>
+                            {[
+                                { label: 'Total', count: demoBookings.length, color: '#64748b', bg: 'rgba(100,116,139,0.08)', border: 'rgba(100,116,139,0.18)' },
+                                { label: 'Pending', count: demoBookings.filter(b => b.status === 'pending').length, color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
+                                { label: 'Confirmed', count: demoBookings.filter(b => b.status === 'confirmed').length, color: '#118a8b', bg: 'rgba(17,138,139,0.08)', border: 'rgba(17,138,139,0.2)' },
+                                { label: 'Completed', count: demoBookings.filter(b => b.status === 'completed').length, color: '#22c55e', bg: 'rgba(34,197,94,0.08)', border: 'rgba(34,197,94,0.2)' },
+                            ].map(chip => (
+                                <span key={chip.label} style={{ padding: '6px 16px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '700', color: chip.color, background: chip.bg, border: `1px solid ${chip.border}` }}>
+                                    {chip.label}: {chip.count}
+                                </span>
+                            ))}
+                        </div>
+
+                        {/* Table */}
+                        <div className="glass-panel" style={{ overflowX: 'auto' }}>
+                            {demoBookings.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+                                    <ClipboardList size={48} color="#1e293b" style={{ margin: '0 auto 15px', display: 'block' }} />
+                                    <p style={{ color: '#64748b' }}>
+                                        No prospects yet.<br />
+                                        Students who book a demo session will appear here automatically.
+                                    </p>
+                                </div>
+                            ) : (
+                                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                    <thead>
+                                        <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                                            {['Prospect', 'Contact', 'Course Interest', 'Preferred Slot', 'Status', 'Booked On', 'Actions'].map(h => (
+                                                <th key={h} style={{ padding: '18px 20px', color: '#64748b', fontSize: '0.72rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {demoBookings
+                                            .filter(b =>
+                                                (b.fullName || '').toLowerCase().includes(bookingSearch.toLowerCase()) ||
+                                                (b.email || '').toLowerCase().includes(bookingSearch.toLowerCase()) ||
+                                                (b.course || '').toLowerCase().includes(bookingSearch.toLowerCase()) ||
+                                                (b.phone || '').includes(bookingSearch)
+                                            )
+                                            .map(b => {
+                                                const sc = b.status === 'pending' ? '#f59e0b' : b.status === 'confirmed' ? '#118a8b' : '#22c55e';
+                                                const sb = b.status === 'pending' ? 'rgba(245,158,11,0.1)' : b.status === 'confirmed' ? 'rgba(17,138,139,0.1)' : 'rgba(34,197,94,0.1)';
+                                                return (
+                                                    <tr key={b.id} style={{ borderBottom: '1px solid var(--glass-border)', transition: 'background 0.2s' }}
+                                                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(17,138,139,0.03)'}
+                                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                                    >
+                                                        {/* Prospect */}
+                                                        <td style={{ padding: '18px 20px' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg, rgba(17,138,139,0.15), rgba(17,138,139,0.08))', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontWeight: '800', color: '#118a8b', fontSize: '0.9rem' }}>
+                                                                    {(b.fullName || '?')[0].toUpperCase()}
+                                                                </div>
+                                                                <div>
+                                                                    <div style={{ fontWeight: '700', fontSize: '0.92rem' }}>{b.fullName}</div>
+                                                                    {b.message && <div style={{ fontSize: '0.72rem', color: '#94a3b8', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.message}>"{b.message}"</div>}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        {/* Contact */}
+                                                        <td style={{ padding: '18px 20px' }}>
+                                                            <div style={{ fontSize: '0.88rem' }}>{b.phone}</div>
+                                                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{b.email}</div>
+                                                        </td>
+                                                        {/* Course */}
+                                                        <td style={{ padding: '18px 20px' }}>
+                                                            <span style={{ padding: '5px 12px', borderRadius: '8px', background: 'rgba(17,138,139,0.08)', color: '#118a8b', fontSize: '0.78rem', fontWeight: '600', display: 'inline-block' }}>{b.course}</span>
+                                                        </td>
+                                                        {/* Preferred Slot */}
+                                                        <td style={{ padding: '18px 20px' }}>
+                                                            {b.preferredDate ? (
+                                                                <div>
+                                                                    <div style={{ fontSize: '0.85rem', fontWeight: '600' }}>{b.preferredDate}</div>
+                                                                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{b.preferredTime || 'Any time'}</div>
+                                                                </div>
+                                                            ) : (
+                                                                <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>Not specified</span>
+                                                            )}
+                                                        </td>
+                                                        {/* Status */}
+                                                        <td style={{ padding: '18px 20px' }}>
+                                                            <select
+                                                                value={b.status}
+                                                                onChange={async (e) => await updateDemoBookingStatus(b.id, e.target.value)}
+                                                                style={{ padding: '5px 10px', borderRadius: '20px', background: sb, color: sc, border: `1px solid ${sc}40`, fontSize: '0.75rem', fontWeight: '700', cursor: 'pointer', outline: 'none', appearance: 'none', paddingRight: '24px', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
+                                                            >
+                                                                <option value="pending">PENDING</option>
+                                                                <option value="confirmed">CONFIRMED</option>
+                                                                <option value="completed">COMPLETED</option>
+                                                            </select>
+                                                        </td>
+                                                        {/* Booked On */}
+                                                        <td style={{ padding: '18px 20px', color: '#94a3b8', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>{b.date}</td>
+                                                        {/* Actions */}
+                                                        <td style={{ padding: '18px 20px', textAlign: 'center' }}>
+                                                            <button
+                                                                onClick={async () => { if (window.confirm(`Remove ${b.fullName} from Prospect Registry?`)) await deleteDemoBooking(b.id); }}
+                                                                style={{ padding: '9px', borderRadius: '10px', color: '#ef4444', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                                                            >
+                                                                <Trash2 size={15} />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
                     </div>
                 )}
 
