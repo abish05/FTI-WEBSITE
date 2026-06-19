@@ -22,16 +22,14 @@ export default async function handler(req, res) {
     try {
         const data = req.body;
 
-        // Create the SMTP transporter
+        // Create the SMTP transporter using Brevo (or any standard SMTP)
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true, // true for 465, false for other ports
+            host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+            port: process.env.SMTP_PORT || 587,
+            secure: false, // true for 465, false for 587
             auth: {
-                user: 'contact@ftitraining.in',
-                // IMPORTANT: You MUST use an App Password here, not the standard login password.
-                // Replace this with the generated 16-character App Password.
-                pass: process.env.EMAIL_PASSWORD || 'YOUR_APP_PASSWORD_HERE'
+                user: process.env.SMTP_USER || 'contact@ftitraining.in',
+                pass: process.env.SMTP_PASS || '16ITU043@kahe'
             }
         });
 
