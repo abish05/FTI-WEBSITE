@@ -262,7 +262,7 @@ export const subscribeToDemoBookings = (callback) => {
     });
 };
 
-const EMAIL_WORKER_URL = 'https://email-worker.abish-23cse008.workers.dev';
+const EMAIL_API_URL = '/api/send-email';
 
 export const updateDemoBookingStatus = async (id, status) => {
     try {
@@ -276,7 +276,7 @@ export const updateDemoBookingStatus = async (id, status) => {
                 const snap = await getDoc(bookingRef);
                 if (snap.exists()) {
                     const b = snap.data();
-                    await fetch(EMAIL_WORKER_URL, {
+                    await fetch(EMAIL_API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
