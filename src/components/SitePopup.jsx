@@ -11,12 +11,9 @@ const SitePopup = () => {
     useEffect(() => {
         const unsub = subscribeToPopupConfig((data) => {
             setConfig(data);
-            // Show only once per session, only if enabled
+            // Show every time the page loads if enabled
             if (data?.enabled) {
-                const dismissed = sessionStorage.getItem('fti_popup_dismissed');
-                if (!dismissed) {
-                    setTimeout(() => setVisible(true), 1500);
-                }
+                setTimeout(() => setVisible(true), 1500);
             } else {
                 setVisible(false);
             }
@@ -26,7 +23,6 @@ const SitePopup = () => {
 
     const handleClose = () => {
         setVisible(false);
-        sessionStorage.setItem('fti_popup_dismissed', '1');
     };
 
     const handleCTA = () => {
