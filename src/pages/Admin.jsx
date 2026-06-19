@@ -595,7 +595,7 @@ const Admin = () => {
                                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                                     <thead>
                                         <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                                            {['Prospect', 'Contact', 'Course Interest', 'Preferred Slot', 'Status', 'Booked On', 'Actions'].map(h => (
+                                            {['Prospect', 'Contact', 'Area of Interest', 'Location', 'Pincode', 'Status', 'Booked On', 'Actions'].map(h => (
                                                 <th key={h} style={{ padding: '18px 20px', color: '#64748b', fontSize: '0.72rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>
                                             ))}
                                         </tr>
@@ -633,20 +633,17 @@ const Admin = () => {
                                                             <div style={{ fontSize: '0.88rem' }}>{b.phone}</div>
                                                             <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{b.email}</div>
                                                         </td>
-                                                        {/* Course */}
+                                                        {/* Area of Interest */}
                                                         <td style={{ padding: '18px 20px' }}>
                                                             <span style={{ padding: '5px 12px', borderRadius: '8px', background: 'rgba(17,138,139,0.08)', color: '#118a8b', fontSize: '0.78rem', fontWeight: '600', display: 'inline-block' }}>{b.course}</span>
                                                         </td>
-                                                        {/* Preferred Slot */}
+                                                        {/* Location */}
                                                         <td style={{ padding: '18px 20px' }}>
-                                                            {b.preferredDate ? (
-                                                                <div>
-                                                                    <div style={{ fontSize: '0.85rem', fontWeight: '600' }}>{b.preferredDate}</div>
-                                                                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{b.preferredTime || 'Any time'}</div>
-                                                                </div>
-                                                            ) : (
-                                                                <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>Not specified</span>
-                                                            )}
+                                                            <div style={{ fontSize: '0.88rem', fontWeight: '600' }}>{b.location || <span style={{ color: '#94a3b8' }}>—</span>}</div>
+                                                        </td>
+                                                        {/* Pincode */}
+                                                        <td style={{ padding: '18px 20px' }}>
+                                                            <span style={{ fontFamily: 'monospace', fontSize: '0.88rem', fontWeight: '600', color: '#475569' }}>{b.pincode || '—'}</span>
                                                         </td>
                                                         {/* Status */}
                                                         <td style={{ padding: '18px 20px' }}>
@@ -745,11 +742,17 @@ const Admin = () => {
                                         />
                                     </div>
                                     <div>
-                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b', fontWeight: '600' }}>CTA Button Link <span style={{ fontWeight: '400', opacity: 0.7 }}>(leave blank to open the booking form)</span></label>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b', fontWeight: '600' }}>CTA Button Link <span style={{ fontWeight: '400', opacity: 0.7 }}>(leave blank to use the auto-generated booking form)</span></label>
+                                        {/* Auto-generated link hint */}
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', padding: '10px 14px', borderRadius: '10px', background: 'rgba(17,138,139,0.06)', border: '1px solid rgba(17,138,139,0.15)' }}>
+                                            <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: '600', whiteSpace: 'nowrap' }}>✨ Auto-generated:</span>
+                                            <code style={{ fontSize: '0.8rem', color: '#118a8b', fontWeight: '700', flex: 1 }}>{window.location.origin}/book-demo</code>
+                                            <button type="button" onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/book-demo`); }} style={{ padding: '4px 10px', borderRadius: '6px', background: '#118a8b', color: 'white', border: 'none', fontSize: '0.72rem', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>Copy</button>
+                                        </div>
                                         <input
                                             className="form-input"
                                             style={{ marginBottom: 0 }}
-                                            placeholder="https://... or leave blank"
+                                            placeholder={`${window.location.origin}/book-demo  or leave blank`}
                                             value={popupConfig.buttonLink}
                                             onChange={e => setPopupConfig(p => ({ ...p, buttonLink: e.target.value }))}
                                         />

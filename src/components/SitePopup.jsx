@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Sparkles, Calendar } from 'lucide-react';
 import { subscribeToPopupConfig } from '../api/db';
 
 const SitePopup = () => {
+    const navigate = useNavigate();
     const [config, setConfig] = useState(null);
     const [visible, setVisible] = useState(false);
-    const [showDemoForm, setShowDemoForm] = useState(false);
 
     useEffect(() => {
         const unsub = subscribeToPopupConfig((data) => {
@@ -29,11 +30,16 @@ const SitePopup = () => {
     };
 
     const handleCTA = () => {
-        if (config?.buttonLink) {
-            window.open(config.buttonLink, '_blank');
+        handleClose();
+        const link = config?.buttonLink || '/book-demo';
+        // Internal link (starts with /) — use React Router
+        if (link.startsWith('/') || link.startsWith(window.location.origin)) {
+            const path = link.startsWith(window.location.origin)
+                ? link.replace(window.location.origin, '')
+                : link;
+            navigate(path);
         } else {
-            setShowDemoForm(true);
-            setVisible(false);
+            window.open(link, '_blank');
         }
     };
 

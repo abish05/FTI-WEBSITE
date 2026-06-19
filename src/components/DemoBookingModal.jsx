@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { X, Calendar, User, Mail, Phone, BookOpen, Clock, CheckCircle } from 'lucide-react';
+import { X, Calendar, User, Mail, Phone, BookOpen, MapPin, Hash, CheckCircle } from 'lucide-react';
 import { addDemoBooking } from '../api/db';
 
 const DemoBookingModal = ({ isOpen, onClose }) => {
     const [form, setForm] = useState({
         fullName: '',
-        email: '',
         phone: '',
+        email: '',
         course: 'Web Development',
-        preferredDate: '',
-        preferredTime: '',
-        message: ''
+        location: '',
+        pincode: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -25,13 +24,13 @@ const DemoBookingModal = ({ isOpen, onClose }) => {
         if (result.success) {
             setSubmitted(true);
         } else {
-            alert('Failed to submit booking. Please try again or contact us directly.');
+            alert('Failed to submit. Please try again or contact us directly.');
         }
     };
 
     const handleReset = () => {
         setSubmitted(false);
-        setForm({ fullName: '', email: '', phone: '', course: 'Web Development', preferredDate: '', preferredTime: '', message: '' });
+        setForm({ fullName: '', phone: '', email: '', course: 'Web Development', location: '', pincode: '' });
         onClose();
     };
 
@@ -177,13 +176,14 @@ const DemoBookingModal = ({ isOpen, onClose }) => {
                                 </div>
 
                                 <div className="demo-field" style={{ marginBottom: '16px' }}>
-                                    <label className="demo-label"><Mail size={13} /> Email Address</label>
+                                    <label className="demo-label"><Mail size={13} /> Email ID</label>
                                     <input required type="email" className="demo-input" placeholder="you@email.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
                                 </div>
 
                                 <div className="demo-field" style={{ marginBottom: '16px' }}>
-                                    <label className="demo-label"><BookOpen size={13} /> Interested Course</label>
+                                    <label className="demo-label"><BookOpen size={13} /> Area of Interest</label>
                                     <select required className="demo-input" value={form.course} onChange={e => setForm({ ...form, course: e.target.value })}>
+                                        <option value="">— Select your interest —</option>
                                         <option>Web Development</option>
                                         <option>Data Science &amp; AI</option>
                                         <option>Artificial Intelligence</option>
@@ -198,26 +198,13 @@ const DemoBookingModal = ({ isOpen, onClose }) => {
 
                                 <div className="demo-field-group">
                                     <div className="demo-field">
-                                        <label className="demo-label"><Calendar size={13} /> Preferred Date</label>
-                                        <input type="date" className="demo-input" value={form.preferredDate} min={new Date().toISOString().split('T')[0]} onChange={e => setForm({ ...form, preferredDate: e.target.value })} />
+                                        <label className="demo-label"><MapPin size={13} /> Location / City</label>
+                                        <input required className="demo-input" placeholder="e.g. Coimbatore" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} />
                                     </div>
                                     <div className="demo-field">
-                                        <label className="demo-label"><Clock size={13} /> Preferred Time</label>
-                                        <select className="demo-input" value={form.preferredTime} onChange={e => setForm({ ...form, preferredTime: e.target.value })}>
-                                            <option value="">Any time</option>
-                                            <option>9:00 AM – 10:00 AM</option>
-                                            <option>10:00 AM – 11:00 AM</option>
-                                            <option>11:00 AM – 12:00 PM</option>
-                                            <option>2:00 PM – 3:00 PM</option>
-                                            <option>3:00 PM – 4:00 PM</option>
-                                            <option>4:00 PM – 5:00 PM</option>
-                                        </select>
+                                        <label className="demo-label"><Hash size={13} /> Pincode</label>
+                                        <input required className="demo-input" placeholder="e.g. 641114" maxLength={6} value={form.pincode} onChange={e => setForm({ ...form, pincode: e.target.value.replace(/\D/g, '') })} />
                                     </div>
-                                </div>
-
-                                <div className="demo-field" style={{ marginBottom: '0', marginTop: '16px' }}>
-                                    <label className="demo-label">Any questions or notes? (optional)</label>
-                                    <textarea className="demo-input" rows="3" style={{ resize: 'none' }} placeholder="e.g. I'm a beginner and want to know if this course is right for me..." value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
                                 </div>
 
                                 <button type="submit" className="demo-submit-btn" disabled={isSubmitting}>
@@ -227,7 +214,7 @@ const DemoBookingModal = ({ isOpen, onClose }) => {
                                             Submitting...
                                         </>
                                     ) : (
-                                        <><Calendar size={20} /> Confirm My Demo Session</>
+                                        <><Calendar size={20} /> Book My Free Demo</>
                                     )}
                                 </button>
                             </form>
