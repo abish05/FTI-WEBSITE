@@ -262,7 +262,7 @@ export const subscribeToDemoBookings = (callback) => {
     });
 };
 
-const EMAIL_WORKER_URL = 'https://email-worker.ftitraining.workers.dev';
+const EMAIL_API_URL = '/api/send-email';
 
 export const updateDemoBookingStatus = async (id, status) => {
     try {
@@ -270,13 +270,13 @@ export const updateDemoBookingStatus = async (id, status) => {
         const bookingRef = doc(db, 'demoBookings', id);
         await updateDoc(bookingRef, { status });
 
-        // 2. If confirmed → fetch booking data and email the student
+        // 2. If confirmed → fetch booking data and email the student via Vercel Function
         if (status === 'confirmed') {
             try {
                 const snap = await getDoc(bookingRef);
                 if (snap.exists()) {
                     const b = snap.data();
-                    await fetch(EMAIL_WORKER_URL, {
+                    await fetch(EMAIL_API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
