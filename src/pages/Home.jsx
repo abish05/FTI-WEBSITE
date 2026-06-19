@@ -30,7 +30,7 @@ const Home = () => {
                         <Link to="/courses" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             View Our Courses <ArrowRight size={20} />
                         </Link>
-                        <Link to="/admission" className="btn-primary" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+                        <Link to="/book-demo" className="btn-primary" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
                             Book a Free Demo Class
                         </Link>
                     </div>
