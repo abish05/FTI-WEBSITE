@@ -13,6 +13,8 @@ import {
     getDocs,
     deleteDoc,
     doc,
+    getDoc,
+    setDoc,
     query,
     orderBy,
     serverTimestamp,
@@ -192,3 +194,90 @@ export const updateAdminStatus = async (id, isOnline) => {
 
 // ---- LEGACY COMPATIBILITY (updateDB is no longer needed) ----
 export const updateDB = async () => true;
+
+// ============================================================
+//  SITE POPUP CONFIG
+//  Stored in Firestore as a single document: siteConfig/popup
+// ============================================================
+
+export const getPopupConfig = async () => {
+    try {
+        const ref = doc(db, 'siteConfig', 'popup');
+        const snap = await getDoc(ref);
+        if (snap.exists()) return snap.data();
+        return { enabled: false, title: '', message: '', buttonText: 'Book a Demo', buttonLink: '' };
+    } catch (err) {
+        console.error('getPopupConfig error:', err);
+        return { enabled: false, title: '', message: '', buttonText: 'Book a Demo', buttonLink: '' };
+    }
+};
+
+export const savePopupConfig = async (config) => {
+    try {
+        const ref = doc(db, 'siteConfig', 'popup');
+        await setDoc(ref, { ...config, updatedAt: serverTimestamp() });
+        return true;
+    } catch (err) {
+        console.error('savePopupConfig error:', err);
+        return false;
+    }
+};
+
+export const subscribeToPopupConfig = (callback) => {
+    const ref = doc(db, 'siteConfig', 'popup');
+    return onSnapshot(ref, (snap) => {
+        if (snap.exists()) callback(snap.data());
+        else callback({ enabled: false });
+    }, (err) => {
+        console.error('Popup config subscription error:', err);
+    });
+};
+
+// ============================================================
+//  DEMO BOOKINGS
+//  Stored in Firestore collection: demoBookings
+// ============================================================
+export const addDemoBooking = async (formData) => {
+    try {
+        const docRef = await addDoc(collection(db, 'demoBookings'), {
+            ...formData,
+            status: 'pending',
+            createdAt: serverTimestamp(),
+            date: new Date().toLocaleString('en-IN')
+        });
+        return { success: true, id: docRef.id };
+    } catch (err) {
+        console.error('addDemoBooking error:', err);
+        return { success: false, error: err.message };
+    }
+};
+
+export const subscribeToDemoBookings = (callback) => {
+    const q = query(collection(db, 'demoBookings'), orderBy('createdAt', 'desc'));
+    return onSnapshot(q, (snap) => {
+        const bookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        callback(bookings);
+    }, (err) => {
+        console.error('Demo bookings subscription error:', err);
+    });
+};
+
+export const updateDemoBookingStatus = async (id, status) => {
+    try {
+        await updateDoc(doc(db, 'demoBookings', id), { status });
+        return true;
+    } catch (err) {
+        console.error('updateDemoBookingStatus error:', err);
+        return false;
+    }
+};
+
+export const deleteDemoBooking = async (id) => {
+    try {
+        await deleteDoc(doc(db, 'demoBookings', id));
+        return true;
+    } catch (err) {
+        console.error('deleteDemoBooking error:', err);
+        return false;
+    }
+};

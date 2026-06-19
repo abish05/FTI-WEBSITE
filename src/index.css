@@ -74,7 +74,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section {
-  padding: 80px 20px;
+  padding: 0 20px 80px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -88,7 +88,7 @@ h1, h2, h3, h4, h5, h6 {
 .page-container {
   min-height: 100vh;
   animation: pagetransition 0.5s ease-out;
-  padding-top: 120px; /* Offset for fixed navbar */
+  padding-top: 90px; /* Offset for fixed navbar */
 }
 
 .gradient-text {

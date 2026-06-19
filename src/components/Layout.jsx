@@ -2,10 +2,13 @@ import { Outlet, NavLink, Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import logoImg from '../assets/logo.png';
+import SitePopup from './SitePopup';
+import DemoBookingModal from './DemoBookingModal';
 
 const Layout = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [user, setUser] = useState(null);
+    const [isDemoOpen, setIsDemoOpen] = useState(false);
 
 
     useEffect(() => {
@@ -62,6 +65,9 @@ const Layout = () => {
                     </button>
                 </div>
             </nav>
+
+            <SitePopup />
+            <DemoBookingModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
 
             <main className="page-container">
                 <Outlet />

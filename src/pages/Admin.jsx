@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
     LayoutDashboard, Users, MessageSquare,
     LogOut, Search, Download, Trash2, Menu, X, 
-    ShieldCheck, Zap, RefreshCw, Plus, UserPlus, Mail, Edit
+    ShieldCheck, Zap, RefreshCw, Plus, UserPlus, Mail, Edit,
+    Bell, BellOff, Calendar, CheckCircle, Clock, AlertCircle, ToggleLeft, ToggleRight, Eye
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,7 +17,12 @@ import {
     addAdmin,
     updateAdmin,
     deleteAdmin,
-    updateAdminStatus
+    updateAdminStatus,
+    getPopupConfig,
+    savePopupConfig,
+    subscribeToDemoBookings,
+    updateDemoBookingStatus,
+    deleteDemoBooking
 } from '../api/db';
 
 const Admin = () => {
@@ -36,6 +42,15 @@ const Admin = () => {
     // Admin Management Form State
     const [adminForm, setAdminForm] = useState({ username: '', email: '', role: 'Admin', password: '' });
     const [editingAdminId, setEditingAdminId] = useState(null);
+
+    // Popup Config State
+    const [popupConfig, setPopupConfig] = useState({ enabled: false, title: '', message: '', buttonText: 'Book a Free Demo', buttonLink: '' });
+    const [isSavingPopup, setIsSavingPopup] = useState(false);
+    const [popupSaved, setPopupSaved] = useState(false);
+
+    // Demo Bookings State
+    const [demoBookings, setDemoBookings] = useState([]);
+    const [bookingSearch, setBookingSearch] = useState('');
 
     const user = JSON.parse(sessionStorage.getItem('fti_current_user') || 'null');
 
@@ -63,10 +78,17 @@ const Admin = () => {
             setMessages(data);
         });
 
+        // Subscribe to demo bookings
+        const unsubDemoBookings = subscribeToDemoBookings((data) => {
+            setDemoBookings(data);
+        });
+
+        // Load popup config
+        getPopupConfig().then(cfg => setPopupConfig(cfg));
+
         // Handle browser/tab close
         const handleBeforeUnload = () => {
             if (user && user.id && user.id !== 'master') {
-                // We use navigator.sendBeacon or standard sync call
                 updateAdminStatus(user.id, false);
             }
         };
@@ -77,6 +99,7 @@ const Admin = () => {
             if (unsubEnrollments) unsubEnrollments();
             if (unsubMessages) unsubMessages();
             if (unsubAdmins) unsubAdmins();
+            if (unsubDemoBookings) unsubDemoBookings();
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
     }, []);
@@ -125,6 +148,18 @@ const Admin = () => {
         link.href = url;
         link.download = `FTI_Students_${new Date().toLocaleDateString()}.csv`;
         link.click();
+    };
+
+    const handleSavePopup = async () => {
+        setIsSavingPopup(true);
+        const success = await savePopupConfig(popupConfig);
+        setIsSavingPopup(false);
+        if (success) {
+            setPopupSaved(true);
+            setTimeout(() => setPopupSaved(false), 3000);
+        } else {
+            alert('Failed to save popup config. Please try again.');
+        }
     };
 
     const SidebarItem = ({ icon, label, active, onClick }) => (
@@ -201,6 +236,8 @@ const Admin = () => {
                     <SidebarItem icon={<LayoutDashboard size={20} />} label="Overview" active={activeTab === 'Overview'} onClick={() => { setActiveTab('Overview'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<Users size={20} />} label="Student Ledger" active={activeTab === 'Participants'} onClick={() => { setActiveTab('Participants'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<MessageSquare size={20} />} label="Inquiries" active={activeTab === 'Messages'} onClick={() => { setActiveTab('Messages'); setIsSidebarOpen(false); }} />
+                    <SidebarItem icon={<Calendar size={20} />} label="Demo Bookings" active={activeTab === 'DemoBookings'} onClick={() => { setActiveTab('DemoBookings'); setIsSidebarOpen(false); }} />
+                    <SidebarItem icon={<Bell size={20} />} label="Popup Manager" active={activeTab === 'Popup'} onClick={() => { setActiveTab('Popup'); setIsSidebarOpen(false); }} />
                     <SidebarItem icon={<ShieldCheck size={20} />} label="System Config" active={activeTab === 'Config'} onClick={() => { setActiveTab('Config'); setIsSidebarOpen(false); }} />
                 </div>
 
@@ -245,7 +282,7 @@ const Admin = () => {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '25px', marginBottom: '45px' }}>
                             <StatCard label="Total Students" value={enrollments.length} subtext="Active Enrollments" icon={<Users size={85} />} color="#118a8b" />
                             <StatCard label="Enquiries" value={messages.length} subtext="Total Messages" icon={<MessageSquare size={85} />} color="#118a8b" />
-                            <StatCard label="Database" value="Firestore" subtext="Real-time Cloud Sync" icon={<Zap size={85} />} color="#118a8b" />
+                            <StatCard label="Demo Bookings" value={demoBookings.length} subtext={`${demoBookings.filter(b => b.status === 'pending').length} pending`} icon={<Calendar size={85} />} color="#f59e0b" />
                             <StatCard label="Access Level" value="Root" subtext={user?.role || 'Admin'} icon={<ShieldCheck size={85} />} color="#f59e0b" />
                         </div>
 
@@ -380,6 +417,251 @@ const Admin = () => {
                                 ))}
                             </div>
                         )}
+                    </div>
+                )}
+
+                {/* DEMO BOOKINGS */}
+                {!isLoading && activeTab === 'DemoBookings' && (
+                    <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
+                        <div style={{ display: 'flex', gap: '15px', marginBottom: '30px', flexWrap: 'wrap', alignItems: 'center' }}>
+                            <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+                                <Search size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+                                <input
+                                    type="text"
+                                    placeholder="Search bookings..."
+                                    className="form-input"
+                                    style={{ paddingLeft: '45px', marginBottom: 0 }}
+                                    value={bookingSearch}
+                                    onChange={(e) => setBookingSearch(e.target.value)}
+                                />
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
+                                {['All', 'pending', 'confirmed', 'completed'].map(s => (
+                                    <span key={s} style={{ padding: '8px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '600', cursor: 'default',
+                                        background: s === 'pending' ? 'rgba(245,158,11,0.1)' : s === 'confirmed' ? 'rgba(17,138,139,0.1)' : s === 'completed' ? 'rgba(34,197,94,0.1)' : 'rgba(100,116,139,0.1)',
+                                        color: s === 'pending' ? '#f59e0b' : s === 'confirmed' ? '#118a8b' : s === 'completed' ? '#22c55e' : '#64748b',
+                                        border: `1px solid ${s === 'pending' ? 'rgba(245,158,11,0.2)' : s === 'confirmed' ? 'rgba(17,138,139,0.2)' : s === 'completed' ? 'rgba(34,197,94,0.2)' : 'rgba(100,116,139,0.2)'}`
+                                    }}>
+                                        {s === 'All' ? `All (${demoBookings.length})` : `${s.charAt(0).toUpperCase() + s.slice(1)} (${demoBookings.filter(b => b.status === s).length})`}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        {demoBookings.length === 0 ? (
+                            <div className="glass-panel" style={{ textAlign: 'center', padding: '60px 20px' }}>
+                                <Calendar size={48} color="#1e293b" style={{ margin: '0 auto 15px' }} />
+                                <p style={{ color: '#64748b' }}>No demo bookings yet.<br />They will appear here instantly when clients book through the site.</p>
+                            </div>
+                        ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                {demoBookings
+                                    .filter(b =>
+                                        (b.fullName || '').toLowerCase().includes(bookingSearch.toLowerCase()) ||
+                                        (b.email || '').toLowerCase().includes(bookingSearch.toLowerCase()) ||
+                                        (b.course || '').toLowerCase().includes(bookingSearch.toLowerCase())
+                                    )
+                                    .map(b => {
+                                        const statusColor = b.status === 'pending' ? '#f59e0b' : b.status === 'confirmed' ? '#118a8b' : '#22c55e';
+                                        const statusBg = b.status === 'pending' ? 'rgba(245,158,11,0.1)' : b.status === 'confirmed' ? 'rgba(17,138,139,0.1)' : 'rgba(34,197,94,0.1)';
+                                        const StatusIcon = b.status === 'pending' ? Clock : b.status === 'confirmed' ? CheckCircle : CheckCircle;
+                                        return (
+                                            <div key={b.id} className="glass-panel" style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '20px', flexWrap: 'wrap' }}>
+                                                <div style={{ flex: 1, minWidth: '200px' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                                                        <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(17,138,139,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                            <Calendar size={20} color="#118a8b" />
+                                                        </div>
+                                                        <div>
+                                                            <p style={{ fontWeight: '700', margin: 0, fontSize: '1rem' }}>{b.fullName}</p>
+                                                            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>{b.email} · {b.phone}</p>
+                                                        </div>
+                                                        <span style={{ padding: '4px 12px', borderRadius: '20px', background: statusBg, color: statusColor, fontSize: '0.75rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '5px', border: `1px solid ${statusColor}30` }}>
+                                                            <StatusIcon size={12} /> {b.status?.toUpperCase()}
+                                                        </span>
+                                                    </div>
+                                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px', marginLeft: '54px' }}>
+                                                        <div style={{ fontSize: '0.82rem' }}>
+                                                            <span style={{ color: '#64748b', fontWeight: '600' }}>Course: </span>
+                                                            <span style={{ color: '#118a8b', fontWeight: '600' }}>{b.course}</span>
+                                                        </div>
+                                                        {b.preferredDate && (
+                                                            <div style={{ fontSize: '0.82rem' }}>
+                                                                <span style={{ color: '#64748b', fontWeight: '600' }}>Date: </span>
+                                                                <span>{b.preferredDate}</span>
+                                                            </div>
+                                                        )}
+                                                        {b.preferredTime && (
+                                                            <div style={{ fontSize: '0.82rem' }}>
+                                                                <span style={{ color: '#64748b', fontWeight: '600' }}>Time: </span>
+                                                                <span>{b.preferredTime}</span>
+                                                            </div>
+                                                        )}
+                                                        <div style={{ fontSize: '0.82rem' }}>
+                                                            <span style={{ color: '#64748b', fontWeight: '600' }}>Booked: </span>
+                                                            <span>{b.date}</span>
+                                                        </div>
+                                                    </div>
+                                                    {b.message && (
+                                                        <p style={{ fontSize: '0.82rem', color: '#94a3b8', marginTop: '10px', marginLeft: '54px', fontStyle: 'italic' }}>"{b.message}"</p>
+                                                    )}
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '8px', flexShrink: 0, alignItems: 'center', flexWrap: 'wrap' }}>
+                                                    {b.status === 'pending' && (
+                                                        <button onClick={() => updateDemoBookingStatus(b.id, 'confirmed')} style={{ padding: '8px 14px', borderRadius: '10px', background: 'rgba(17,138,139,0.1)', color: '#118a8b', border: '1px solid rgba(17,138,139,0.2)', cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                            <CheckCircle size={14} /> Confirm
+                                                        </button>
+                                                    )}
+                                                    {b.status === 'confirmed' && (
+                                                        <button onClick={() => updateDemoBookingStatus(b.id, 'completed')} style={{ padding: '8px 14px', borderRadius: '10px', background: 'rgba(34,197,94,0.1)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.2)', cursor: 'pointer', fontWeight: '600', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                            <CheckCircle size={14} /> Mark Done
+                                                        </button>
+                                                    )}
+                                                    <button onClick={async () => { if (window.confirm('Delete this booking?')) await deleteDemoBooking(b.id); }} style={{ padding: '8px', borderRadius: '10px', color: '#ef4444', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* POPUP MANAGER */}
+                {!isLoading && activeTab === 'Popup' && (
+                    <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', alignItems: 'start' }}>
+
+                            {/* Editor Panel */}
+                            <div className="glass-panel" style={{ padding: '35px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '25px', flexWrap: 'wrap', gap: '12px' }}>
+                                    <h2 style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: 0 }}>
+                                        <Bell color="#118a8b" size={26} /> Popup Manager
+                                    </h2>
+                                    {/* Enable/Disable Toggle */}
+                                    <button
+                                        onClick={() => setPopupConfig(p => ({ ...p, enabled: !p.enabled }))}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', gap: '10px',
+                                            padding: '10px 20px', borderRadius: '50px', border: 'none', cursor: 'pointer', fontWeight: '700', fontSize: '0.9rem',
+                                            background: popupConfig.enabled ? 'rgba(17,138,139,0.12)' : 'rgba(100,116,139,0.1)',
+                                            color: popupConfig.enabled ? '#118a8b' : '#64748b',
+                                            transition: 'all 0.3s ease'
+                                        }}
+                                    >
+                                        {popupConfig.enabled ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
+                                        {popupConfig.enabled ? 'Popup LIVE' : 'Popup OFF'}
+                                    </button>
+                                </div>
+
+                                <p style={{ color: '#94a3b8', marginBottom: '25px', fontSize: '0.9rem', lineHeight: '1.6' }}>
+                                    When <strong>Popup LIVE</strong> is active, a promotional popup will appear to all new visitors once per session.
+                                </p>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b', fontWeight: '600' }}>Popup Headline / Title</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ marginBottom: 0 }}
+                                            placeholder="e.g. 🎉 Free Demo Sessions Now Open!"
+                                            value={popupConfig.title}
+                                            onChange={e => setPopupConfig(p => ({ ...p, title: e.target.value }))}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b', fontWeight: '600' }}>Message Body</label>
+                                        <textarea
+                                            className="form-input"
+                                            rows="4"
+                                            style={{ resize: 'vertical', marginBottom: 0 }}
+                                            placeholder="e.g. Meet our expert instructors in a personalized 1-on-1 demo session. Limited slots available this week!"
+                                            value={popupConfig.message}
+                                            onChange={e => setPopupConfig(p => ({ ...p, message: e.target.value }))}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b', fontWeight: '600' }}>CTA Button Text</label>
+                                        <input
+                                            className="form-input"
+                                            style={{ marginBottom: 0 }}
+                                            placeholder="e.g. Book a Free Demo"
+                                            value={popupConfig.buttonText}
+                                            onChange={e => setPopupConfig(p => ({ ...p, buttonText: e.target.value }))}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '8px', color: '#64748b', fontWeight: '600' }}>CTA Button Link <span style={{ fontWeight: '400', opacity: 0.7 }}>(leave blank to open the booking form)</span></label>
+                                        <input
+                                            className="form-input"
+                                            style={{ marginBottom: 0 }}
+                                            placeholder="https://... or leave blank"
+                                            value={popupConfig.buttonLink}
+                                            onChange={e => setPopupConfig(p => ({ ...p, buttonLink: e.target.value }))}
+                                        />
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleSavePopup}
+                                    disabled={isSavingPopup}
+                                    style={{
+                                        marginTop: '25px', width: '100%', padding: '15px',
+                                        background: popupSaved ? '#22c55e' : '#118a8b',
+                                        color: 'white', border: 'none', borderRadius: '12px',
+                                        fontWeight: '700', cursor: isSavingPopup ? 'not-allowed' : 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+                                        transition: 'background 0.3s ease', fontSize: '0.95rem'
+                                    }}
+                                >
+                                    {isSavingPopup ? (
+                                        <><div style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Saving...</>
+                                    ) : popupSaved ? (
+                                        <><CheckCircle size={18} /> Changes Saved!</>
+                                    ) : (
+                                        <><Bell size={18} /> Save & Publish</>
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* Live Preview Panel */}
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                                    <Eye size={16} color="#64748b" />
+                                    <span style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Live Preview</span>
+                                </div>
+                                <div style={{ background: 'rgba(0,0,0,0.55)', borderRadius: '20px', padding: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '350px', position: 'relative', overflow: 'hidden' }}>
+                                    <div style={{ position: 'absolute', inset: 0, background: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.03\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")', borderRadius: '20px' }} />
+                                    <div style={{ background: 'white', borderRadius: '24px', padding: '35px 32px 28px', maxWidth: '340px', width: '100%', boxShadow: '0 30px 80px rgba(0,0,0,0.3)', position: 'relative', overflow: 'hidden' }}>
+                                        <div style={{ position: 'absolute', top: '-40px', left: '-40px', width: '130px', height: '130px', background: 'radial-gradient(circle, rgba(17,138,139,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
+                                        <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'rgba(100,116,139,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 'auto', marginBottom: '16px' }}>
+                                            <X size={14} color="#64748b" />
+                                        </div>
+                                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(17,138,139,0.1)', border: '1px solid rgba(17,138,139,0.2)', borderRadius: '50px', padding: '4px 12px', marginBottom: '12px' }}>
+                                            <span style={{ fontSize: '0.65rem', fontWeight: '700', color: '#118a8b', textTransform: 'uppercase', letterSpacing: '0.08em' }}>✨ Special Announcement</span>
+                                        </div>
+                                        <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#0f172a', marginBottom: '10px', lineHeight: '1.3', letterSpacing: '-0.02em' }}>
+                                            {popupConfig.title || 'Your Popup Title Here'}
+                                        </h3>
+                                        <p style={{ color: '#475569', fontSize: '0.82rem', lineHeight: '1.6', marginBottom: '20px' }}>
+                                            {popupConfig.message || 'Your message will appear here. Keep it concise and engaging!'}
+                                        </p>
+                                        <div style={{ background: 'linear-gradient(135deg, #118a8b, #0d9488)', color: 'white', padding: '12px', borderRadius: '12px', fontWeight: '700', fontSize: '0.82rem', textAlign: 'center', boxShadow: '0 6px 18px rgba(17,138,139,0.3)' }}>
+                                            📅 {popupConfig.buttonText || 'Book a Free Demo'}
+                                        </div>
+                                        <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.72rem', marginTop: '10px' }}>No thanks, maybe later</p>
+                                    </div>
+                                </div>
+                                <div style={{ marginTop: '12px', padding: '12px 16px', borderRadius: '12px', background: popupConfig.enabled ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.06)', border: `1px solid ${popupConfig.enabled ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.15)'}`, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: popupConfig.enabled ? '#22c55e' : '#ef4444', boxShadow: popupConfig.enabled ? '0 0 8px rgba(34,197,94,0.5)' : 'none' }} />
+                                    <span style={{ fontSize: '0.82rem', fontWeight: '600', color: popupConfig.enabled ? '#22c55e' : '#ef4444' }}>
+                                        {popupConfig.enabled ? 'Popup is LIVE — visitors will see this popup' : 'Popup is OFF — not visible to visitors'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
 
