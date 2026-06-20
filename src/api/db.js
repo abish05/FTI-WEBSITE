@@ -159,6 +159,14 @@ export const addEnrollment = async (formData) => {
             createdAt: serverTimestamp(),
             date: new Date().toLocaleString('en-IN')
         });
+        
+        // SECURE OFFSITE BACKUP
+        fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'backup_enrollment', ...formData, date: new Date().toLocaleString('en-IN') })
+        }).catch(e => console.warn('Backup email failed:', e));
+        
         return { success: true, id: docRef.id };
     } catch (err) {
         console.error('addEnrollment error:', err);
@@ -174,6 +182,14 @@ export const addMessage = async (formData) => {
             createdAt: serverTimestamp(),
             date: new Date().toLocaleDateString('en-IN')
         });
+        
+        // SECURE OFFSITE BACKUP
+        fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'backup_message', ...formData, date: new Date().toLocaleDateString('en-IN') })
+        }).catch(e => console.warn('Backup email failed:', e));
+        
         return { success: true, id: docRef.id };
     } catch (err) {
         console.error('addMessage error:', err);
@@ -303,6 +319,14 @@ export const addDemoBooking = async (formData) => {
             createdAt: serverTimestamp(),
             date: new Date().toLocaleString('en-IN')
         });
+        
+        // SECURE OFFSITE BACKUP
+        fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'backup_demo', ...formData, date: new Date().toLocaleString('en-IN') })
+        }).catch(e => console.warn('Backup email failed:', e));
+        
         return { success: true, id: docRef.id };
     } catch (err) {
         console.error('addDemoBooking error:', err);

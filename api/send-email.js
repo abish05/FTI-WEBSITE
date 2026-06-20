@@ -79,6 +79,41 @@ https://ftitraining.in
             return res.status(200).json({ success: true });
         }
 
+        // ==========================================
+        //  SECURE BACKUP EMAILS (TO ADMIN)
+        // ==========================================
+        const adminEmail = process.env.ADMIN_EMAIL || 'abishstk@gmail.com'; // Send backups here
+        
+        if (data.type === 'backup_enrollment') {
+            await transporter.sendMail({
+                from: '"FTI System Backup" <contact@ftitraining.in>',
+                to: adminEmail,
+                subject: `🔒 DATA BACKUP: New Enrollment - ${data.fullName}`,
+                text: `SECURE BACKUP RECORD\n\nType: New Student Admission\nName: ${data.fullName}\nEmail: ${data.email}\nPhone: ${data.phone}\nCourse: ${data.course}\nDate: ${data.date}\nRemarks: ${data.remarks || 'None'}`
+            });
+            return res.status(200).json({ success: true });
+        }
+
+        if (data.type === 'backup_demo') {
+            await transporter.sendMail({
+                from: '"FTI System Backup" <contact@ftitraining.in>',
+                to: adminEmail,
+                subject: `🔒 DATA BACKUP: New Demo Booking - ${data.fullName}`,
+                text: `SECURE BACKUP RECORD\n\nType: Demo Class Booking\nName: ${data.fullName}\nEmail: ${data.email}\nPhone: ${data.phone}\nCourse: ${data.course}\nLocation: ${data.location || 'N/A'}\nPincode: ${data.pincode || 'N/A'}\nDate: ${data.date}`
+            });
+            return res.status(200).json({ success: true });
+        }
+
+        if (data.type === 'backup_message') {
+            await transporter.sendMail({
+                from: '"FTI System Backup" <contact@ftitraining.in>',
+                to: adminEmail,
+                subject: `🔒 DATA BACKUP: New Inquiry - ${data.name}`,
+                text: `SECURE BACKUP RECORD\n\nType: Contact Form Inquiry\nName: ${data.name}\nEmail: ${data.email}\nPhone: ${data.phone || 'N/A'}\nDate: ${data.date}\n\nMessage:\n${data.message}`
+            });
+            return res.status(200).json({ success: true });
+        }
+
         return res.status(400).json({ success: false, error: 'Unknown email type' });
 
     } catch (error) {
