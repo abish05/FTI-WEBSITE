@@ -22,7 +22,8 @@ import {
     savePopupConfig,
     subscribeToDemoBookings,
     updateDemoBookingStatus,
-    deleteDemoBooking
+    deleteDemoBooking,
+    restoreFromCacheIfNeeded
 } from '../api/db';
 
 const Admin = () => {
@@ -59,6 +60,9 @@ const Admin = () => {
             navigate('/admin');
             return;
         }
+        
+        // Attempt to restore lost data from cache if DB is empty
+        restoreFromCacheIfNeeded();
 
         // Subscribe to real-time admins updates from Firestore
         const unsubAdmins = subscribeToAdmins((data) => {

@@ -60,6 +60,39 @@ export const fetchDB = async () => {
     }
 };
 
+// ---- AUTO RESTORE FROM CACHE ----
+export const restoreFromCacheIfNeeded = async () => {
+    try {
+        const stored = localStorage.getItem('fti_cache');
+        if (!stored) return;
+        const data = JSON.parse(stored);
+        
+        if (data.enrollments && data.enrollments.length > 0) {
+            const snap = await getDocs(query(collection(db, 'enrollments')));
+            if (snap.empty) {
+                console.log("Restoring enrollments from cache...");
+                for (const item of data.enrollments) {
+                    const { id, ...rest } = item;
+                    await setDoc(doc(db, 'enrollments', id), rest);
+                }
+            }
+        }
+        
+        if (data.messages && data.messages.length > 0) {
+            const snap = await getDocs(query(collection(db, 'messages')));
+            if (snap.empty) {
+                console.log("Restoring messages from cache...");
+                for (const item of data.messages) {
+                    const { id, ...rest } = item;
+                    await setDoc(doc(db, 'messages', id), rest);
+                }
+            }
+        }
+    } catch(e) {
+        console.error("Restore failed:", e);
+    }
+};
+
 // ---- SUBSCRIBE TO REAL-TIME UPDATES (Admin dashboard) ----
 // Returns an unsubscribe function. Call it on component unmount.
 export const subscribeToEnrollments = (callback, errorCallback) => {
