@@ -62,27 +62,29 @@ export const fetchDB = async () => {
 
 // ---- SUBSCRIBE TO REAL-TIME UPDATES (Admin dashboard) ----
 // Returns an unsubscribe function. Call it on component unmount.
-export const subscribeToEnrollments = (callback) => {
+export const subscribeToEnrollments = (callback, errorCallback) => {
     const q = query(collection(db, 'enrollments'), orderBy('createdAt', 'desc'));
     return onSnapshot(q, (snap) => {
         const enrollments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         callback(enrollments);
     }, (err) => {
         console.error('Enrollment subscription error:', err);
+        if (errorCallback) errorCallback(err);
     });
 };
 
-export const subscribeToMessages = (callback) => {
+export const subscribeToMessages = (callback, errorCallback) => {
     const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
     return onSnapshot(q, (snap) => {
         const messages = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         callback(messages);
     }, (err) => {
         console.error('Message subscription error:', err);
+        if (errorCallback) errorCallback(err);
     });
 };
 
-export const subscribeToAdmins = (callback) => {
+export const subscribeToAdmins = (callback, errorCallback) => {
     // Sort admins by creation date descending
     const q = query(collection(db, 'admins'), orderBy('createdAt', 'desc'));
     return onSnapshot(q, (snap) => {
@@ -90,6 +92,7 @@ export const subscribeToAdmins = (callback) => {
         callback(admins);
     }, (err) => {
         console.error('Admin subscription error:', err);
+        if (errorCallback) errorCallback(err);
     });
 };
 
@@ -252,13 +255,14 @@ export const addDemoBooking = async (formData) => {
     }
 };
 
-export const subscribeToDemoBookings = (callback) => {
+export const subscribeToDemoBookings = (callback, errorCallback) => {
     const q = query(collection(db, 'demoBookings'), orderBy('createdAt', 'desc'));
     return onSnapshot(q, (snap) => {
         const bookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         callback(bookings);
     }, (err) => {
         console.error('Demo bookings subscription error:', err);
+        if (errorCallback) errorCallback(err);
     });
 };
 

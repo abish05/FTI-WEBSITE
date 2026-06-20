@@ -3,14 +3,14 @@ import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCYCAyz6rrxbIBefJ4cX1eSa1QzcIzpZaw",
-  authDomain: "fti-admin.firebaseapp.com",
-  databaseURL: "https://fti-admin-default-rtdb.firebaseio.com",
-  projectId: "fti-admin",
-  storageBucket: "fti-admin.firebasestorage.app",
-  messagingSenderId: "949078967834",
-  appId: "1:949078967834:web:25254e07ac22038b9c33a3",
-  measurementId: "G-56KBLCB1HC"
+  apiKey: "AIzaSyDQnmXpQR9pDgXMDIvHrMnLGU30oX8IQ6Y",
+  authDomain: "fti-admin-3db6b.firebaseapp.com",
+  databaseURL: "https://fti-admin-3db6b-default-rtdb.firebaseio.com",
+  projectId: "fti-admin-3db6b",
+  storageBucket: "fti-admin-3db6b.firebasestorage.app",
+  messagingSenderId: "269900784570",
+  appId: "1:269900784570:web:cf48c32c4ab58375fa7383",
+  measurementId: "G-QWSWQ8PE7D"
 };
 
 const app = initializeApp(firebaseConfig);

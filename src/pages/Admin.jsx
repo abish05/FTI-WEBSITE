@@ -63,6 +63,9 @@ const Admin = () => {
         // Subscribe to real-time admins updates from Firestore
         const unsubAdmins = subscribeToAdmins((data) => {
             setAdmins(data);
+        }, (err) => {
+            setIsLoading(false);
+            setIsConnected(false);
         });
 
         // Subscribe to real-time enrollment updates from Firestore
@@ -71,16 +74,25 @@ const Admin = () => {
             setSyncTime(new Date().toLocaleTimeString());
             setIsConnected(true);
             setIsLoading(false);
+        }, (err) => {
+            setIsLoading(false);
+            setIsConnected(false);
         });
 
         // Subscribe to real-time message updates from Firestore
         const unsubMessages = subscribeToMessages((data) => {
             setMessages(data);
+        }, (err) => {
+            setIsLoading(false);
+            setIsConnected(false);
         });
 
         // Subscribe to demo bookings
         const unsubDemoBookings = subscribeToDemoBookings((data) => {
             setDemoBookings(data);
+        }, (err) => {
+            setIsLoading(false);
+            setIsConnected(false);
         });
 
         // Load popup config
