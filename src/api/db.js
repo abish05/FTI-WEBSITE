@@ -88,6 +88,28 @@ export const restoreFromCacheIfNeeded = async () => {
                 }
             }
         }
+        
+        if (data.admins && data.admins.length > 0) {
+            const snap = await getDocs(query(collection(db, 'admins')));
+            if (snap.empty) {
+                console.log("Restoring admins from cache...");
+                for (const item of data.admins) {
+                    const { id, ...rest } = item;
+                    await setDoc(doc(db, 'admins', id), rest);
+                }
+            }
+        }
+        
+        if (data.demoBookings && data.demoBookings.length > 0) {
+            const snap = await getDocs(query(collection(db, 'demoBookings')));
+            if (snap.empty) {
+                console.log("Restoring demoBookings from cache...");
+                for (const item of data.demoBookings) {
+                    const { id, ...rest } = item;
+                    await setDoc(doc(db, 'demoBookings', id), rest);
+                }
+            }
+        }
     } catch(e) {
         console.error("Restore failed:", e);
     }
