@@ -1,5 +1,5 @@
 import { ArrowRight, Code, Briefcase, Zap, MonitorPlay, ShieldCheck, Users, Trophy, ChevronRight, PenTool, Image as ImageIcon, Star, PlayCircle, TrendingUp } from 'lucide-react';
-import heroV2 from '../assets/hero_v2.png';
+import ftiHero from '../assets/fti_hero.png';
 import classroomLife from '../assets/classroom_life.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -37,7 +37,7 @@ const Home = () => {
                 </div>
                 <div style={{ position: 'relative', animation: 'float 6s ease-in-out infinite' }} className="image-container">
                     <div style={{ position: 'absolute', top: '-20px', left: '-20px', right: '20px', bottom: '20px', background: 'var(--accent)', filter: 'blur(80px)', opacity: '0.15', zIndex: -1 }}></div>
-                    <img src={heroV2} alt="FutureTech Classroom" className="premium-image" style={{ width: '100%', borderRadius: '24px', border: '1px solid var(--glass-border)', boxShadow: 'var(--glass-shadow)' }} loading="lazy" />
+                    <img src={ftiHero} alt="FTI Classroom" className="premium-image" style={{ width: '100%', borderRadius: '24px', border: '1px solid var(--glass-border)', boxShadow: 'var(--glass-shadow)' }} loading="lazy" />
                     <div className="image-overlay"></div>
                 </div>
             </div>
