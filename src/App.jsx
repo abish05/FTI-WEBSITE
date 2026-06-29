@@ -11,6 +11,7 @@ import AdminLogin from './pages/AdminLogin';
 import Admin from './pages/Admin';
 import BookDemo from './pages/BookDemo';
 import ScrollToTop from './components/ScrollToTop';
+import StudentDashboard from './pages/StudentDashboard';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         </Route>
         <Route path="admin" element={<AdminLogin />} />
         <Route path="admin/dashboard" element={<Admin />} />
+        <Route path="student/dashboard" element={<StudentDashboard />} />
         <Route path="book-demo" element={<BookDemo />} />
       </Routes>
     </BrowserRouter>
